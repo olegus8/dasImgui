@@ -17,7 +17,8 @@ def main
         "operator new";
         "__security_init_cookie";
         "__security_check_cookie";
-        "ImGui::TextUnformatted"
+        "ImGui::TextUnformatted";
+        "ImGuiTextFilter::PassFilter"
     }]
 
     cmres_functions <- [{auto[]
@@ -27,10 +28,13 @@ def main
     local_type_names <- [{auto[]
         "ImVec2";
         "ImVec3";
-        "ImVec4"
+        "ImVec4";
+        "ImColor"
     }]
 
     // generate
 
     var args <- get_command_line_arguments()
     bindHeaders(args[3], args[4])
+    genDefineConstants(args[5],args[4])
+

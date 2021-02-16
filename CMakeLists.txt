@@ -10,15 +10,40 @@ IF(NOT DAS_IMGUI_INCLUDED)
     FIND_PACKAGE(glfw3)
     FIND_PACKAGE(Vulkan)
 
+
+#	SET(imgui_INCLUDE_DIR
+#		${DAS_IMGUI_DIR}/imgui
+#
+#	SET(DAS_IMGUI_SRC
+#		${imgui_INCLUDE_DIR}/imconfig.h
+#		${imgui_INCLUDE_DIR}/imgui.cpp
+#		${imgui_INCLUDE_DIR}/imgui.h
+#		${imgui_INCLUDE_DIR}/imgui_demo.cpp
+#		${imgui_INCLUDE_DIR}/imgui_draw.cpp
+#		${imgui_INCLUDE_DIR}/imgui_internal.h
+#		${imgui_INCLUDE_DIR}/imgui_tables.cpp
+#		${imgui_INCLUDE_DIR}/imgui_widgets.cpp
+#		${imgui_INCLUDE_DIR}/imstb_rectpack.h
+#		${imgui_INCLUDE_DIR}/imstb_textedit.h
+#		${imgui_INCLUDE_DIR}/imstb_truetype.h
+#
+
     IF(NOT imgui_FOUND)
         MESSAGE(STATUS "IMGUI not found. Not building dasImGui.")
 	ELSE()
 		# libDasModuleImGui
 		SET(DAS_IMGUI_MODULE_SRC
+			${DAS_IMGUI_DIR}/src/need_imgui.h
 			${DAS_IMGUI_DIR}/src/module_imgui.cpp
-			${DAS_IMGUI_DIR}/src/module_imgui.inc
+			${DAS_IMGUI_DIR}/src/module_imgui_enums.cpp
+			${DAS_IMGUI_DIR}/src/module_imgui_ann.cpp
+			${DAS_IMGUI_DIR}/src/module_imgui_fun.cpp
+			${DAS_IMGUI_DIR}/src/module_imgui_method.cpp
 			${DAS_IMGUI_DIR}/src/module_imgui.h
-			${DAS_IMGUI_DIR}/src/module_imgui.cpp_inc
+			${DAS_IMGUI_DIR}/src/module_imgui.inc
+			${DAS_IMGUI_DIR}/src/module_imgui.method.inc
+			${DAS_IMGUI_DIR}/src/module_imgui.enum.inc
+			${DAS_IMGUI_DIR}/src/module_imgui.enum.cpp_inc
 		)
 		ADD_MODULE_LIB(libDasModuleImGui)
 		ADD_MODULE_CPP(imgui)
@@ -30,6 +55,7 @@ IF(NOT DAS_IMGUI_INCLUDED)
 		SETUP_CPP11(libDasModuleImGui)
 		# GENERATED IMGUI
 		get_target_property(BIND_INCLUDE_DIRS libDasModuleImGui INCLUDE_DIRECTORIES)
+		FIND_FILE(IMGUI_H "imgui.h")
 		CPP_BIND_AST(
 			IMGUI_GENERATE
 			generate_imgui.das
@@ -37,7 +63,7 @@ IF(NOT DAS_IMGUI_INCLUDED)
 			${DAS_IMGUI_DIR}/src/module_imgui
 			${DAS_IMGUI_DIR}/src
 			${BIND_INCLUDE_DIRS}
-			""
+			${IMGUI_H}
 		)
 		IF(NOT glfw3_FOUND)
 			MESSAGE(STATUS "GLFW3 not found. Not building dasImGuiGLFW.")

@@ -170,8 +170,76 @@ bitfield ImGuiInputTextFlags
     CallbackResize
     CallbackEdit
 
+bitfield ImGuiColorEditFlags
+    None
+    NoAlpha
+    NoPicker
+    NoOptions
+    NoSmallPreview
+    NoInputs
+    NoTooltip
+    NoLabel
+    NoSidePreview
+    NoDragDrop
+    NoBorder
+    _bit11
+    _bit12
+    _bit13
+    _bit14
+    _bit15
+    AlphaBar
+    AlphaPreview
+    AlphaPreviewHalf
+    HDR
+    DisplayRGB
+    DisplayHSV
+    DisplayHex
+    Uint8
+    Float
+    PickerHueBar
+    PickerHueWheel
+    InputRGB
+    InputHSV
+
+let
+    ImGuiColorEditFlags__OptionsDefault = ImGuiColorEditFlags Uint8 | ImGuiColorEditFlags DisplayRGB | ImGuiColorEditFlags InputRGB | ImGuiColorEditFlags PickerHueBar
+
+bitfield ImDrawCornerFlags
+    TopLeft
+    TopRight
+    BotLeft
+    BotRight
+
+let
+    ImDrawCornerFlags_None      = bitfield(0)
+    ImDrawCornerFlags_Top       = ImDrawCornerFlags TopLeft | ImDrawCornerFlags TopRight
+    ImDrawCornerFlags_Bot       = ImDrawCornerFlags BotLeft | ImDrawCornerFlags BotRight
+    ImDrawCornerFlags_Left      = ImDrawCornerFlags TopLeft | ImDrawCornerFlags BotLeft
+    ImDrawCornerFlags_Right     = ImDrawCornerFlags TopRight | ImDrawCornerFlags BotRight
+    ImDrawCornerFlags_All       = bitfield(0xF)
+
+let IM_COL32_WHITE = IM_COL32(255,255,255,255)
+let IM_COL32_BLACK = IM_COL32(0,0,0,255)
+let IM_COL32_BLACK_TRANS = IM_COL32(0,0,0,0)
+
+def IM_COL32(R,G,B,A:uint)
+    return (A<<IM_COL32_A_SHIFT) | (B<<IM_COL32_B_SHIFT) | (G<<IM_COL32_G_SHIFT) | (R<<IM_COL32_R_SHIFT)
+
+def IM_COL32(R,G,B,A:int)
+    return (uint(A)<<IM_COL32_A_SHIFT) | (uint(B)<<IM_COL32_B_SHIFT) | (uint(G)<<IM_COL32_G_SHIFT) | (uint(R)<<IM_COL32_R_SHIFT)
+
+def ImVec4 ( col:ImColor )
+    return col.Value
+
 def Begin(name:string; p_open:bool?; flags:ImGuiWindowFlags  = bitfield(0))
     return imgui::Begin(name,p_open,int(flags))
+
+def BeginPopupModal(name:string; p_open:bool?; flags:ImGuiWindowFlags = bitfield(0))
+    return imgui::BeginPopupModal(name, p_open, int(flags))
+
+def BeginPopupModal(name:string; var p_open:bool&; flags:ImGuiWindowFlags = bitfield(0))
+    unsafe
+        return imgui::BeginPopupModal(name, addr(p_open), int(flags))
 
 def GetKeyIndex(key:ImGuiKey_)
     return imgui::GetKeyIndex(int(key))
@@ -230,3 +298,30 @@ def Combo ( lab:string; var current_item:int&; items:string[]; popul_max_heigh_i
     let nItems = typeinfo(dim items)
     unsafe
         imgui::Combo(lab,addr(current_item),addr(items[0]),nItems,popul_max_heigh_in_items)
+
+def PushStyleVar(idx:ImGuiStyleVar_; val:float)
+    imgui::PushStyleVar(int(idx),val)
+
+def PushStyleVar(idx:ImGuiStyleVar_; val:ImVec2)
+    imgui::PushStyleVar(int(idx),val)
+
+def PushStyleColor(idx:ImGuiCol_;col:uint)
+    imgui::PushStyleColor(int(idx),col)
+
+def PushStyleColor(idx:ImGuiCol_;col:ImVec4)
+    imgui::PushStyleColor(int(idx),col)
+
+def ColorEdit3(lab:string; var col:float[3]; flags:ImGuiColorEditFlags = bitfield(0))
+    unsafe
+        return imgui::ColorEdit3(lab,addr(col[0]),int(flags))
+
+def ColorEdit4(lab:string; var col:float[4]; flags:ImGuiColorEditFlags = bitfield(0))
+    unsafe
+        return imgui::ColorEdit4(lab,addr(col[0]),int(flags))
+
+// ImDrawList
+
+def AddRectFilled(var self:ImDrawList; p_min,p_max:ImVec2; col:uint; rounding:float=0.0f; rounding_corners:ImDrawCornerFlags = ImDrawCornerFlags_All )
+    self |> imgui::AddRectFilled(p_min,p_max,col,rounding,int(rounding_corners))
+
+
