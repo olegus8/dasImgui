@@ -1,8 +1,5 @@
 [requires]
 glfw/3.3.2
 
-[requires]
-imgui/1.80
-
 [generators]
 cmake_find_package

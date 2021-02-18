@@ -15,7 +15,6 @@ using namespace das;
 
 #endif
 
-
 void Module_imgui::initEnums() {
 #if USE_GENERATED
 #include "module_imgui.enum.inc"

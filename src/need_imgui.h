@@ -16,43 +16,46 @@ protected:
     void initMethods();
 };
 
-
-template <>
-struct cast_arg<ImVec2> {
-    static __forceinline ImVec2 to ( Context & ctx, SimNode * node ) {
-        return * (ImVec2 *) node->evalPtr(ctx);
-    }
-};
+namespace das {
+    template <>
+    struct cast_arg<ImVec2> {
+        static __forceinline ImVec2 to ( Context & ctx, SimNode * node ) {
+            return * (ImVec2 *) node->evalPtr(ctx);
+        }
+    };
+}
 
 MAKE_TYPE_FACTORY(ImGuiContext,ImGuiContext);
 MAKE_TYPE_FACTORY(ImDrawListSharedData,ImDrawListSharedData);
+MAKE_TYPE_FACTORY(ImFontBuilderIO,ImFontBuilderIO);
 
-/*
-template <typename TT>
-struct typeName<ImVector<TT>> {
+namespace das {
+
+template <>
+struct typeName<char> {
     static string name() {
-        return string("ImVector`") + typeName<TT>::name(); // TODO: compilation time concat
+        return string("char");
     }
 };
 
-// ImDrawListSharedData to void * TODO: make dummy type
 template <>
-struct typeFactory<const ImDrawListSharedData *> {
-    static TypeDeclPtr make(const ModuleLibrary & library ) {
-        return typeFactory<void *>::make(library);
-    };
+struct cast <char> {
+    static __forceinline char to ( vec4f x )             { return char(v_extract_xi(v_cast_vec4i(x))); }
+    static __forceinline vec4f from ( char x )           { return v_cast_vec4f(v_splatsi(x)); }
 };
 
-// ImFont
-template <>
-struct typeName<ImFont *> : das::typeName<void *> {
+template <typename TT>
+struct typeName<TT *> {
+    static string name() {
+        return string("ptr`") + typeName<TT>::name();
+    }
 };
 
-template <>
-struct typeFactory<ImFont *> {
-    static TypeDeclPtr make(const ModuleLibrary & library ) {
-        return typeFactory<void *>::make(library);
-    };
+template <typename TT>
+struct typeName<ImVector<TT>> {
+    static string name() {
+        return string("ImVector`") + typeName<TT>::name();
+    }
 };
 
 template <typename TT>
@@ -74,5 +77,5 @@ struct typeFactory<ImVector<TT>> {
         return makeHandleType(library,declN.c_str());
     }
 };
-*/
 
+}

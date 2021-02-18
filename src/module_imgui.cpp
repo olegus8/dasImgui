@@ -86,6 +86,27 @@ namespace das {
     ImColor HSV(float h, float s, float v, float a = 1.0f) {
         return ImColor::HSV(h,s,v,a);
     }
+
+    // ImGuiTextBuffer
+
+    void ImGTB_Append ( ImGuiTextBuffer & buf, const char * txt ) {
+        buf.append(txt, nullptr);
+    }
+
+    int ImGTB_At ( ImGuiTextBuffer & buf, int32_t index ) {
+        return buf[index];
+    }
+
+    char * ImGTB_Slice ( ImGuiTextBuffer & buf, int32_t head, int32_t tail, Context * context, LineInfoArg * at ) {
+        if ( head>tail ) {
+            context->throw_error_at(*at, "can't get slice of ImGuiTextBuffer, head > tail");
+        }
+        int32_t len = tail - head;
+        if ( len>buf.size() ) {
+            context->throw_error_at(*at, "can't get slice of ImGuiTextBuffer, slice too big");
+        }
+        return context->stringHeap->allocateString(buf.begin() + head,len+1);
+    }
 }
 
 Module_imgui::Module_imgui() : Module("imgui") {
@@ -97,6 +118,8 @@ Module_imgui::Module_imgui() : Module("imgui") {
     addAnnotation(make_smart<DummyTypeAnnotation>("ImGuiContext", "ImGuiContext",
         1, 1)); // sizeof(ImGuiContext), alignof(ImGuiContext)));
     addAnnotation(make_smart<DummyTypeAnnotation>("ImDrawListSharedData", "ImDrawListSharedData",
+        1, 1)); // sizeof(ImGuiContext), alignof(ImGuiContext)));
+    addAnnotation(make_smart<DummyTypeAnnotation>("ImFontBuilderIO", "ImFontBuilderIO",
         1, 1)); // sizeof(ImGuiContext), alignof(ImGuiContext)));
     // constants
     addConstant(*this,"IMGUI_VERSION", IMGUI_VERSION);
@@ -167,6 +190,31 @@ bool Module_imgui::initDependencies() {
     addExtern<DAS_BIND_FUN(das::InputText)>(*this, lib, "InputText",
         SideEffects::worstDefault, "das::InputText")
             ->arg_init(3, make_smart<ExprConstInt>(0));
+    // imgui text buffer
+    addExtern<DAS_BIND_FUN(das::ImGTB_Append)>(*this,lib,"append",
+        SideEffects::worstDefault,"das::ImGTB_Append");
+    addExtern<DAS_BIND_FUN(das::ImGTB_At)>(*this,lib,"at",      // TODO: do we need to learn to map operator []?
+        SideEffects::worstDefault,"das::ImGTB_At");
+    addExtern<DAS_BIND_FUN(das::ImGTB_Slice)>(*this,lib,"slice",
+        SideEffects::worstDefault,"das::ImGTB_Slice");
+    // additional default values
+    findUniqueFunction("AddRectFilled")
+        ->arg_init(5, make_smart<ExprConstEnumeration>("All",makeType<ImDrawCornerFlags_>(lib)));
+    findUniqueFunction("BeginTable")
+        ->arg_init(3, make_smart<ExprCall>(LineInfo(), "ImVec2"));
+    for ( auto & fn : functionsByName["Selectable"] ) {
+        fn->arg_init(3, make_smart<ExprCall>(LineInfo(), "ImVec2"));
+    }
+    findUniqueFunction("SetNextWindowPos")
+        ->arg_init(2, make_smart<ExprCall>(LineInfo(), "ImVec2"));
+    findUniqueFunction("Button")
+        ->arg_init(1, make_smart<ExprCall>(LineInfo(), "ImVec2"));
+    for ( auto & fn : functionsByName["PlotHistogram"] ) {
+        if ( fn->arguments.size()==9 ) {
+            fn->arg_init(7, make_smart<ExprCall>(LineInfo(), "ImVec2"));
+            fn->arg_init(8, make_smart<ExprConstInt>(int32_t(sizeof(float))));
+        }
+    }
 #endif
     return true;
 }

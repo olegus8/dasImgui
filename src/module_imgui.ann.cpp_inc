@@ -2,83 +2,48 @@
 // structures
 // ------------
 
-	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImColor,ImColor)
-	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImDrawChannel,ImDrawChannel)
-	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImDrawListSplitter,ImDrawListSplitter)
-	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImDrawList,ImDrawList)
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImDrawData,ImDrawData)
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImFontGlyphRangesBuilder,ImFontGlyphRangesBuilder)
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImGuiPayload,ImGuiPayload)
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImGuiStoragePair,ImGuiStorage::ImGuiStoragePair)
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImFontConfig,ImFontConfig)
-	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImFont,ImFont)
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImGuiIO,ImGuiIO)
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImNewWrapper,ImNewWrapper)
-	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImGuiTableSortSpecs,ImGuiTableSortSpecs)
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImDrawVert,ImDrawVert)
+	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImGuiTableSortSpecs,ImGuiTableSortSpecs)
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImDrawCmdHeader,ImDrawCmdHeader)
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImFontGlyph,ImFontGlyph)
-	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImGuiOnceUponAFrame,ImGuiOnceUponAFrame)
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImFontAtlas,ImFontAtlas)
+	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImGuiOnceUponAFrame,ImGuiOnceUponAFrame)
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImGuiTextFilter,ImGuiTextFilter)
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImGuiSizeCallbackData,ImGuiSizeCallbackData)
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImGuiListClipper,ImGuiListClipper)
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImVec2,ImVec2)
-	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImGuiTextBuffer,ImGuiTextBuffer)
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImVec4,ImVec4)
+	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImFont,ImFont)
+	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImGuiTextBuffer,ImGuiTextBuffer)
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImGuiInputTextCallbackData,ImGuiInputTextCallbackData)
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImDrawCmd,ImDrawCmd)
+	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImGuiViewport,ImGuiViewport)
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImFontAtlasCustomRect,ImFontAtlasCustomRect)
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImGuiStyle,ImGuiStyle)
+	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImColor,ImColor)
+	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImDrawListSplitter,ImDrawListSplitter)
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImGuiStorage,ImGuiStorage)
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImGuiTextRange,ImGuiTextFilter::ImGuiTextRange)
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImGuiTableColumnSortSpecs,ImGuiTableColumnSortSpecs)
+	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImDrawChannel,ImDrawChannel)
+	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImDrawList,ImDrawList)
 
-struct ImColor_GeneratedAnnotation : ManagedStructureAnnotation<ImColor> {
-	virtual bool isLocal() const override { return true; }
-	ImColor_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImColor", ml) {
-	}
-	void init () {
-		addField<DAS_BIND_MANAGED_FIELD(Value)>("Value","Value");
-	}
-};
-struct ImDrawChannel_GeneratedAnnotation : ManagedStructureAnnotation<ImDrawChannel> {
-	ImDrawChannel_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImDrawChannel", ml) {
-	}
-	void init () {
-	}
-};
-struct ImDrawListSplitter_GeneratedAnnotation : ManagedStructureAnnotation<ImDrawListSplitter> {
-	ImDrawListSplitter_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImDrawListSplitter", ml) {
-	}
-	void init () {
-		addField<DAS_BIND_MANAGED_FIELD(_Current)>("_Current","_Current");
-		addField<DAS_BIND_MANAGED_FIELD(_Count)>("_Count","_Count");
-	}
-};
-struct ImDrawList_GeneratedAnnotation : ManagedStructureAnnotation<ImDrawList> {
-	ImDrawList_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImDrawList", ml) {
-	}
-	void init () {
-		addField<DAS_BIND_MANAGED_FIELD(Flags)>("Flags","Flags");
-		addField<DAS_BIND_MANAGED_FIELD(_VtxCurrentIdx)>("_VtxCurrentIdx","_VtxCurrentIdx");
-		addField<DAS_BIND_MANAGED_FIELD(_OwnerName)>("_OwnerName","_OwnerName");
-		addField<DAS_BIND_MANAGED_FIELD(_VtxWritePtr)>("_VtxWritePtr","_VtxWritePtr");
-		addField<DAS_BIND_MANAGED_FIELD(_IdxWritePtr)>("_IdxWritePtr","_IdxWritePtr");
-		addField<DAS_BIND_MANAGED_FIELD(_CmdHeader)>("_CmdHeader","_CmdHeader");
-		addField<DAS_BIND_MANAGED_FIELD(_Splitter)>("_Splitter","_Splitter");
-		addField<DAS_BIND_MANAGED_FIELD(_FringeScale)>("_FringeScale","_FringeScale");
-	}
-};
 struct ImDrawData_GeneratedAnnotation : ManagedStructureAnnotation<ImDrawData> {
 	ImDrawData_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImDrawData", ml) {
 	}
 	void init () {
 		addField<DAS_BIND_MANAGED_FIELD(Valid)>("Valid","Valid");
-		addField<DAS_BIND_MANAGED_FIELD(CmdLists)>("CmdLists","CmdLists");
 		addField<DAS_BIND_MANAGED_FIELD(CmdListsCount)>("CmdListsCount","CmdListsCount");
 		addField<DAS_BIND_MANAGED_FIELD(TotalIdxCount)>("TotalIdxCount","TotalIdxCount");
 		addField<DAS_BIND_MANAGED_FIELD(TotalVtxCount)>("TotalVtxCount","TotalVtxCount");
+		addField<DAS_BIND_MANAGED_FIELD(CmdLists)>("CmdLists","CmdLists");
 		addField<DAS_BIND_MANAGED_FIELD(DisplayPos)>("DisplayPos","DisplayPos");
 		addField<DAS_BIND_MANAGED_FIELD(DisplaySize)>("DisplaySize","DisplaySize");
 		addField<DAS_BIND_MANAGED_FIELD(FramebufferScale)>("FramebufferScale","FramebufferScale");
@@ -88,6 +53,7 @@ struct ImFontGlyphRangesBuilder_GeneratedAnnotation : ManagedStructureAnnotation
 	ImFontGlyphRangesBuilder_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImFontGlyphRangesBuilder", ml) {
 	}
 	void init () {
+		addField<DAS_BIND_MANAGED_FIELD(UsedChars)>("UsedChars","UsedChars");
 	}
 };
 struct ImGuiPayload_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiPayload> {
@@ -129,31 +95,11 @@ struct ImFontConfig_GeneratedAnnotation : ManagedStructureAnnotation<ImFontConfi
 		addField<DAS_BIND_MANAGED_FIELD(GlyphMinAdvanceX)>("GlyphMinAdvanceX","GlyphMinAdvanceX");
 		addField<DAS_BIND_MANAGED_FIELD(GlyphMaxAdvanceX)>("GlyphMaxAdvanceX","GlyphMaxAdvanceX");
 		addField<DAS_BIND_MANAGED_FIELD(MergeMode)>("MergeMode","MergeMode");
-		addField<DAS_BIND_MANAGED_FIELD(RasterizerFlags)>("RasterizerFlags","RasterizerFlags");
+		addField<DAS_BIND_MANAGED_FIELD(FontBuilderFlags)>("FontBuilderFlags","FontBuilderFlags");
 		addField<DAS_BIND_MANAGED_FIELD(RasterizerMultiply)>("RasterizerMultiply","RasterizerMultiply");
 		addField<DAS_BIND_MANAGED_FIELD(EllipsisChar)>("EllipsisChar","EllipsisChar");
 		addField<DAS_BIND_MANAGED_FIELD(Name)>("Name","Name");
 		addField<DAS_BIND_MANAGED_FIELD(DstFont)>("DstFont","DstFont");
-	}
-};
-struct ImFont_GeneratedAnnotation : ManagedStructureAnnotation<ImFont> {
-	ImFont_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImFont", ml) {
-	}
-	void init () {
-		addField<DAS_BIND_MANAGED_FIELD(FallbackAdvanceX)>("FallbackAdvanceX","FallbackAdvanceX");
-		addField<DAS_BIND_MANAGED_FIELD(FontSize)>("FontSize","FontSize");
-		addField<DAS_BIND_MANAGED_FIELD(FallbackGlyph)>("FallbackGlyph","FallbackGlyph");
-		addField<DAS_BIND_MANAGED_FIELD(ContainerAtlas)>("ContainerAtlas","ContainerAtlas");
-		addField<DAS_BIND_MANAGED_FIELD(ConfigData)>("ConfigData","ConfigData");
-		addField<DAS_BIND_MANAGED_FIELD(ConfigDataCount)>("ConfigDataCount","ConfigDataCount");
-		addField<DAS_BIND_MANAGED_FIELD(FallbackChar)>("FallbackChar","FallbackChar");
-		addField<DAS_BIND_MANAGED_FIELD(EllipsisChar)>("EllipsisChar","EllipsisChar");
-		addField<DAS_BIND_MANAGED_FIELD(DirtyLookupTables)>("DirtyLookupTables","DirtyLookupTables");
-		addField<DAS_BIND_MANAGED_FIELD(Scale)>("Scale","Scale");
-		addField<DAS_BIND_MANAGED_FIELD(Ascent)>("Ascent","Ascent");
-		addField<DAS_BIND_MANAGED_FIELD(Descent)>("Descent","Descent");
-		addField<DAS_BIND_MANAGED_FIELD(MetricsTotalSurface)>("MetricsTotalSurface","MetricsTotalSurface");
-		addField<DAS_BIND_MANAGED_FIELD(Used4kPagesMap)>("Used4kPagesMap","Used4kPagesMap");
 	}
 };
 struct ImGuiIO_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiIO> {
@@ -239,21 +185,13 @@ struct ImGuiIO_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiIO> {
 		addField<DAS_BIND_MANAGED_FIELD(NavInputsDownDurationPrev)>("NavInputsDownDurationPrev","NavInputsDownDurationPrev");
 		addField<DAS_BIND_MANAGED_FIELD(PenPressure)>("PenPressure","PenPressure");
 		addField<DAS_BIND_MANAGED_FIELD(InputQueueSurrogate)>("InputQueueSurrogate","InputQueueSurrogate");
+		addField<DAS_BIND_MANAGED_FIELD(InputQueueCharacters)>("InputQueueCharacters","InputQueueCharacters");
 	}
 };
 struct ImNewWrapper_GeneratedAnnotation : ManagedStructureAnnotation<ImNewWrapper> {
 	ImNewWrapper_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImNewWrapper", ml) {
 	}
 	void init () {
-	}
-};
-struct ImGuiTableSortSpecs_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiTableSortSpecs> {
-	ImGuiTableSortSpecs_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImGuiTableSortSpecs", ml) {
-	}
-	void init () {
-		addField<DAS_BIND_MANAGED_FIELD(Specs)>("Specs","Specs");
-		addField<DAS_BIND_MANAGED_FIELD(SpecsCount)>("SpecsCount","SpecsCount");
-		addField<DAS_BIND_MANAGED_FIELD(SpecsDirty)>("SpecsDirty","SpecsDirty");
 	}
 };
 struct ImDrawVert_GeneratedAnnotation : ManagedStructureAnnotation<ImDrawVert> {
@@ -263,6 +201,15 @@ struct ImDrawVert_GeneratedAnnotation : ManagedStructureAnnotation<ImDrawVert> {
 		addField<DAS_BIND_MANAGED_FIELD(pos)>("pos","pos");
 		addField<DAS_BIND_MANAGED_FIELD(uv)>("uv","uv");
 		addField<DAS_BIND_MANAGED_FIELD(col)>("col","col");
+	}
+};
+struct ImGuiTableSortSpecs_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiTableSortSpecs> {
+	ImGuiTableSortSpecs_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImGuiTableSortSpecs", ml) {
+	}
+	void init () {
+		addField<DAS_BIND_MANAGED_FIELD(Specs)>("Specs","Specs");
+		addField<DAS_BIND_MANAGED_FIELD(SpecsCount)>("SpecsCount","SpecsCount");
+		addField<DAS_BIND_MANAGED_FIELD(SpecsDirty)>("SpecsDirty","SpecsDirty");
 	}
 };
 struct ImDrawCmdHeader_GeneratedAnnotation : ManagedStructureAnnotation<ImDrawCmdHeader> {
@@ -289,13 +236,6 @@ struct ImFontGlyph_GeneratedAnnotation : ManagedStructureAnnotation<ImFontGlyph>
 		addField<DAS_BIND_MANAGED_FIELD(V1)>("V1","V1");
 	}
 };
-struct ImGuiOnceUponAFrame_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiOnceUponAFrame> {
-	ImGuiOnceUponAFrame_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImGuiOnceUponAFrame", ml) {
-	}
-	void init () {
-		addField<DAS_BIND_MANAGED_FIELD(RefFrame)>("RefFrame","RefFrame");
-	}
-};
 struct ImFontAtlas_GeneratedAnnotation : ManagedStructureAnnotation<ImFontAtlas> {
 	ImFontAtlas_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImFontAtlas", ml) {
 	}
@@ -311,9 +251,21 @@ struct ImFontAtlas_GeneratedAnnotation : ManagedStructureAnnotation<ImFontAtlas>
 		addField<DAS_BIND_MANAGED_FIELD(TexHeight)>("TexHeight","TexHeight");
 		addField<DAS_BIND_MANAGED_FIELD(TexUvScale)>("TexUvScale","TexUvScale");
 		addField<DAS_BIND_MANAGED_FIELD(TexUvWhitePixel)>("TexUvWhitePixel","TexUvWhitePixel");
+		addField<DAS_BIND_MANAGED_FIELD(Fonts)>("Fonts","Fonts");
+		addField<DAS_BIND_MANAGED_FIELD(CustomRects)>("CustomRects","CustomRects");
+		addField<DAS_BIND_MANAGED_FIELD(ConfigData)>("ConfigData","ConfigData");
 		addField<DAS_BIND_MANAGED_FIELD(TexUvLines)>("TexUvLines","TexUvLines");
+		addField<DAS_BIND_MANAGED_FIELD(FontBuilderIO)>("FontBuilderIO","FontBuilderIO");
+		addField<DAS_BIND_MANAGED_FIELD(FontBuilderFlags)>("FontBuilderFlags","FontBuilderFlags");
 		addField<DAS_BIND_MANAGED_FIELD(PackIdMouseCursors)>("PackIdMouseCursors","PackIdMouseCursors");
 		addField<DAS_BIND_MANAGED_FIELD(PackIdLines)>("PackIdLines","PackIdLines");
+	}
+};
+struct ImGuiOnceUponAFrame_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiOnceUponAFrame> {
+	ImGuiOnceUponAFrame_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImGuiOnceUponAFrame", ml) {
+	}
+	void init () {
+		addField<DAS_BIND_MANAGED_FIELD(RefFrame)>("RefFrame","RefFrame");
 	}
 };
 struct ImGuiTextFilter_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiTextFilter> {
@@ -321,6 +273,7 @@ struct ImGuiTextFilter_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiTex
 	}
 	void init () {
 		addField<DAS_BIND_MANAGED_FIELD(InputBuf)>("InputBuf","InputBuf");
+		addField<DAS_BIND_MANAGED_FIELD(Filters)>("Filters","Filters");
 		addField<DAS_BIND_MANAGED_FIELD(CountGrep)>("CountGrep","CountGrep");
 	}
 };
@@ -356,12 +309,6 @@ struct ImVec2_GeneratedAnnotation : ManagedStructureAnnotation<ImVec2> {
 		addField<DAS_BIND_MANAGED_FIELD(y)>("y","y");
 	}
 };
-struct ImGuiTextBuffer_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiTextBuffer> {
-	ImGuiTextBuffer_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImGuiTextBuffer", ml) {
-	}
-	void init () {
-	}
-};
 struct ImVec4_GeneratedAnnotation : ManagedStructureAnnotation<ImVec4> {
 	virtual bool isLocal() const override { return true; }
 	ImVec4_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImVec4", ml) {
@@ -371,6 +318,36 @@ struct ImVec4_GeneratedAnnotation : ManagedStructureAnnotation<ImVec4> {
 		addField<DAS_BIND_MANAGED_FIELD(y)>("y","y");
 		addField<DAS_BIND_MANAGED_FIELD(z)>("z","z");
 		addField<DAS_BIND_MANAGED_FIELD(w)>("w","w");
+	}
+};
+struct ImFont_GeneratedAnnotation : ManagedStructureAnnotation<ImFont> {
+	ImFont_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImFont", ml) {
+	}
+	void init () {
+		addField<DAS_BIND_MANAGED_FIELD(IndexAdvanceX)>("IndexAdvanceX","IndexAdvanceX");
+		addField<DAS_BIND_MANAGED_FIELD(FallbackAdvanceX)>("FallbackAdvanceX","FallbackAdvanceX");
+		addField<DAS_BIND_MANAGED_FIELD(FontSize)>("FontSize","FontSize");
+		addField<DAS_BIND_MANAGED_FIELD(IndexLookup)>("IndexLookup","IndexLookup");
+		addField<DAS_BIND_MANAGED_FIELD(Glyphs)>("Glyphs","Glyphs");
+		addField<DAS_BIND_MANAGED_FIELD(FallbackGlyph)>("FallbackGlyph","FallbackGlyph");
+		addField<DAS_BIND_MANAGED_FIELD(ContainerAtlas)>("ContainerAtlas","ContainerAtlas");
+		addField<DAS_BIND_MANAGED_FIELD(ConfigData)>("ConfigData","ConfigData");
+		addField<DAS_BIND_MANAGED_FIELD(ConfigDataCount)>("ConfigDataCount","ConfigDataCount");
+		addField<DAS_BIND_MANAGED_FIELD(FallbackChar)>("FallbackChar","FallbackChar");
+		addField<DAS_BIND_MANAGED_FIELD(EllipsisChar)>("EllipsisChar","EllipsisChar");
+		addField<DAS_BIND_MANAGED_FIELD(DirtyLookupTables)>("DirtyLookupTables","DirtyLookupTables");
+		addField<DAS_BIND_MANAGED_FIELD(Scale)>("Scale","Scale");
+		addField<DAS_BIND_MANAGED_FIELD(Ascent)>("Ascent","Ascent");
+		addField<DAS_BIND_MANAGED_FIELD(Descent)>("Descent","Descent");
+		addField<DAS_BIND_MANAGED_FIELD(MetricsTotalSurface)>("MetricsTotalSurface","MetricsTotalSurface");
+		addField<DAS_BIND_MANAGED_FIELD(Used4kPagesMap)>("Used4kPagesMap","Used4kPagesMap");
+	}
+};
+struct ImGuiTextBuffer_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiTextBuffer> {
+	ImGuiTextBuffer_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImGuiTextBuffer", ml) {
+	}
+	void init () {
+		addField<DAS_BIND_MANAGED_FIELD(Buf)>("Buf","Buf");
 	}
 };
 struct ImGuiInputTextCallbackData_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiInputTextCallbackData> {
@@ -402,6 +379,17 @@ struct ImDrawCmd_GeneratedAnnotation : ManagedStructureAnnotation<ImDrawCmd> {
 		addField<DAS_BIND_MANAGED_FIELD(ElemCount)>("ElemCount","ElemCount");
 		addField<DAS_BIND_MANAGED_FIELD(UserCallback)>("UserCallback","UserCallback");
 		addField<DAS_BIND_MANAGED_FIELD(UserCallbackData)>("UserCallbackData","UserCallbackData");
+	}
+};
+struct ImGuiViewport_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiViewport> {
+	ImGuiViewport_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImGuiViewport", ml) {
+	}
+	void init () {
+		addField<DAS_BIND_MANAGED_FIELD(Flags)>("Flags","Flags");
+		addField<DAS_BIND_MANAGED_FIELD(Pos)>("Pos","Pos");
+		addField<DAS_BIND_MANAGED_FIELD(Size)>("Size","Size");
+		addField<DAS_BIND_MANAGED_FIELD(WorkPos)>("WorkPos","WorkPos");
+		addField<DAS_BIND_MANAGED_FIELD(WorkSize)>("WorkSize","WorkSize");
 	}
 };
 struct ImFontAtlasCustomRect_GeneratedAnnotation : ManagedStructureAnnotation<ImFontAtlasCustomRect> {
@@ -464,6 +452,23 @@ struct ImGuiStyle_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiStyle> {
 		addField<DAS_BIND_MANAGED_FIELD(Colors)>("Colors","Colors");
 	}
 };
+struct ImColor_GeneratedAnnotation : ManagedStructureAnnotation<ImColor> {
+	virtual bool isLocal() const override { return true; }
+	ImColor_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImColor", ml) {
+	}
+	void init () {
+		addField<DAS_BIND_MANAGED_FIELD(Value)>("Value","Value");
+	}
+};
+struct ImDrawListSplitter_GeneratedAnnotation : ManagedStructureAnnotation<ImDrawListSplitter> {
+	ImDrawListSplitter_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImDrawListSplitter", ml) {
+	}
+	void init () {
+		addField<DAS_BIND_MANAGED_FIELD(_Current)>("_Current","_Current");
+		addField<DAS_BIND_MANAGED_FIELD(_Count)>("_Count","_Count");
+		addField<DAS_BIND_MANAGED_FIELD(_Channels)>("_Channels","_Channels");
+	}
+};
 struct ImGuiStorage_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiStorage> {
 	ImGuiStorage_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImGuiStorage", ml) {
 	}
@@ -485,5 +490,33 @@ struct ImGuiTableColumnSortSpecs_GeneratedAnnotation : ManagedStructureAnnotatio
 		addField<DAS_BIND_MANAGED_FIELD(ColumnUserID)>("ColumnUserID","ColumnUserID");
 		addField<DAS_BIND_MANAGED_FIELD(ColumnIndex)>("ColumnIndex","ColumnIndex");
 		addField<DAS_BIND_MANAGED_FIELD(SortOrder)>("SortOrder","SortOrder");
+	}
+};
+struct ImDrawChannel_GeneratedAnnotation : ManagedStructureAnnotation<ImDrawChannel> {
+	ImDrawChannel_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImDrawChannel", ml) {
+	}
+	void init () {
+		addField<DAS_BIND_MANAGED_FIELD(_CmdBuffer)>("_CmdBuffer","_CmdBuffer");
+		addField<DAS_BIND_MANAGED_FIELD(_IdxBuffer)>("_IdxBuffer","_IdxBuffer");
+	}
+};
+struct ImDrawList_GeneratedAnnotation : ManagedStructureAnnotation<ImDrawList> {
+	ImDrawList_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImDrawList", ml) {
+	}
+	void init () {
+		addField<DAS_BIND_MANAGED_FIELD(CmdBuffer)>("CmdBuffer","CmdBuffer");
+		addField<DAS_BIND_MANAGED_FIELD(IdxBuffer)>("IdxBuffer","IdxBuffer");
+		addField<DAS_BIND_MANAGED_FIELD(VtxBuffer)>("VtxBuffer","VtxBuffer");
+		addField<DAS_BIND_MANAGED_FIELD(Flags)>("Flags","Flags");
+		addField<DAS_BIND_MANAGED_FIELD(_VtxCurrentIdx)>("_VtxCurrentIdx","_VtxCurrentIdx");
+		addField<DAS_BIND_MANAGED_FIELD(_OwnerName)>("_OwnerName","_OwnerName");
+		addField<DAS_BIND_MANAGED_FIELD(_VtxWritePtr)>("_VtxWritePtr","_VtxWritePtr");
+		addField<DAS_BIND_MANAGED_FIELD(_IdxWritePtr)>("_IdxWritePtr","_IdxWritePtr");
+		addField<DAS_BIND_MANAGED_FIELD(_ClipRectStack)>("_ClipRectStack","_ClipRectStack");
+		addField<DAS_BIND_MANAGED_FIELD(_TextureIdStack)>("_TextureIdStack","_TextureIdStack");
+		addField<DAS_BIND_MANAGED_FIELD(_Path)>("_Path","_Path");
+		addField<DAS_BIND_MANAGED_FIELD(_CmdHeader)>("_CmdHeader","_CmdHeader");
+		addField<DAS_BIND_MANAGED_FIELD(_Splitter)>("_Splitter","_Splitter");
+		addField<DAS_BIND_MANAGED_FIELD(_FringeScale)>("_FringeScale","_FringeScale");
 	}
 };

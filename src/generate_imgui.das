@@ -6,7 +6,7 @@ def main
     // configure
 
     blocked_type_names <- [{auto[]
-        "ImVector";
+        // "ImVector";
         "ImGuiStoragePair";
         "ImDrawListSharedData";
         "ImGuiInputTextCallback"
@@ -18,7 +18,8 @@ def main
         "__security_init_cookie";
         "__security_check_cookie";
         "ImGui::TextUnformatted";
-        "ImGuiTextFilter::PassFilter"
+        "ImGuiTextFilter::PassFilter";
+        "ImGuiTextBuffer::append"
     }]
 
     cmres_functions <- [{auto[]
@@ -31,6 +32,27 @@ def main
         "ImVec4";
         "ImColor"
     }]
+
+    ex_enums <- {{
+    // flags
+        "ImGuiWindowFlags_" => [[ExEnum() name="ImGuiWindowFlags", isFlags=true]];
+        "ImGuiBackendFlags_" => [[ExEnum() name="ImGuiBackendFlags", isFlags=true]];
+        "ImGuiConfigFlags_"  => [[ExEnum() name="ImGuiConfigFlags", isFlags=true]];
+        "ImGuiSliderFlags_" => [[ExEnum() name = "ImGuiSliderFlags", isFlags=true]];
+        "ImGuiCond_" => [[ExEnum() name = "ImGuiCond", isFlags=true]];
+        "ImGuiTableFlags_" => [[ExEnum() name = "ImGuiTableFlags", isFlags=true]];
+        "ImGuiSelectableFlags_" => [[ExEnum() name = "ImGuiSelectableFlags", isFlags=true]];
+        "ImGuiInputTextFlags_" => [[ExEnum() name = "ImGuiInputTextFlags", isFlags=true]];
+        "ImGuiColorEditFlags_" => [[ExEnum() name = "ImGuiColorEditFlags", isFlags=true]];
+        "ImDrawCornerFlags_" => [[ExEnum() name = "ImDrawCornerFlags", isFlags=true]];
+        "ImGuiTabBarFlags_" => [[ExEnum() name = "ImGuiTabBarFlags", isFlags=true]];
+
+    // not flags
+        "ImGuiStyleVar_" => [[ExEnum() name = "ImGuiStyleVar"]];
+        "ImGuiCol_" => [[ExEnum() name = "ImGuiCol"]];
+        "ImGuiKey_" => [[ExEnum() name = "ImGuiKey"]];
+        "ImGuiMouseButton_" => [[ExEnum() name = "ImGuiMouseButton"]]
+    }}
 
     // generate
 

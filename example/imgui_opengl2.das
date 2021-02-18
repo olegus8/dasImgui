@@ -40,7 +40,7 @@ def imgui_app ( title:string; blk : block )
     glfwDestroyWindow(window)
     glfwTerminate()
 
-def HelpMarker(desc:string)
+def DasHelpMaker(desc:string)
     TextDisabled("(?)")
     if IsItemHovered()
         BeginTooltip()
@@ -78,6 +78,109 @@ def DasShowUserGuide()
     BulletText("CTRL+Tab to select a window.")
     Unindent()
 
+def DasShowExampleAppMainMenuBar()
+    if BeginMainMenuBar()
+        if BeginMenu("File")
+            ShowExampleMenuFile()
+            EndMenu()
+        if BeginMenu("Edit")
+            if MenuItem("Undo", "CTRL+Z")
+                pass
+            if MenuItem("Redo", "CTRL+Y", false, false)
+                pass
+            Separator()
+            if MenuItem("Cut", "CTRL+X")
+                pass
+            if MenuItem("Copy", "CTRL+C")
+                pass
+            if MenuItem("Paste", "CTRL+V")
+                pass
+            EndMenu()
+        EndMainMenuBar()
+
+def DasShowAboutWindow(p_open: bool? implicit)
+    if !Begin("About Dear ImGui", p_open, ImGuiWindowFlags AlwaysAutoResize)
+        End()
+        return
+    Text("Dear ImGui {GetVersion()}")
+    Separator()
+    Text("By Omar Cornut and all Dear ImGui contributors.")
+    Text("Dear ImGui is licensed under the MIT License, see LICENSE for more information.")
+    static_let <|
+        var show_config_info = false
+    Checkbox("Config/Build Information", safe_addr(show_config_info))
+    if show_config_info
+        var io & = GetIO()
+        var style & = GetStyle()
+        let copy_to_clipboard = Button("Copy to clipboard")
+        var child_size = ImVec2(0., GetTextLineHeightWithSpacing() * 18.)
+        BeginChildFrame(GetID("cfg_infos"), child_size, ImGuiWindowFlags NoMove)
+        if copy_to_clipboard
+            LogToClipboard()
+            LogText("```\n")
+        Text("Dear ImGui {IMGUI_VERSION} ({IMGUI_VERSION_NUM})")
+        Separator()
+        // Text("sizeof(ImDrawIdx): {typeinfo(sizeof type<ImDrawIdx>)}, sizeof(ImDrawVert): {typeinfo(sizeof type<ImDrawVert>)}")
+        // Separator()
+        Text("io.BackendPlatformName: {io.BackendPlatformName}")
+        Text("io.BackendRendererName: {io.BackendRendererName}")
+        Text("io.ConfigFlags: {io.ConfigFlags}")
+        var icf : ImGuiConfigFlags
+        unsafe
+            icf = reinterpret<ImGuiConfigFlags> io.ConfigFlags
+        if icf && ImGuiConfigFlags NavEnableKeyboard
+            Text(" NavEnableKeyboard")
+        if icf && ImGuiConfigFlags NavEnableGamepad
+            Text(" NavEnableGamepad")
+        if icf && ImGuiConfigFlags NavEnableSetMousePos
+            Text(" NavEnableSetMousePos")
+        if icf && ImGuiConfigFlags NavNoCaptureKeyboard
+            Text(" NavNoCaptureKeyboard")
+        if icf && ImGuiConfigFlags NoMouse
+            Text(" NoMouse")
+        if icf && ImGuiConfigFlags NoMouseCursorChange
+            Text(" NoMouseCursorChange")
+        if io.MouseDrawCursor
+            Text("io.MouseDrawCursor")
+        if io.ConfigMacOSXBehaviors
+            Text("io.ConfigMacOSXBehaviors")
+        if io.ConfigInputTextCursorBlink
+            Text("io.ConfigInputTextCursorBlink")
+        if io.ConfigWindowsResizeFromEdges
+            Text("io.ConfigWindowsResizeFromEdges")
+        if io.ConfigWindowsMoveFromTitleBarOnly
+            Text("io.ConfigWindowsMoveFromTitleBarOnly")
+        if io.ConfigMemoryCompactTimer >= 0.0f
+            Text("io.ConfigMemoryCompactTimer = {io.ConfigMemoryCompactTimer}")
+        Text("io.BackendFlags: {io.BackendFlags}")
+        var ibf : ImGuiBackendFlags
+        unsafe
+            ibf = reinterpret<ImGuiBackendFlags> io.BackendFlags
+        if ibf && ImGuiBackendFlags HasGamepad
+            Text(" HasGamepad")
+        if ibf && ImGuiBackendFlags HasMouseCursors
+            Text(" HasMouseCursors")
+        if ibf && ImGuiBackendFlags HasSetMousePos
+            Text(" HasSetMousePos")
+        if ibf && ImGuiBackendFlags RendererHasVtxOffset
+            Text(" RendererHasVtxOffset")
+        Separator()
+        Text("io.Fonts: {io.Fonts.Fonts.length} fonts, Flags: {io.Fonts.Flags}, TexSize: {io.Fonts.TexWidth},{io.Fonts.TexHeight}")
+        Text("io.DisplaySize: {io.DisplaySize.x},{io.DisplaySize.y}")
+        Text("io.DisplayFramebufferScale: {io.DisplayFramebufferScale.x},{io.DisplayFramebufferScale.y}")
+        Separator()
+        Text("style.WindowPadding: {style.WindowPadding.x},{style.WindowPadding.y}")
+        Text("style.WindowBorderSize: {style.WindowBorderSize}")
+        Text("style.FramePadding: {style.FramePadding.x},{style.FramePadding.y}")
+        Text("style.FrameRounding: {style.FrameRounding}")
+        Text("style.FrameBorderSize: {style.FrameBorderSize}")
+        Text("style.ItemSpacing: {style.ItemSpacing.x},{style.ItemSpacing.y}")
+        Text("style.ItemInnerSpacing: {style.ItemInnerSpacing.x},{style.ItemInnerSpacing.y}")
+        if (copy_to_clipboard)
+            LogText("\n```\n")
+            LogFinish()
+        EndChildFrame()
+    End()
 
 def DasShowDemoWindow ( _p_open : bool? )
 
@@ -99,20 +202,26 @@ def DasShowDemoWindow ( _p_open : bool? )
         var show_app_window_titles = false
         var show_app_custom_rendering = false
 
-/*
-    if (show_app_main_menu_bar)       ShowExampleAppMainMenuBar();
-    if (show_app_documents)           ShowExampleAppDocuments(&show_app_documents);
+    if show_app_main_menu_bar
+        DasShowExampleAppMainMenuBar()
 
-    if (show_app_console)             ShowExampleAppConsole(&show_app_console);
-    if (show_app_log)                 ShowExampleAppLog(&show_app_log);
-    if (show_app_layout)              ShowExampleAppLayout(&show_app_layout);
-    if (show_app_property_editor)     ShowExampleAppPropertyEditor(&show_app_property_editor);
-    if (show_app_long_text)           ShowExampleAppLongText(&show_app_long_text);
-    if (show_app_auto_resize)         ShowExampleAppAutoResize(&show_app_auto_resize);
-    if (show_app_constrained_resize)  ShowExampleAppConstrainedResize(&show_app_constrained_resize);
-    if (show_app_simple_overlay)      ShowExampleAppSimpleOverlay(&show_app_simple_overlay);
-    if (show_app_window_titles)       ShowExampleAppWindowTitles(&show_app_window_titles);
-    if (show_app_custom_rendering)    ShowExampleAppCustomRendering(&show_app_custom_rendering);
+/*
+    if (show_app_documents)           ShowExampleAppDocuments(&show_app_documents)
+
+    if (show_app_console)             ShowExampleAppConsole(&show_app_console)
+*/
+    if show_app_log
+        DasShowExampleAppLog(safe_addr(show_app_log))
+    if show_app_layout
+        DasShowExampleAppLayout(safe_addr(show_app_layout))
+/*
+    if (show_app_property_editor)     ShowExampleAppPropertyEditor(&show_app_property_editor)
+    if (show_app_long_text)           ShowExampleAppLongText(&show_app_long_text)
+    if (show_app_auto_resize)         ShowExampleAppAutoResize(&show_app_auto_resize)
+    if (show_app_constrained_resize)  ShowExampleAppConstrainedResize(&show_app_constrained_resize)
+    if (show_app_simple_overlay)      ShowExampleAppSimpleOverlay(&show_app_simple_overlay)
+    if (show_app_window_titles)       ShowExampleAppWindowTitles(&show_app_window_titles)
+    if (show_app_custom_rendering)    ShowExampleAppCustomRendering(&show_app_custom_rendering)
 */
 
     static_let <|
@@ -120,10 +229,12 @@ def DasShowDemoWindow ( _p_open : bool? )
         var show_app_style_editor = false
         var show_app_about = false
 
-    /*
-    if (show_app_metrics)       { ImGui::ShowMetricsWindow(&show_app_metrics); }
-    if (show_app_about)         { ImGui::ShowAboutWindow(&show_app_about); }
-    */
+
+    if show_app_metrics
+        ShowMetricsWindow(safe_addr(show_app_metrics))  // NOTE: this is in imgui.cpp ???
+
+    if show_app_about
+        DasShowAboutWindow(safe_addr(show_app_about))
 
     if show_app_style_editor
         Begin("Dear ImGui Style Editor", safe_addr(show_app_style_editor))
@@ -156,7 +267,7 @@ def DasShowDemoWindow ( _p_open : bool? )
     if no_collapse
         window_flags |= ImGuiWindowFlags NoCollapse
     if no_nav
-        window_flags |= imgui_boost::ImGuiWindowFlags_NoNav
+        window_flags |= ImGuiWindowFlags NoNav
     if no_background
         window_flags |= ImGuiWindowFlags NoBackground
     if no_bring_to_front
@@ -177,23 +288,23 @@ def DasShowDemoWindow ( _p_open : bool? )
             ShowExampleMenuFile()
             EndMenu()
         if BeginMenu("Examples")
-            MenuItem("Main menu bar", show_app_main_menu_bar)
-            MenuItem("Console", show_app_console)
-            MenuItem("Log", show_app_log)
-            MenuItem("Simple layout", show_app_layout)
-            MenuItem("Property editor", show_app_property_editor)
-            MenuItem("Long text display", show_app_long_text)
-            MenuItem("Auto-resizing window", show_app_auto_resize)
-            MenuItem("Constrained-resizing window", show_app_constrained_resize)
-            MenuItem("Simple overlay", show_app_simple_overlay)
-            MenuItem("Manipulating window titles", show_app_window_titles)
-            MenuItem("Custom rendering", show_app_custom_rendering)
-            MenuItem("Documents", show_app_documents)
+            MenuItem("Main menu bar", "", safe_addr(show_app_main_menu_bar))
+            MenuItem("Console", "", safe_addr(show_app_console))
+            MenuItem("Log", "", safe_addr(show_app_log))
+            MenuItem("Simple layout", "", safe_addr(show_app_layout))
+            MenuItem("Property editor", "", safe_addr(show_app_property_editor))
+            MenuItem("Long text display", "", safe_addr(show_app_long_text))
+            MenuItem("Auto-resizing window", "", safe_addr(show_app_auto_resize))
+            MenuItem("Constrained-resizing window", "", safe_addr(show_app_constrained_resize))
+            MenuItem("Simple overlay", "", safe_addr(show_app_simple_overlay))
+            MenuItem("Manipulating window titles", "", safe_addr(show_app_window_titles))
+            MenuItem("Custom rendering", "", safe_addr(show_app_custom_rendering))
+            MenuItem("Documents", "", safe_addr(show_app_documents))
             EndMenu()
         if BeginMenu("Tools")
-            MenuItem("Metrics/Debugger", show_app_metrics)
-            MenuItem("Style Editor", show_app_style_editor)
-            MenuItem("About Dear ImGui", show_app_about)
+            MenuItem("Metrics/Debugger", "", safe_addr(show_app_metrics))
+            MenuItem("Style Editor", "", safe_addr(show_app_style_editor))
+            MenuItem("About Dear ImGui", "", safe_addr(show_app_about))
             EndMenu()
         EndMenuBar()
 
@@ -221,66 +332,75 @@ def DasShowDemoWindow ( _p_open : bool? )
     if CollapsingHeader("Configuration")
         var io & = GetIO()
         if TreeNode("Configuration##2")
-            CheckboxFlags("io.ConfigFlags: NavEnableKeyboard", io.ConfigFlags,ImGuiConfigFlags NavEnableKeyboard)
+            unsafe
+                CheckboxFlags("io.ConfigFlags: NavEnableKeyboard", addr(io.ConfigFlags), int(ImGuiConfigFlags NavEnableKeyboard))
             SameLine()
-            HelpMarker("Enable keyboard controls.")
-            CheckboxFlags("io.ConfigFlags: NavEnableGamepad", io.ConfigFlags, ImGuiConfigFlags NavEnableGamepad)
+            DasHelpMaker("Enable keyboard controls.")
+            unsafe
+                CheckboxFlags("io.ConfigFlags: NavEnableGamepad", addr(io.ConfigFlags), int(ImGuiConfigFlags NavEnableGamepad))
             SameLine()
-            HelpMarker("Enable gamepad controls. Require backend to set io.BackendFlags |= ImGuiBackendFlags_HasGamepad.\n\nRead instructions in imgui.cpp for details.")
-            CheckboxFlags("io.ConfigFlags: NavEnableSetMousePos", io.ConfigFlags, ImGuiConfigFlags NavEnableSetMousePos)
+            DasHelpMaker("Enable gamepad controls. Require backend to set io.BackendFlags |= ImGuiBackendFlags HasGamepad.\n\nRead instructions in imgui.cpp for details.")
+            unsafe
+                CheckboxFlags("io.ConfigFlags: NavEnableSetMousePos", addr(io.ConfigFlags), int(ImGuiConfigFlags NavEnableSetMousePos))
             SameLine()
-            HelpMarker("Instruct navigation to move the mouse cursor. See comment for ImGuiConfigFlags_NavEnableSetMousePos.")
-            CheckboxFlags("io.ConfigFlags: NoMouse", io.ConfigFlags, ImGuiConfigFlags NoMouse)
-            var icf : ImGuiConfigFlags = ImGuiConfigFlags(io.ConfigFlags)
-            if ImGuiConfigFlags(io.ConfigFlags).NoMouse
+            DasHelpMaker("Instruct navigation to move the mouse cursor. See comment for ImGuiConfigFlagsNavEnableSetMousePos.")
+            unsafe
+                CheckboxFlags("io.ConfigFlags: NoMouse", addr(io.ConfigFlags), int(ImGuiConfigFlags NoMouse))
+            if (io.ConfigFlags & int(ImGuiConfigFlags NoMouse)) != 0
                 if (float(GetTime()) % 0.40f) < 0.20f
                     SameLine()
                     Text("<<PRESS SPACE TO DISABLE>>")
-                if IsKeyPressed(GetKeyIndex(ImGuiKey_ ImGuiKey_Space))
-                    io.ConfigFlags &= ~int(ImGuiConfigFlags_ ImGuiConfigFlags_NoMouse)
-            CheckboxFlags("io.ConfigFlags: NoMouseCursorChange", io.ConfigFlags, ImGuiConfigFlags NoMouseCursorChange)
+                if IsKeyPressed(GetKeyIndex(ImGuiKey Space))
+                    io.ConfigFlags &= ~int(ImGuiConfigFlags NoMouse)
+            unsafe
+                CheckboxFlags("io.ConfigFlags: NoMouseCursorChange", addr(io.ConfigFlags), int(ImGuiConfigFlags NoMouseCursorChange))
             SameLine()
-            HelpMarker("Instruct backend to not alter mouse cursor shape and visibility.")
-            Checkbox("io.ConfigInputTextCursorBlink", io.ConfigInputTextCursorBlink)
+            DasHelpMaker("Instruct backend to not alter mouse cursor shape and visibility.")
+            unsafe
+                Checkbox("io.ConfigInputTextCursorBlink", addr(io.ConfigInputTextCursorBlink))
             SameLine()
-            HelpMarker("Enable blinking cursor (optional as some users consider it to be distracting)")
-            Checkbox("io.ConfigDragClickToInputText", io.ConfigDragClickToInputText)
+            DasHelpMaker("Enable blinking cursor (optional as some users consider it to be distracting)")
+            unsafe
+                Checkbox("io.ConfigDragClickToInputText", addr(io.ConfigDragClickToInputText))
             SameLine()
-            HelpMarker("Enable turning DragXXX widgets into text input with a simple mouse click-release (without moving).")
-            Checkbox("io.ConfigWindowsResizeFromEdges", io.ConfigWindowsResizeFromEdges)
+            DasHelpMaker("Enable turning DragXXX widgets into text input with a simple mouse click-release (without moving).")
+            unsafe
+                Checkbox("io.ConfigWindowsResizeFromEdges", addr(io.ConfigWindowsResizeFromEdges))
             SameLine()
-            HelpMarker("Enable resizing of windows from their edges and from the lower-left corner.\nThis requires (io.BackendFlags & ImGuiBackendFlags_HasMouseCursors) because it needs mouse cursor feedback.")
-            Checkbox("io.ConfigWindowsMoveFromTitleBarOnly", io.ConfigWindowsMoveFromTitleBarOnly)
-            Checkbox("io.MouseDrawCursor", io.MouseDrawCursor)
+            DasHelpMaker("Enable resizing of windows from their edges and from the lower-left corner.\nThis requires (io.BackendFlags & ImGuiBackendFlags HasMouseCursors) because it needs mouse cursor feedback.")
+            unsafe
+                Checkbox("io.ConfigWindowsMoveFromTitleBarOnly", addr(io.ConfigWindowsMoveFromTitleBarOnly))
+            unsafe
+                Checkbox("io.MouseDrawCursor", addr(io.MouseDrawCursor))
             SameLine()
-            HelpMarker("Instruct Dear ImGui to render a mouse cursor itself. Note that a mouse cursor rendered via your application GPU rendering path will feel more laggy than hardware cursor, but will be more in sync with your other visuals.\n\nSome desktop applications may use both kinds of cursors (e.g. enable software cursor only when resizing/dragging something).")
+            DasHelpMaker("Instruct Dear ImGui to render a mouse cursor itself. Note that a mouse cursor rendered via your application GPU rendering path will feel more laggy than hardware cursor, but will be more in sync with your other visuals.\n\nSome desktop applications may use both kinds of cursors (e.g. enable software cursor only when resizing/dragging something).")
             Text("Also see Style->Rendering for rendering options.")
             TreePop()
             Separator()
         if TreeNode("Backend Flags")
-            HelpMarker(
+            DasHelpMaker(
                 "Those flags are set by the backends (imgui_impl_xxx files) to specify their capabilities.\n" +
                 "Here we expose then as read-only fields to avoid breaking interactions with your backend.")
             // Make a local copy to avoid modifying actual backend flags.
             var backend_flags = io.BackendFlags
-            CheckboxFlags("io.BackendFlags: HasGamepad", backend_flags, ImGuiBackendFlags HasGamepad)
-            CheckboxFlags("io.BackendFlags: HasMouseCursors", backend_flags, ImGuiBackendFlags HasMouseCursors)
-            CheckboxFlags("io.BackendFlags: HasSetMousePos", backend_flags, ImGuiBackendFlags HasSetMousePos)
-            CheckboxFlags("io.BackendFlags: RendererHasVtxOffset", backend_flags, ImGuiBackendFlags RendererHasVtxOffset)
+            CheckboxFlags("io.BackendFlags: HasGamepad", safe_addr(backend_flags), int(ImGuiBackendFlags HasGamepad))
+            CheckboxFlags("io.BackendFlags: HasMouseCursors", safe_addr(backend_flags), int(ImGuiBackendFlags HasMouseCursors))
+            CheckboxFlags("io.BackendFlags: HasSetMousePos", safe_addr(backend_flags), int(ImGuiBackendFlags HasSetMousePos))
+            CheckboxFlags("io.BackendFlags: RendererHasVtxOffset", safe_addr(backend_flags), int(ImGuiBackendFlags RendererHasVtxOffset))
             TreePop()
             Separator()
         if TreeNode("Style")
-            HelpMarker("The same contents can be accessed in 'Tools->Style Editor' or by calling the ShowStyleEditor() function.")
+            DasHelpMaker("The same contents can be accessed in 'Tools->Style Editor' or by calling the ShowStyleEditor() function.")
             ShowStyleEditor()
             TreePop()
             Separator()
         if TreeNode("Capture/Logging")
-            HelpMarker(
+            DasHelpMaker(
                 "The logging API redirects all text output so you can easily capture the content of " +
                 "a window or a block. Tree nodes can be automatically expanded.\n" +
                 "Try opening any of the contents below in this window and then click one of the \"Log To\" button.")
             LogButtons()
-            HelpMarker("You can also call LogText() to output directly to the log without a visual output.")
+            DasHelpMaker("You can also call LogText() to output directly to the log without a visual output.")
             if Button("Copy \"Hello, world!\" to clipboard")
                 LogToClipboard()
                 LogText("Hello, world!")
@@ -290,40 +410,40 @@ def DasShowDemoWindow ( _p_open : bool? )
     if CollapsingHeader("Window options")
         if BeginTable("split", 3)
             TableNextColumn()
-            Checkbox("No titlebar", no_titlebar)
+            Checkbox("No titlebar", safe_addr(no_titlebar))
             TableNextColumn()
-            Checkbox("No scrollbar", no_scrollbar)
+            Checkbox("No scrollbar", safe_addr(no_scrollbar))
             TableNextColumn()
-            Checkbox("No menu", no_menu)
+            Checkbox("No menu", safe_addr(no_menu))
             TableNextColumn()
-            Checkbox("No move", no_move)
+            Checkbox("No move", safe_addr(no_move))
             TableNextColumn()
-            Checkbox("No resize", no_resize)
+            Checkbox("No resize", safe_addr(no_resize))
             TableNextColumn()
-            Checkbox("No collapse", no_collapse)
+            Checkbox("No collapse", safe_addr(no_collapse))
             TableNextColumn()
-            Checkbox("No close", no_close)
+            Checkbox("No close", safe_addr(no_close))
             TableNextColumn()
-            Checkbox("No nav", no_nav)
+            Checkbox("No nav", safe_addr(no_nav))
             TableNextColumn()
-            Checkbox("No background", no_background)
+            Checkbox("No background", safe_addr(no_background))
             TableNextColumn()
-            Checkbox("No bring to front", no_bring_to_front)
+            Checkbox("No bring to front", safe_addr(no_bring_to_front))
             EndTable()
 
     /*
     ShowDemoWindowWidgets()
     */
-    ShowDemoWindowLayout()
-    ShowDemoWindowPopups()
+    DasShowDemoWindowLayout()
+    DasShowDemoWindowPopups()
     /*
     ShowDemoWindowTables()
     */
-    ShowDemoWindowMisc()
+    DasShowDemoWindowMisc()
     PopItemWidth()
     End()
 
-def ShowDemoWindowPopups()
+def DasShowDemoWindowPopups()
     if !CollapsingHeader("Popups & Modal windows")
         return
 
@@ -352,7 +472,7 @@ def ShowDemoWindowPopups()
             OpenPopup("my_toggle_popup")
         if BeginPopup("my_toggle_popup")
             for name,toggle in names,toggles
-                imgui_boost::MenuItem(name, "", toggle)
+                MenuItem(name, "", toggle)
             if BeginMenu("Sub-menu")
                 MenuItem("Click me")
                 EndMenu()
@@ -364,7 +484,7 @@ def ShowDemoWindowPopups()
                 OpenPopup("another popup")
             if BeginPopup("another popup")
                 for name,toggle in names,toggles
-                    imgui_boost::MenuItem(name, "", toggle)
+                    MenuItem(name, "", toggle)
                 if BeginMenu("Sub-menu")
                     MenuItem("Click me")
                     if Button("Stacked Popup")
@@ -422,11 +542,11 @@ def ShowDemoWindowPopups()
             Separator()
             static_let <|
                 var unused_i = 0
-            Combo("Combo", unused_i, [[auto "Delete"; "Delete harder"]])
+            Combo("Combo", safe_addr(unused_i), [[auto "Delete"; "Delete harder"]])
             static_let <|
                 var dont_ask_me_next_time = false
-            PushStyleVar(ImGuiStyleVar_ ImGuiStyleVar_FramePadding, ImVec2(0.0f, 0.0f))
-            Checkbox("Don't ask me next time", dont_ask_me_next_time)
+            PushStyleVar(ImGuiStyleVar FramePadding, ImVec2(0.0f, 0.0f))
+            Checkbox("Don't ask me next time", safe_addr(dont_ask_me_next_time))
             PopStyleVar()
             if Button("OK", ImVec2(120., 0.))
                 CloseCurrentPopup()
@@ -448,13 +568,13 @@ def ShowDemoWindowPopups()
             static_let <|
                 var item = 1
                 var color = [[float[4] 0.4f; 0.7f; 0.0f; 0.5f]]
-            Combo("Combo", item, [[auto "aaaa"; "bbbb"; "cccc"; "dddd"; "eeee"]])
-            ColorEdit4("color", color)
+            Combo("Combo", safe_addr(item), [[auto "aaaa"; "bbbb"; "cccc"; "dddd"; "eeee"]])
+            ColorEdit4("color", safe_addr(color[0]))
             if Button("Add another modal..")
                 OpenPopup("Stacked 2")
             static_let <|
                 var unused_open = true
-            if BeginPopupModal("Stacked 2", unused_open)
+            if BeginPopupModal("Stacked 2", safe_addr(unused_open))
                 Text("Hello from Stacked The Second!")
                 if Button("Close")
                     CloseCurrentPopup()
@@ -503,7 +623,7 @@ def ShowExampleMenuFile()
     if BeginMenu("Options")
         static_let <|
             var enabled = true
-        imgui_boost::MenuItem("Enabled", "", enabled)
+        MenuItem("Enabled", "", enabled)
         BeginChild("child", ImVec2(0., 60.), true)
         for i in range(1)
             Text("Scrolling Text {i}")
@@ -511,19 +631,19 @@ def ShowExampleMenuFile()
         static_let <|
             var f = 0.5f
             var n = 0
-        SliderFloat("Value", f, 0.0f, 1.0f)
-        InputFloat("Input", f, 0.1f)
-        Combo("Combo", n, [[auto "Yes";"No";"Maybe"]])
+        SliderFloat("Value", safe_addr(f), 0.0f, 1.0f)
+        InputFloat("Input", safe_addr(f), 0.1f)
+        Combo("Combo", safe_addr(n), [[auto "Yes";"No";"Maybe"]])
         EndMenu()
 
     if BeginMenu("Colors")
         let sz = GetTextLineHeight()
-        for col,i in range(100500),each_enum(type<ImGuiCol_>)
-            if i == ImGuiCol_ ImGuiCol_COUNT
+        for col in each_enum(type<ImGuiCol>)
+            if col == ImGuiCol COUNT
                 continue
             let name = GetStyleColorName(col)
             let p = GetCursorScreenPos()
-            *GetWindowDrawList() |> AddRectFilled(p, ImVec2(p.x + sz, p.y + sz), GetColorU32(uint(i)))
+            *GetWindowDrawList() |> AddRectFilled(p, ImVec2(p.x + sz, p.y + sz), GetColorU32(col))
             Dummy(ImVec2(sz, sz))
             SameLine()
             MenuItem(name)
@@ -532,7 +652,7 @@ def ShowExampleMenuFile()
     if BeginMenu("Options")
         static_let <|
             var b = true
-        Checkbox("SomeOption", b)
+        Checkbox("SomeOption", safe_addr(b))
         EndMenu()
 
     if BeginMenu("Disabled", false)
@@ -542,7 +662,7 @@ def ShowExampleMenuFile()
     if MenuItem("Quit", "Alt+F4")
         pass
 
-def ShowDemoWindowMisc()
+def DasShowDemoWindowMisc()
     if CollapsingHeader("Filtering")
         static_let <|
             var filter = new ImGuiTextFilter
@@ -580,18 +700,18 @@ def ShowDemoWindowMisc()
                     SameLine()
                     Text("b{i} ({io.MouseDownDuration[i]} secs)")
             Text("Mouse clicked:")
-            for i in range(length(io.MouseDown))
-                if IsMouseClicked(i)
+            for i in each_enum(type<ImGuiMouseButton>)
+                if i!=ImGuiMouseButton COUNT && IsMouseClicked(i)
                     SameLine()
-                    Text("b{i}")
+                    Text("{i}")
             Text("Mouse dblclick:")
-            for i in range(length(io.MouseDown))
-                if IsMouseDoubleClicked(i)
+            for i in each_enum(type<ImGuiMouseButton>)
+                if i!=ImGuiMouseButton COUNT && IsMouseDoubleClicked(i)
                     SameLine()
                     Text("b{i}")
             Text("Mouse released:")
-            for i in range(length(io.MouseDown))
-                if IsMouseReleased(i)
+            for i in each_enum(type<ImGuiMouseButton>)
+                if i!=ImGuiMouseButton COUNT && IsMouseReleased(i)
                     SameLine()
                     Text("b{i}")
             Text("Mouse wheel: {io.MouseWheel}")
@@ -611,16 +731,11 @@ def ShowDemoWindowMisc()
                     SameLine()
                     Text("{i} (0x{uint(i)})")
             Text("Keys mods: {io.KeyCtrl ? "CTRL " : ""}{io.KeyShift ? "SHIFT " : ""}{io.KeyAlt ? "ALT " : ""}{io.KeySuper ? "SUPER " : ""}")
-
-            // TODO: support ImVector
-            /*
             Text("Chars queue:")
-            for i in range(io.InputQueueCharacters.Size)
-                let c = io.InputQueueCharacters[i]
+            for i in range(io.InputQueueCharacters.length)
+                let c = int(io.InputQueueCharacters[i])
                 SameLine()
                 Text("'{(c > ' ' && c <= 255) ? to_char(c) : "?"}' (0x{uint(c)})")
-            */
-
             Text("NavInputs down:")
             for i in range(length(io.NavInputs))
                 if io.NavInputs[i] > 0.0f
@@ -707,7 +822,7 @@ def ShowDemoWindowMisc()
 
         if TreeNode("Dragging")
             TextWrapped("You can use GetMouseDragDelta(0) to query for the dragged amount on any widget.")
-            for button in range(3)
+            for button in each_enum(type<ImGuiMouseButton>)
                 Text("IsMouseDragging({button}):")
                 Text("  w/ default threshold: {IsMouseDragging(button)},")
                 Text("  w/ zero threshold: {IsMouseDragging(button, 0.0f)},")
@@ -717,11 +832,11 @@ def ShowDemoWindowMisc()
                 *GetForegroundDrawList() |> AddLine(
                     io.MouseClickedPos[0],
                     io.MousePos,
-                    GetColorU32(int(ImGuiCol_ ImGuiCol_Button)),
+                    GetColorU32(ImGuiCol Button),
                     4.0f)
-            let value_raw = GetMouseDragDelta(0, 0.0f)
-            let value_with_lock_threshold = GetMouseDragDelta(0)
-            let mouse_delta = io.MouseDelta;
+            let value_raw = GetMouseDragDelta(ImGuiMouseButton Left, 0.0f)
+            let value_with_lock_threshold = GetMouseDragDelta(ImGuiMouseButton Left)
+            let mouse_delta = io.MouseDelta
             Text("GetMouseDragDelta(0):")
             Text("  w/ default threshold: ({value_with_lock_threshold.x}, {value_with_lock_threshold.y})")
             Text("  w/ zero threshold: ({value_raw.x}, {value_raw.y})")
@@ -735,7 +850,7 @@ def ShowDemoWindowMisc()
             Text("Current mouse cursor = {current}: {mouse_cursors_names[current]}")
             Text("Hover to see mouse cursors:")
             SameLine()
-            HelpMarker(
+            DasHelpMaker(
                 "Your application can render a different mouse cursor based on what GetMouseCursor() returns. " +
                 "If software cursor rendering (io.MouseDrawCursor) is set ImGui will draw the right cursor for you, " +
                 "otherwise your backend needs to handle it.")
@@ -747,432 +862,347 @@ def ShowDemoWindowMisc()
                     SetMouseCursor(i)
             TreePop()
 
-/*
-static void ShowDemoWindowLayout()
-{
+def DasShowDemoWindowLayout
+    if !CollapsingHeader("Layout & Scrolling")
+        return
 
-    if (TreeNode("Child windows"))
-    {
-        HelpMarker("Use child windows to begin into a self-contained independent scrolling/clipping regions within a host window.")
-        static bool disable_mouse_wheel = false;
-        static bool disable_menu = false;
-        Checkbox("Disable Mouse Wheel", &disable_mouse_wheel)
-        Checkbox("Disable Menu", &disable_menu)
-
-        // Child 1: no border, enable horizontal scrollbar
-        {
-            ImGuiWindowFlags window_flags = ImGuiWindowFlags_HorizontalScrollbar;
-            if (disable_mouse_wheel)
-                window_flags |= ImGuiWindowFlags_NoScrollWithMouse;
-            BeginChild("ChildL", ImVec2(GetWindowContentRegionWidth() * 0.5f, 260), false, window_flags)
-            for (int i = 0; i < 100; i++)
-                Text("%04d: scrollable region", i)
+    if TreeNode("Child windows")
+        DasHelpMaker("Use child windows to begin into a self-contained independent scrolling/clipping regions within a host window.")
+        static_let <|
+            var disable_mouse_wheel = false
+            var disable_menu = false
+        Checkbox("Disable Mouse Wheel", safe_addr(disable_mouse_wheel))
+        Checkbox("Disable Menu", safe_addr(disable_menu))
+        if true
+            var window_flags = ImGuiWindowFlags HorizontalScrollbar
+            if disable_mouse_wheel
+                window_flags |= ImGuiWindowFlags NoScrollWithMouse
+            BeginChild("ChildL", ImVec2(GetWindowContentRegionWidth() * 0.5f, 260.), false, window_flags)
+            for i in range(100)
+                Text("{i}: scrollable region")
             EndChild()
-        }
-
         SameLine()
-
-        // Child 2: rounded border
-        {
-            ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
-            if (disable_mouse_wheel)
-                window_flags |= ImGuiWindowFlags_NoScrollWithMouse;
-            if (!disable_menu)
-                window_flags |= ImGuiWindowFlags_MenuBar;
-            PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f)
-            BeginChild("ChildR", ImVec2(0, 260), true, window_flags)
-            if (!disable_menu && BeginMenuBar())
-            {
-                if (BeginMenu("Menu"))
-                {
+        if true
+            var window_flags = ImGuiWindowFlags None
+            if disable_mouse_wheel
+                window_flags |= ImGuiWindowFlags NoScrollWithMouse
+            if !disable_menu
+                window_flags |= ImGuiWindowFlags MenuBar
+            PushStyleVar(ImGuiStyleVar ChildRounding, 5.0f)
+            BeginChild("ChildR", ImVec2(0., 260.), true, window_flags)
+            if !disable_menu && BeginMenuBar()
+                if BeginMenu("Menu")
                     ShowExampleMenuFile()
                     EndMenu()
-                }
                 EndMenuBar()
-            }
-            if (BeginTable("split", 2, ImGuiTableFlags_Resizable | ImGuiTableFlags_NoSavedSettings))
-            {
-                for (int i = 0; i < 100; i++)
-                {
-                    char buf[32];
-                    sprintf(buf, "%03d", i)
+            if BeginTable("split", 2, ImGuiTableFlags Resizable | ImGuiTableFlags NoSavedSettings)
+                for i in range(100)
                     TableNextColumn()
-                    Button(buf, ImVec2(-FLT_MIN, 0.0f))
-                }
+                    Button("{i}", ImVec2(-FLT_MIN, 0.0f))
                 EndTable()
-            }
             EndChild()
             PopStyleVar()
-        }
-
         Separator()
-
-        // Demonstrate a few extra things
-        // - Changing ImGuiCol_ChildBg (which is transparent black in default styles)
-        // - Using SetCursorPos() to position child window (the child window is an item from the POV of parent window)
-        //   You can also call SetNextWindowPos() to position the child window. The parent window will effectively
-        //   layout from this position.
-        // - Using GetItemRectMin/Max() to query the "item" state (because the child window is an item from
-        //   the POV of the parent window). See 'Demo->Querying Status (Active/Focused/Hovered etc.)' for details.
-        {
-            static int offset_x = 0;
-            SetNextItemWidth(100)
-            DragInt("Offset X", &offset_x, 1.0f, -1000, 1000)
-
-            SetCursorPosX(GetCursorPosX() + (float)offset_x)
-            PushStyleColor(ImGuiCol_ChildBg, IM_COL32(255, 0, 0, 100))
-            BeginChild("Red", ImVec2(200, 100), true, ImGuiWindowFlags_None)
-            for (int n = 0; n < 50; n++)
-                Text("Some test %d", n)
+        if true
+            static_let <|
+                var offset_x = 0
+            SetNextItemWidth(100.)
+            DragInt("Offset X", safe_addr(offset_x), 1.0f, -1000, 1000)
+            SetCursorPosX(GetCursorPosX() + float(offset_x))
+            PushStyleColor(ImGuiCol ChildBg, IM_COL32(255, 0, 0, 100))
+            BeginChild("Red", ImVec2(200., 100.), true, ImGuiWindowFlags None)
+            for i in range(50)
+                Text("Some test {i}")
             EndChild()
-            bool child_is_hovered = IsItemHovered()
-            ImVec2 child_rect_min = GetItemRectMin()
-            ImVec2 child_rect_max = GetItemRectMax()
+            let child_is_hovered = IsItemHovered()
+            let child_rect_min = GetItemRectMin()
+            let child_rect_max = GetItemRectMax()
             PopStyleColor()
-            Text("Hovered: %d", child_is_hovered)
-            Text("Rect of child window is: (%.0f,%.0f) (%.0f,%.0f)", child_rect_min.x, child_rect_min.y, child_rect_max.x, child_rect_max.y)
-        }
-
+            Text("Hovered: {child_is_hovered}")
+            Text("Rect of child window is: ({child_rect_min.x},{child_rect_min.y}) ({child_rect_max.x}, {child_rect_max.y})")
         TreePop()
-    }
 
-    if (TreeNode("Widgets Width"))
-    {
-        // Use SetNextItemWidth() to set the width of a single upcoming item.
-        // Use PushItemWidth()/PopItemWidth() to set the width of a group of items.
-        // In real code use you'll probably want to choose width values that are proportional to your font size
-        // e.g. Using '20.0f * GetFontSize()' as width instead of '200.0f', etc.
-
-        static float f = 0.0f;
-        static bool show_indented_items = true;
-        Checkbox("Show indented items", &show_indented_items)
-
+    if TreeNode("Widgets Width")
+        static_let <|
+            var f = 0.0f
+            var show_indented_items = true
+        Checkbox("Show indented items", safe_addr(show_indented_items))
         Text("SetNextItemWidth/PushItemWidth(100)")
-        SameLine() HelpMarker("Fixed width.")
-        PushItemWidth(100)
-        DragFloat("float##1b", &f)
-        if (show_indented_items)
-        {
+        SameLine()
+        DasHelpMaker("Fixed width.")
+        PushItemWidth(100.)
+        DragFloat("float##1b", safe_addr(f))
+        if show_indented_items
             Indent()
-            DragFloat("float (indented)##1b", &f)
+            DragFloat("float (indented)##1b", safe_addr(f))
             Unindent()
-        }
         PopItemWidth()
-
         Text("SetNextItemWidth/PushItemWidth(-100)")
-        SameLine() HelpMarker("Align to right edge minus 100")
-        PushItemWidth(-100)
-        DragFloat("float##2a", &f)
-        if (show_indented_items)
-        {
+        SameLine()
+        DasHelpMaker("Align to right edge minus 100")
+        PushItemWidth(-100.)
+        DragFloat("float##2a", safe_addr(f))
+        if show_indented_items
             Indent()
-            DragFloat("float (indented)##2b", &f)
+            DragFloat("float (indented)##2b", safe_addr(f))
             Unindent()
-        }
         PopItemWidth()
-
         Text("SetNextItemWidth/PushItemWidth(GetContentRegionAvail().x * 0.5f)")
-        SameLine() HelpMarker("Half of available width.\n(~ right-cursor_pos)\n(works within a column set)")
+        SameLine()
+        DasHelpMaker("Half of available width.\n(~ right-cursor_pos)\n(works within a column set)")
         PushItemWidth(GetContentRegionAvail().x * 0.5f)
-        DragFloat("float##3a", &f)
-        if (show_indented_items)
-        {
+        DragFloat("float##3a", safe_addr(f))
+        if show_indented_items
             Indent()
-            DragFloat("float (indented)##3b", &f)
+            DragFloat("float (indented)##3b", safe_addr(f))
             Unindent()
-        }
         PopItemWidth()
-
         Text("SetNextItemWidth/PushItemWidth(-GetContentRegionAvail().x * 0.5f)")
-        SameLine() HelpMarker("Align to right edge minus half")
+        SameLine()
+        DasHelpMaker("Align to right edge minus half")
         PushItemWidth(-GetContentRegionAvail().x * 0.5f)
-        DragFloat("float##4a", &f)
-        if (show_indented_items)
-        {
+        DragFloat("float##4a", safe_addr(f))
+        if show_indented_items
             Indent()
-            DragFloat("float (indented)##4b", &f)
+            DragFloat("float (indented)##4b", safe_addr(f))
             Unindent()
-        }
         PopItemWidth()
-
-        // Demonstrate using PushItemWidth to surround three items.
-        // Calling SetNextItemWidth() before each of them would have the same effect.
         Text("SetNextItemWidth/PushItemWidth(-FLT_MIN)")
-        SameLine() HelpMarker("Align to right edge")
+        SameLine()
+        DasHelpMaker("Align to right edge")
         PushItemWidth(-FLT_MIN)
-        DragFloat("##float5a", &f)
-        if (show_indented_items)
-        {
+        DragFloat("##float5a", safe_addr(f))
+        if show_indented_items
             Indent()
-            DragFloat("float (indented)##5b", &f)
+            DragFloat("float (indented)##5b", safe_addr(f))
             Unindent()
-        }
         PopItemWidth()
-
         TreePop()
-    }
 
-    if (TreeNode("Basic Horizontal Layout"))
-    {
+    if TreeNode("Basic Horizontal Layout")
         TextWrapped("(Use SameLine() to keep adding items to the right of the preceding item)")
-
-        // Text
-        Text("Two items: Hello") SameLine()
-        TextColored(ImVec4(1,1,0,1), "Sailor")
-
-        // Adjust spacing
-        Text("More spacing: Hello") SameLine(0, 20)
-        TextColored(ImVec4(1,1,0,1), "Sailor")
-
-        // Button
+        Text("Two items: Hello")
+        SameLine()
+        TextColored(ImVec4(1.,1.,0.,1.), "Sailor")
+        Text("More spacing: Hello")
+        SameLine(0., 20.)
+        TextColored(ImVec4(1.,1.,0.,1.), "Sailor")
         AlignTextToFramePadding()
-        Text("Normal buttons") SameLine()
-        Button("Banana") SameLine()
-        Button("Apple") SameLine()
+        Text("Normal buttons")
+        SameLine()
+        Button("Banana")
+        SameLine()
+        Button("Apple")
+        SameLine()
         Button("Corniflower")
-
-        // Button
-        Text("Small buttons") SameLine()
-        SmallButton("Like this one") SameLine()
+        Text("Small buttons")
+        SameLine()
+        SmallButton("Like this one")
+        SameLine()
         Text("can fit within a text block.")
-
-        // Aligned to arbitrary position. Easy/cheap column.
         Text("Aligned")
-        SameLine(150) Text("x=150")
-        SameLine(300) Text("x=300")
+        SameLine(150.)
+        Text("x=150")
+        SameLine(300.)
+        Text("x=300")
         Text("Aligned")
-        SameLine(150) SmallButton("x=150")
-        SameLine(300) SmallButton("x=300")
-
-        // Checkbox
-        static bool c1 = false, c2 = false, c3 = false, c4 = false;
-        Checkbox("My", &c1) SameLine()
-        Checkbox("Tailor", &c2) SameLine()
-        Checkbox("Is", &c3) SameLine()
-        Checkbox("Rich", &c4)
-
-        // Various
-        static float f0 = 1.0f, f1 = 2.0f, f2 = 3.0f;
-        PushItemWidth(80)
-        const char* items[] = { "AAAA", "BBBB", "CCCC", "DDDD" };
-        static int item = -1;
-        Combo("Combo", &item, items, IM_ARRAYSIZE(items)) SameLine()
-        SliderFloat("X", &f0, 0.0f, 5.0f) SameLine()
-        SliderFloat("Y", &f1, 0.0f, 5.0f) SameLine()
-        SliderFloat("Z", &f2, 0.0f, 5.0f)
+        SameLine(150.)
+        SmallButton("x=150")
+        SameLine(300.)
+        SmallButton("x=300")
+        static_let <|
+            var c1 = false
+            var c2 = false
+            var c3 = false
+            var c4 = false
+        Checkbox("My", safe_addr(c1))
+        SameLine()
+        Checkbox("Tailor", safe_addr(c2))
+        SameLine()
+        Checkbox("Is", safe_addr(c3))
+        SameLine()
+        Checkbox("Rich", safe_addr(c4))
+        static_let <|
+            var f0 = 1.0f
+            var f1 = 2.0f
+            var f2 = 3.0f
+        PushItemWidth(80.)
+        static_let <|
+            let items = [[string[] "AAAA"; "BBBB"; "CCCC"; "DDDD" ]]
+            var item = -1
+        Combo("Combo", safe_addr(item), items)
+        SameLine()
+        SliderFloat("X", safe_addr(f0), 0.0f, 5.0f)
+        SameLine()
+        SliderFloat("Y", safe_addr(f1), 0.0f, 5.0f)
+        SameLine()
+        SliderFloat("Z", safe_addr(f2), 0.0f, 5.0f)
         PopItemWidth()
-
-        PushItemWidth(80)
+        PushItemWidth(80.)
         Text("Lists:")
-        static int selection[4] = { 0, 1, 2, 3 };
-        for (int i = 0; i < 4; i++)
-        {
-            if (i > 0) SameLine()
+        static_let <|
+            var selection = [[int[] 0; 1; 2; 3]]
+        for i in range(4)
+            if (i > 0)
+                SameLine()
             PushID(i)
-            ListBox("", &selection[i], items, IM_ARRAYSIZE(items))
+            ListBox("", safe_addr(selection[i]), items)
             PopID()
-            //if (IsItemHovered()) SetTooltip("ListBox %d hovered", i)
-        }
         PopItemWidth()
-
-        // Dummy
-        ImVec2 button_sz(40, 40)
-        Button("A", button_sz) SameLine()
-        Dummy(button_sz) SameLine()
+        let button_sz = ImVec2(40., 40.)
+        Button("A", button_sz)
+        SameLine()
+        Dummy(button_sz)
+        SameLine()
         Button("B", button_sz)
-
-        // Manually wrapping
-        // (we should eventually provide this as an automatic layout feature, but for now you can do it manually)
         Text("Manually wrapping:")
-        ImGuiStyle& style = GetStyle()
-        int buttons_count = 20;
-        float window_visible_x2 = GetWindowPos().x + GetWindowContentRegionMax().x;
-        for (int n = 0; n < buttons_count; n++)
-        {
+        let style & = GetStyle()
+        let buttons_count = 20
+        let window_visible_x2 = GetWindowPos().x + GetWindowContentRegionMax().x
+        for n in range(buttons_count)
             PushID(n)
             Button("Box", button_sz)
-            float last_button_x2 = GetItemRectMax().x;
-            float next_button_x2 = last_button_x2 + style.ItemSpacing.x + button_sz.x; // Expected position if next button was on same line
-            if (n + 1 < buttons_count && next_button_x2 < window_visible_x2)
+            let last_button_x2 = GetItemRectMax().x
+            let next_button_x2 = last_button_x2 + style.ItemSpacing.x + button_sz.x
+            if n + 1 < buttons_count && next_button_x2 < window_visible_x2
                 SameLine()
             PopID()
-        }
-
         TreePop()
-    }
 
-    if (TreeNode("Groups"))
-    {
-        HelpMarker(
-            "BeginGroup() basically locks the horizontal position for new line. "
-            "EndGroup() bundles the whole group so that you can use \"item\" functions such as "
+    if TreeNode("Groups")
+        DasHelpMaker(
+            "BeginGroup() basically locks the horizontal position for new line. " +
+            "EndGroup() bundles the whole group so that you can use \"item\" functions such as " +
             "IsItemHovered()/IsItemActive() or SameLine() etc. on the whole group.")
         BeginGroup()
-        {
-            BeginGroup()
-            Button("AAA")
-            SameLine()
-            Button("BBB")
-            SameLine()
-            BeginGroup()
-            Button("CCC")
-            Button("DDD")
-            EndGroup()
-            SameLine()
-            Button("EEE")
-            EndGroup()
-            if (IsItemHovered())
-                SetTooltip("First group hovered")
-        }
-        // Capture the group size and create widgets using the same size
-        ImVec2 size = GetItemRectSize()
-        const float values[5] = { 0.5f, 0.20f, 0.80f, 0.60f, 0.25f };
-        PlotHistogram("##values", values, IM_ARRAYSIZE(values), 0, NULL, 0.0f, 1.0f, size)
-
+        BeginGroup()
+        Button("AAA")
+        SameLine()
+        Button("BBB")
+        SameLine()
+        BeginGroup()
+        Button("CCC")
+        Button("DDD")
+        EndGroup()
+        SameLine()
+        Button("EEE")
+        EndGroup()
+        if IsItemHovered()
+            SetTooltip("First group hovered")
+        var size = GetItemRectSize()
+        static_let <|
+            let values = [[float[] 0.5f; 0.20f; 0.80f; 0.60f; 0.25f ]]
+        PlotHistogram("##values", values, 0, "", 0.0f, 1.0f, size)
         Button("ACTION", ImVec2((size.x - GetStyle().ItemSpacing.x) * 0.5f, size.y))
         SameLine()
         Button("REACTION", ImVec2((size.x - GetStyle().ItemSpacing.x) * 0.5f, size.y))
         EndGroup()
         SameLine()
-
         Button("LEVERAGE\nBUZZWORD", size)
         SameLine()
-
-        if (ListBoxHeader("List", size))
-        {
+        if ListBoxHeader("List", size)
             Selectable("Selected", true)
             Selectable("Not Selected", false)
             ListBoxFooter()
-        }
-
         TreePop()
-    }
 
-    if (TreeNode("Text Baseline Alignment"))
-    {
-        {
-            BulletText("Text baseline:")
-            SameLine() HelpMarker(
-                "This is testing the vertical alignment that gets applied on text to keep it aligned with widgets. "
-                "Lines only composed of text or \"small\" widgets use less vertical space than lines with framed widgets.")
-            Indent()
-
-            Text("KO Blahblah") SameLine()
-            Button("Some framed item") SameLine()
-            HelpMarker("Baseline of button will look misaligned with text..")
-
-            // If your line starts with text, call AlignTextToFramePadding() to align text to upcoming widgets.
-            // (because we don't know what's coming after the Text() statement, we need to move the text baseline
-            // down by FramePadding.y ahead of time)
-            AlignTextToFramePadding()
-            Text("OK Blahblah") SameLine()
-            Button("Some framed item") SameLine()
-            HelpMarker("We call AlignTextToFramePadding() to vertically align the text baseline by +FramePadding.y")
-
-            // SmallButton() uses the same vertical padding as Text
-            Button("TEST##1") SameLine()
-            Text("TEST") SameLine()
-            SmallButton("TEST##2")
-
-            // If your line starts with text, call AlignTextToFramePadding() to align text to upcoming widgets.
-            AlignTextToFramePadding()
-            Text("Text aligned to framed item") SameLine()
-            Button("Item##1") SameLine()
-            Text("Item") SameLine()
-            SmallButton("Item##2") SameLine()
-            Button("Item##3")
-
-            Unindent()
-        }
-
+    if TreeNode("Text Baseline Alignment")
+        BulletText("Text baseline:")
+        SameLine()
+        DasHelpMaker(
+            "This is testing the vertical alignment that gets applied on text to keep it aligned with widgets. " +
+            "Lines only composed of text or \"small\" widgets use less vertical space than lines with framed widgets.")
+        Indent()
+        Text("KO Blahblah")
+        SameLine()
+        Button("Some framed item")
+        SameLine()
+        DasHelpMaker("Baseline of button will look misaligned with text..")
+        AlignTextToFramePadding()
+        Text("OK Blahblah")
+        SameLine()
+        Button("Some framed item")
+        SameLine()
+        DasHelpMaker("We call AlignTextToFramePadding() to vertically align the text baseline by +FramePadding.y")
+        Button("TEST##1")
+        SameLine()
+        Text("TEST")
+        SameLine()
+        SmallButton("TEST##2")
+        AlignTextToFramePadding()
+        Text("Text aligned to framed item")
+        SameLine()
+        Button("Item##1")
+        SameLine()
+        Text("Item")
+        SameLine()
+        SmallButton("Item##2")
+        SameLine()
+        Button("Item##3")
+        Unindent()
         Spacing()
-
-        {
-            BulletText("Multi-line text:")
-            Indent()
-            Text("One\nTwo\nThree") SameLine()
-            Text("Hello\nWorld") SameLine()
-            Text("Banana")
-
-            Text("Banana") SameLine()
-            Text("Hello\nWorld") SameLine()
-            Text("One\nTwo\nThree")
-
-            Button("HOP##1") SameLine()
-            Text("Banana") SameLine()
-            Text("Hello\nWorld") SameLine()
-            Text("Banana")
-
-            Button("HOP##2") SameLine()
-            Text("Hello\nWorld") SameLine()
-            Text("Banana")
-            Unindent()
-        }
-
+        BulletText("Multi-line text:")
+        Indent()
+        Text("One\nTwo\nThree")
+        SameLine()
+        Text("Hello\nWorld")
+        SameLine()
+        Text("Banana")
+        Text("Banana")
+        SameLine()
+        Text("Hello\nWorld")
+        SameLine()
+        Text("One\nTwo\nThree")
+        Button("HOP##1")
+        SameLine()
+        Text("Banana")
+        SameLine()
+        Text("Hello\nWorld")
+        SameLine()
+        Text("Banana")
+        Button("HOP##2")
+        SameLine()
+        Text("Hello\nWorld")
+        SameLine()
+        Text("Banana")
+        Unindent()
         Spacing()
-
-        {
-            BulletText("Misc items:")
-            Indent()
-
-            // SmallButton() sets FramePadding to zero. Text baseline is aligned to match baseline of previous Button.
-            Button("80x80", ImVec2(80, 80))
-            SameLine()
-            Button("50x50", ImVec2(50, 50))
-            SameLine()
-            Button("Button()")
-            SameLine()
-            SmallButton("SmallButton()")
-
-            // Tree
-            const float spacing = GetStyle().ItemInnerSpacing.x;
-            Button("Button##1")
-            SameLine(0.0f, spacing)
-            if (TreeNode("Node##1"))
-            {
-                // Placeholder tree data
-                for (int i = 0; i < 6; i++)
-                    BulletText("Item %d..", i)
-                TreePop()
-            }
-
-            // Vertically align text node a bit lower so it'll be vertically centered with upcoming widget.
-            // Otherwise you can use SmallButton() (smaller fit).
-            AlignTextToFramePadding()
-
-            // Common mistake to avoid: if we want to SameLine after TreeNode we need to do it before we add
-            // other contents below the node.
-            bool node_open = TreeNode("Node##2")
-            SameLine(0.0f, spacing) Button("Button##2")
-            if (node_open)
-            {
-                // Placeholder tree data
-                for (int i = 0; i < 6; i++)
-                    BulletText("Item %d..", i)
-                TreePop()
-            }
-
-            // Bullet
-            Button("Button##3")
-            SameLine(0.0f, spacing)
-            BulletText("Bullet text")
-
-            AlignTextToFramePadding()
-            BulletText("Node")
-            SameLine(0.0f, spacing) Button("Button##4")
-            Unindent()
-        }
-
+        BulletText("Misc items:")
+        Indent()
+        Button("80x80", ImVec2(80., 80.))
+        SameLine()
+        Button("50x50", ImVec2(50., 50.))
+        SameLine()
+        Button("Button()")
+        SameLine()
+        SmallButton("SmallButton()")
+        let spacing = GetStyle().ItemInnerSpacing.x;
+        Button("Button##1")
+        SameLine(0.0f, spacing)
+        if TreeNode("Node##1")
+            for i in range(6)
+                BulletText("Item {i}..")
+            TreePop()
+        AlignTextToFramePadding()
+        let node_open = TreeNode("Node##2")
+        SameLine(0.0f, spacing)
+        Button("Button##2")
+        if node_open
+            for i in range(6)
+                BulletText("Item {i}..")
+            TreePop()
+        Button("Button##3")
+        SameLine(0.0f, spacing)
+        BulletText("Bullet text")
+        AlignTextToFramePadding()
+        BulletText("Node")
+        SameLine(0.0f, spacing)
+        Button("Button##4")
+        Unindent()
         TreePop()
-    }
-*/
-
-def ShowDemoWindowLayout
-    if !CollapsingHeader("Layout & Scrolling")
-        return
 
     if TreeNode("Scrolling")
-        HelpMarker("Use SetScrollHereY() or SetScrollFromPosY() to scroll to a given vertical position.")
+        DasHelpMaker("Use SetScrollHereY() or SetScrollFromPosY() to scroll to a given vertical position.")
         static_let <|
             var track_item = 50
             var enable_track = true
@@ -1205,11 +1235,11 @@ def ShowDemoWindowLayout
             static_let <|
                 let names_v = [[string[] "Top"; "25%"; "Center"; "75%"; "Bottom" ]]
             TextUnformatted(names_v[i])
-            let child_flags = enable_extra_decorations ? ImGuiWindowFlags MenuBar : bitfield(0)
+            let child_flags = enable_extra_decorations ? ImGuiWindowFlags MenuBar : ImGuiWindowFlags None
             var child_id : uint
             unsafe
                 child_id = GetID(reinterpret<void?> i)
-            let child_is_visible = BeginChild(child_id, ImVec2(child_w, 200.0f), true, int(child_flags))
+            let child_is_visible = BeginChild(child_id, ImVec2(child_w, 200.0f), true, child_flags)
             if BeginMenuBar()
                 TextUnformatted("abc")
                 EndMenuBar()
@@ -1231,7 +1261,7 @@ def ShowDemoWindowLayout
             EndGroup()
         PopID()
         Spacing()
-        HelpMarker(
+        DasHelpMaker(
             "Use SetScrollHereX() or SetScrollFromPosX() to scroll to a given horizontal position.\n\n"+
             "Because the clipping rectangle of most window hides half worth of WindowPadding on the "+
             "left/right, using SetScrollFromPosX(+1) will usually result in clipped text whereas the "+
@@ -1239,11 +1269,11 @@ def ShowDemoWindowLayout
         PushID("##HorizontalScrolling")
         for i in range(5)
             let child_height = GetTextLineHeight() + style.ScrollbarSize + style.WindowPadding.y * 2.0f
-            let child_flags = ImGuiWindowFlags HorizontalScrollbar | (enable_extra_decorations ? ImGuiWindowFlags AlwaysVerticalScrollbar : bitfield(0))
+            let child_flags = ImGuiWindowFlags HorizontalScrollbar | (enable_extra_decorations ? ImGuiWindowFlags AlwaysVerticalScrollbar : ImGuiWindowFlags None)
             var child_id : uint
             unsafe
                 child_id = GetID(reinterpret<void?> i)
-            let child_is_visible = BeginChild(child_id, ImVec2(-100., child_height), true, int(child_flags))
+            let child_is_visible = BeginChild(child_id, ImVec2(-100., child_height), true, child_flags)
             if scroll_to_off
                 SetScrollX(scroll_to_off_px)
             if scroll_to_pos
@@ -1265,16 +1295,16 @@ def ShowDemoWindowLayout
             Text("{names_h[i]}\n{scroll_x}/{scroll_max_x}")
             Spacing()
         PopID()
-        HelpMarker(
-            "Horizontal scrolling for a window is enabled via the ImGuiWindowFlags_HorizontalScrollbar flag.\n\n"+
+        DasHelpMaker(
+            "Horizontal scrolling for a window is enabled via the ImGuiWindowFlags HorizontalScrollbar flag.\n\n"+
             "You may want to also explicitly specify content width by using SetNextWindowContentWidth() before Begin().")
         static_let <|
             var lines = 7
         SliderInt("Lines", safe_addr(lines), 1, 15)
-        PushStyleVar(ImGuiStyleVar_ ImGuiStyleVar_FrameRounding, 3.0f)
-        PushStyleVar(ImGuiStyleVar_ ImGuiStyleVar_FramePadding, ImVec2(2.0f, 1.0f))
+        PushStyleVar(ImGuiStyleVar FrameRounding, 3.0f)
+        PushStyleVar(ImGuiStyleVar FramePadding, ImVec2(2.0f, 1.0f))
         let scrolling_child_size = ImVec2(0., GetFrameHeightWithSpacing() * 7.0 + 30.0)
-        BeginChild("scrolling", scrolling_child_size, true, int(ImGuiWindowFlags_ ImGuiWindowFlags_HorizontalScrollbar))
+        BeginChild("scrolling", scrolling_child_size, true, ImGuiWindowFlags HorizontalScrollbar)
         for line in range(lines)
             let num_buttons = 10 + ((line & 1)!=0 ? line * 9 : line * 3)
             for n in range(num_buttons)
@@ -1284,9 +1314,9 @@ def ShowDemoWindowLayout
                 let num_buf = "{n}"
                 let lab = ((n % 15)==0) ? "FizzBuzz" : ((n % 3)==0) ? "Fizz" : ((n % 5)==0) ? "Buzz" : num_buf
                 let hue = float(n) * 0.05f
-                PushStyleColor(ImGuiCol_ ImGuiCol_Button, ImVec4(HSV(hue, 0.6f, 0.6f)))
-                PushStyleColor(ImGuiCol_ ImGuiCol_ButtonHovered,  ImVec4(HSV(hue, 0.7f, 0.7f)))
-                PushStyleColor(ImGuiCol_ ImGuiCol_ButtonActive, ImVec4( HSV(hue, 0.8f, 0.8f)))
+                PushStyleColor(ImGuiCol Button, ImVec4(HSV(hue, 0.6f, 0.6f)))
+                PushStyleColor(ImGuiCol ButtonHovered,  ImVec4(HSV(hue, 0.7f, 0.7f)))
+                PushStyleColor(ImGuiCol ButtonActive, ImVec4( HSV(hue, 0.8f, 0.8f)))
                 Button(lab, ImVec2(40.0f + sin(float(line + n)) * 20.0f, 0.0f))
                 PopStyleColor(3)
                 PopID()
@@ -1328,10 +1358,10 @@ def ShowDemoWindowLayout
             if explicit_content_size
                 SetNextWindowContentSize(ImVec2(contents_size_x, 0.0f))
             Begin("Horizontal contents size demo window", safe_addr(show_horizontal_contents_size_demo_window),
-                int(show_h_scrollbar ? ImGuiWindowFlags HorizontalScrollbar : bitfield(0)))
-            PushStyleVar(ImGuiStyleVar_ ImGuiStyleVar_ItemSpacing, ImVec2(2., 0.))
-            PushStyleVar(ImGuiStyleVar_ ImGuiStyleVar_FramePadding, ImVec2(2., 0.))
-            HelpMarker("Test of different widgets react and impact the work rectangle growing when horizontal scrolling is enabled.\n\nUse 'Metrics->Tools->Show windows rectangles' to visualize rectangles.")
+                show_h_scrollbar ? ImGuiWindowFlags HorizontalScrollbar : ImGuiWindowFlags None)
+            PushStyleVar(ImGuiStyleVar ItemSpacing, ImVec2(2., 0.))
+            PushStyleVar(ImGuiStyleVar FramePadding, ImVec2(2., 0.))
+            DasHelpMaker("Test of different widgets react and impact the work rectangle growing when horizontal scrolling is enabled.\n\nUse 'Metrics->Tools->Show windows rectangles' to visualize rectangles.")
             Checkbox("H-scrollbar", safe_addr(show_h_scrollbar))
             Checkbox("Button", safe_addr(show_button))
             Checkbox("Tree nodes", safe_addr(show_tree_nodes))
@@ -1365,7 +1395,7 @@ def ShowDemoWindowLayout
                 TextWrapped("This text should automatically wrap on the edge of the work rectangle.")
             if show_columns
                 Text("Tables:")
-                if BeginTable("table", 4, ImGuiTableFlags_Borders)
+                if BeginTable("table", 4, ImGuiTableFlags Borders)
                     for n in range(4)
                         TableNextColumn()
                         Text("Width {GetContentRegionAvail().x}")
@@ -1404,7 +1434,7 @@ def ShowDemoWindowLayout
             PushID(n)
             BeginGroup()
             InvisibleButton("##empty", size)
-            if IsItemActive() && IsMouseDragging(int(ImGuiMouseButton_ ImGuiMouseButton_Left))
+            if IsItemActive() && IsMouseDragging(ImGuiMouseButton Left)
                 offset.x += GetIO().MouseDelta.x
                 offset.y += GetIO().MouseDelta.y
             var p0 = GetItemRectMin()
@@ -1413,7 +1443,7 @@ def ShowDemoWindowLayout
             let text_pos = ImVec2(p0.x + offset.x, p0.y + offset.y)
             var draw_list = GetWindowDrawList()
             if n==0
-                HelpMarker(
+                DasHelpMaker(
                     "Using PushClipRect():\n" +
                     "Will alter ImGui hit-testing logic + ImDrawList rendering.\n" +
                     "(use this if you want your clipping rectangle to affect interactions)")
@@ -1422,7 +1452,7 @@ def ShowDemoWindowLayout
                 *draw_list |> AddText(text_pos, IM_COL32_WHITE, text_str)
                 PopClipRect()
             elif n==1
-                HelpMarker(
+                DasHelpMaker(
                     "Using ImDrawList::PushClipRect():\n" +
                     "Will alter ImDrawList rendering only.\n" +
                     "(use this as a shortcut if you are only using ImDrawList calls)")
@@ -1431,7 +1461,7 @@ def ShowDemoWindowLayout
                 *draw_list |> AddText(text_pos, IM_COL32_WHITE, text_str)
                 *draw_list |> PopClipRect()
             elif n==2
-                HelpMarker(
+                DasHelpMaker(
                     "Using ImDrawList::AddText() with a fine ClipRect:\n" +
                     "Will alter only this specific ImDrawList::AddText() rendering.\n" +
                     "(this is often used internally to avoid altering the clipping rectangle and minimize draw calls)")
@@ -1442,13 +1472,141 @@ def ShowDemoWindowLayout
             PopID()
         TreePop()
 
+class ExampleAppLog
+    Buf:ImGuiTextBuffer? = new ImGuiTextBuffer
+    Filter:ImGuiTextFilter? = new ImGuiTextFilter
+    LineOffsets:array<int>
+    AutoScroll:bool = true
+    def ExampleAppLog()
+        self->Clear()
+    def finalize
+        unsafe
+            delete Buf
+            delete Filter
+    def Clear() : void
+        *Buf |> clear()
+        LineOffsets |> clear()
+        LineOffsets |> push(0)
+    def AddLog(txt:string) : void
+        var old_size = *Buf |> size()
+        *Buf |> append(txt)
+        var new_size = *Buf |> size()
+        while old_size < new_size
+            if *Buf |> at(old_size) == '\n'
+                LineOffsets |> push(old_size + 1)
+            old_size ++
+    def Draw(title:string; p_open:bool? implicit) : void
+        if !Begin(title, p_open)
+            End()
+            return
+        if BeginPopup("Options")
+            Checkbox("Auto-scroll", safe_addr(AutoScroll))
+            EndPopup()
+        if Button("Options")
+            OpenPopup("Options")
+        SameLine()
+        let clear = Button("Clear")
+        SameLine()
+        let copy = Button("Copy")
+        SameLine()
+        *Filter |> Draw("Filter", -100.0f)
+        Separator()
+        BeginChild("scrolling", ImVec2(0., 0.), false, ImGuiWindowFlags HorizontalScrollbar)
+        if clear
+            self->Clear()
+        if copy
+            LogToClipboard()
+        PushStyleVar(ImGuiStyleVar ItemSpacing, ImVec2(0., 0.))
+        if *Filter |> IsActive()
+            var line_no = 0
+            while line_no < length(LineOffsets)
+                var line_start = LineOffsets[line_no]
+                var line_end = (line_no + 1 < length(LineOffsets)) ? (LineOffsets[line_no + 1] - 1) : (*Buf |> size())
+                var ltext = *Buf |> slice(line_start, line_end)
+                if *Filter |> PassFilter(ltext)
+                    TextUnformatted(ltext)
+                line_no++
+        else
+            var clipper = new ImGuiListClipper
+            *clipper |> Begin(length(LineOffsets))
+            while *clipper |> Step()
+                var line_no  = clipper.DisplayStart
+                while line_no < clipper.DisplayEnd
+                    var line_start = LineOffsets[line_no]
+                    var line_end = (line_no + 1 < length(LineOffsets)) ? (LineOffsets[line_no + 1] - 1) : (*Buf |> size())
+                    var ltext = *Buf |> slice(line_start, line_end)
+                    TextUnformatted(ltext)
+                    line_no ++
+            *clipper |> End()
+            unsafe
+                delete clipper
+        PopStyleVar()
+        if AutoScroll && GetScrollY() >= GetScrollMaxY()
+            SetScrollHereY(1.0f)
+        EndChild()
+        End()
+
+def DasShowExampleAppLog(p_open:bool? implicit)
+    static_let <|
+        var log <- ExampleAppLog()
+    SetNextWindowSize(ImVec2(500., 400.), ImGuiCond FirstUseEver)
+    Begin("Example: Log", p_open)
+    if SmallButton("[Debug] Add 5 entries")
+        static_let <|
+            var counter = 0
+            let categories = [[string[] "info"; "warn"; "error"]]
+            let words = [[string [] "Bumfuzzled"; "Cattywampus"; "Snickersnee"; "Abibliophobia"; "Absquatulate"; "Nincompoop"; "Pauciloquent" ]]
+        for n in range(5)
+            let category = categories[counter % length(categories)]
+            let word = words[counter % length(words)]
+            log->AddLog("[{GetFrameCount()}] [{category}] Hello, current time is {GetTime()}, here's a word: '{word}'\n")
+            counter++;
+    End()
+    log->Draw("Example: Log", p_open)
+
+def DasShowExampleAppLayout(var p_open:bool? implicit)
+    SetNextWindowSize(ImVec2(500.0, 440.0), ImGuiCond FirstUseEver)
+    if Begin("Example: Simple layout", p_open, ImGuiWindowFlags MenuBar)
+        if BeginMenuBar()
+            if BeginMenu("File")
+                if MenuItem("Close")
+                    *p_open = false
+                EndMenu()
+            EndMenuBar()
+        static_let <|
+            var selected = 0
+        BeginChild("left pane", ImVec2(150., 0.), true)
+        for i in range(100)
+            if Selectable("MyObject {i}", selected == i)
+                selected = i
+        EndChild()
+        SameLine()
+        BeginGroup()
+        BeginChild("item view", ImVec2(0., -GetFrameHeightWithSpacing())) // Leave room for 1 line below us
+        Text("MyObject: {selected}")
+        Separator()
+        if BeginTabBar("##Tabs", ImGuiTabBarFlags None)
+            if BeginTabItem("Description")
+                TextWrapped("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. ")
+                EndTabItem()
+            if BeginTabItem("Details")
+                Text("ID: 0123456789")
+                EndTabItem()
+            EndTabBar()
+        EndChild()
+        if Button("Revert")
+            pass
+        SameLine()
+        if Button("Save")
+            pass
+        EndGroup()
+    End()
 
 [export]
 def main
 	var f = 0.0
 	imgui_app("Testing IMGUI") <|
         NewFrame()
-        // ShowDemoWindow(null)
         DasShowDemoWindow(null)
         Render()
 
