@@ -1,16 +1,18 @@
 #include "daScript/daScript.h"
 #include "daScript/ast/ast_typefactory_bind.h"
 
-#include "../imgui-1.81/backends/imgui_impl_vulkan.h"
+#include "..\imgui-1.81\backends\imgui_impl_vulkan.h"
 
 using namespace das;
 
-#define USE_GENERATED 1
+#define USE_GENERATED 0
 
 #if USE_GENERATED
 
-#include "../../dasVulkan/include/dasVulkan/module.h"
-#include "../../dasGlfw/src/module_glfw_include.h"
+#include "..\..\dasVulkan\include\dasVulkan\module.h"
+
+// NOTE: this module requires GLFW module
+// #include "../../dasGlfw/src/module_glfw_include.h"
 
 MAKE_EXTERNAL_TYPE_FACTORY(ImDrawData,ImDrawData);
 
