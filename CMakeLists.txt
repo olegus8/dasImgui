@@ -104,7 +104,7 @@ IF(NOT DAS_IMGUI_INCLUDED)
 
 			# GENERATED IMGUI VULKAN
 			CPP_BIND_AST(
-				VULKAN_GENERATE
+				IMGUI_GENERATE_VULKAN
 				generate_vulkan.das
 				${DAS_IMGUI_DIR}/src/imgui_vulkan_headers.h
 				${DAS_IMGUI_DIR}/src/module_imgui_vulkan
