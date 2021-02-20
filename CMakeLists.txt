@@ -51,9 +51,6 @@ IF(NOT DAS_IMGUI_INCLUDED)
 	get_target_property(BIND_INCLUDE_DIRS libDasModuleImGui INCLUDE_DIRECTORIES)
 	FIND_FILE(IMGUI_H "imgui.h" ${imgui_INCLUDE_DIR})
 
-    MESSAGE(STATUS "IMGUI_H=${IMGUI_H}")
-    MESSAGE(FATAL_ERROR "stopping intentionally")
-
 	CPP_BIND_AST(
 		IMGUI_GENERATE
 		generate_imgui.das
