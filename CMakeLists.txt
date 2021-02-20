@@ -49,7 +49,7 @@ IF(NOT DAS_IMGUI_INCLUDED)
 	SETUP_CPP11(libDasModuleImGui)
 	# GENERATED IMGUI
 	get_target_property(BIND_INCLUDE_DIRS libDasModuleImGui INCLUDE_DIRECTORIES)
-	FIND_FILE(IMGUI_H "imgui.h")
+	FIND_FILE(IMGUI_H "imgui.h" ${imgui_INCLUDE_DIR})
 
     MESSAGE(STATUS "IMGUI_H=${IMGUI_H}")
     MESSAGE(FATAL_ERROR "stopping intentionally")
