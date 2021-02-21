@@ -137,7 +137,7 @@ let
     MAX_FRAMES_IN_FLIGHT = 2
 
 
-struct SwapchainIndependentState
+struct SimpleSwapchainIndependentState
     window       : Window
     instance     : InstanceEx
     surface      : SurfaceKHR
@@ -150,7 +150,7 @@ struct SwapchainIndependentState
     present_mode : VkPresentModeKHR
 
 
-def finalize(var x : SwapchainIndependentState explicit)
+def finalize(var x : SimpleSwapchainIndependentState explicit)
     x.device |> device_wait_idle
     delete x.desc_pool
     delete x.device
@@ -159,8 +159,8 @@ def finalize(var x : SwapchainIndependentState explicit)
     delete x.window
 
 
-struct SwapchainDependentState
-    swapchain           : SwapchainEx
+struct SimpleSwapchainDependentState
+    swapchain           : SimpleSwapchain
     img_avail_sems      : array<Semaphore>
     render_done_sems    : array<Semaphore>
     frame_fences        : array<Fence>
@@ -169,7 +169,7 @@ struct SwapchainDependentState
     _device             : Device
 
 
-def finalize(var s : SwapchainDependentState explicit)
+def finalize(var s : SimpleSwapchainDependentState explicit)
     s._device |> device_wait_idle()
     delete s.imgs_used_by_frames
     delete s.swapchain
@@ -179,8 +179,9 @@ def finalize(var s : SwapchainDependentState explicit)
     memzero(s)
 
 
-def create_sis(title : string; width,height : int) : SwapchainIndependentState
-    var sis : SwapchainIndependentState
+def create_simple_sis(title : string; width,height : int
+) : SimpleSwapchainIndependentState
+    var sis : SimpleSwapchainIndependentState
     sis.window <- create_window(width, height, title)
     sis.instance <- create_instance_ex()
     sis.surface <- sis.instance.instance |> create_window_surface(sis.window)
@@ -195,8 +196,11 @@ def create_sis(title : string; width,height : int) : SwapchainIndependentState
     return <- sis
 
 
-def create_sds(sis : SwapchainIndependentState) : SwapchainDependentState
-    var sds <- [[ SwapchainDependentState _device <- weak_copy(sis.device) ]]
+def create_simple_sds(sis : SimpleSwapchainIndependentState
+) : SimpleSwapchainDependentState
+    var sds <- [[ SimpleSwapchainDependentState
+        _device <- weak_copy(sis.device)
+    ]]
     sds.img_avail_sems <- [{for x in range(MAX_FRAMES_IN_FLIGHT);
         sis.device |> create_semaphore() }]
     sds.render_done_sems <- [{for x in range(MAX_FRAMES_IN_FLIGHT);
@@ -205,7 +209,7 @@ def create_sds(sis : SwapchainIndependentState) : SwapchainDependentState
         sis.device |> create_fence([[FenceCreateInfo
             flags=uint(VkFenceCreateFlagBits VK_FENCE_CREATE_SIGNALED_BIT)
     ]]) }]
-    sds.swapchain <- sis.device |> create_swapchain_ex(sis.phys_dev,
+    sds.swapchain <- sis.device |> create_simple_swapchain(sis.phys_dev,
         sis.surface, sis.window, sis.surf_fmt, sis.present_mode,
         sis.render_pass)
     sds.imgs_used_by_frames <- [{for x in sds.swapchain.framebuffers; -1}]
@@ -213,14 +217,14 @@ def create_sds(sis : SwapchainIndependentState) : SwapchainDependentState
     return <- sds
 
 
-struct SwapchainEx
+struct SimpleSwapchain
     swapchain       : SwapchainKHR
     images          : array<Image>
     views           : array<ImageView>
     framebuffers    : array<Framebuffer>
 
 
-def finalize(var sc : SwapchainEx)
+def finalize(var sc : SimpleSwapchain)
     delete sc.framebuffers
     delete sc.views
     delete sc.images
@@ -228,7 +232,7 @@ def finalize(var sc : SwapchainEx)
     memzero(sc)
 
 
-def create_swapchain_ex(
+def create_simple_swapchain(
     device          : Device;
     phys_dev        : PhysicalDevice;
     surface         : SurfaceKHR;
@@ -236,7 +240,7 @@ def create_swapchain_ex(
     surf_fmt        : SurfaceFormatKHR;
     present_mode    : VkPresentModeKHR;
     render_pass     : RenderPass
-) : SwapchainEx
+) : SimpleSwapchain
 
     var swapchain <- device |> create_multibuffered_swapchain(
         phys_dev, surface, window, surf_fmt, present_mode)
@@ -263,7 +267,7 @@ def create_swapchain_ex(
             height = extent.height
         ])}]
 
-    return <- [[SwapchainEx
+    return <- [[SimpleSwapchain
         swapchain <- swapchain,
         images <- images,
         views <- views,
@@ -275,9 +279,9 @@ def imgui_vulkan_app ( title:string; blk : block )
     if glfwInit()==0
 		panic("can't init glfw")
     if true
-        var sis <- create_sis(title, 1280, 720)
+        var sis <- create_simple_sis(title, 1280, 720)
         defer <| { delete sis; }
-        var sds <- create_sds(sis)
+        var sds <- create_simple_sds(sis)
         defer <| { delete sds; }
         invoke(blk)
     glfwTerminate()
