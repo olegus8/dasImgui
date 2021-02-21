@@ -146,6 +146,7 @@ def imgui_vulkan_app ( title:string; blk : block )
         ImGui_ImplGlfw_InitForVulkan(sis.window.window, true)
         invoke(blk)
         ImGui_ImplGlfw_Shutdown()
+        DestroyContext(null)
     glfwTerminate()
 
 [export]
