@@ -292,6 +292,8 @@ def imgui_vulkan_app ( title:string; blk : block )
         let phys_dev <- instance.instance |> find_best_physical_device(
             surface, @@simple_device_score)
         let gfx_qfam = phys_dev |> get_graphics_queue_family(surface, 1)
+        var device <- phys_dev |> create_simple_device(gfx_qfam)
+        defer <| { delete device; }
         invoke(blk)
     glfwTerminate()
 
