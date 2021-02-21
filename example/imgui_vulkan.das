@@ -356,15 +356,20 @@ static void glfw_error_callback(int error, const char* description)
 }
 */
 
-[export]
-def main()
-    print("hello world\n")
+def imgui_vulkan_app ( title:string; blk : block )
     if glfwInit()==0
 		panic("can't init glfw")
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API)
+    var window <- create_window(1280, 720, title)
+    defer <| { delete window; }
+    invoke(blk)
+    glfwTerminate()
 
+[export]
+def main()
+	imgui_vulkan_app("Testing IMGUI") <|
+        print("hello world 2\n")
 /*
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-    GLFWwindow* window = glfwCreateWindow(1280, 720, "Dear ImGui GLFW+Vulkan example", NULL, NULL);
 
     // Setup Vulkan
     if (!glfwVulkanSupported())
@@ -557,4 +562,3 @@ def main()
 
     glfwDestroyWindow(window);
 */
-    glfwTerminate()
