@@ -141,13 +141,11 @@ def imgui_vulkan_app ( title:string; blk : block )
         defer <| { delete sis; }
         var sds <- create_simple_sds(sis)
         defer <| { delete sds; }
-        //CreateContext(null)
-        //var io & = GetIO()
-        //io.FontGlobalScale = 2.0;   // BBATKIN: note - my monitor is HUGE
-        //StyleColorsDark(null)
-        //ImGui_ImplGlfw_InitForVulkan(sis.window.window, true)
+        CreateContext(null)
+        StyleColorsDark(null)
+        ImGui_ImplGlfw_InitForVulkan(sis.window.window, true)
         invoke(blk)
-        //ImGui_ImplGlfw_Shutdown()
+        ImGui_ImplGlfw_Shutdown()
     glfwTerminate()
 
 [export]
