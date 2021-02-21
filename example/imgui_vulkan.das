@@ -170,21 +170,7 @@ def main()
     assert(heap_leaks == 0)
     assert(string_heap_leaks == 0)
 /*
-    // Create Framebuffers
-
-    // Setup Dear ImGui context
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-
-    // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
-    //ImGui::StyleColorsClassic();
-
     // Setup Platform/Renderer backends
-    ImGui_ImplGlfw_InitForVulkan(window, true);
     ImGui_ImplVulkan_InitInfo init_info = {};
     init_info.Instance = g_Instance;
     init_info.PhysicalDevice = g_PhysicalDevice;
@@ -334,8 +320,4 @@ def main()
     err = vkDeviceWaitIdle(g_Device);
     check_vk_result(err);
     ImGui_ImplVulkan_Shutdown();
-    ImGui_ImplGlfw_Shutdown();
-    ImGui::DestroyContext();
-
-    CleanupVulkanWindow();
 */
