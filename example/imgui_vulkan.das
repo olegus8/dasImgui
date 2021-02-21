@@ -365,7 +365,7 @@ def imgui_vulkan_app ( title:string; blk : block )
         defer <| { delete window; }
         var instance <- create_instance_ex()
         defer <| { delete instance; }
-        var surface <- instance.instance |> create_window_surface(s.window)
+        var surface <- instance.instance |> create_window_surface(window)
         defer <| { delete surface; }
         var phys_dev <- instance.instance |> find_best_physical_device(
             surface, simple_device_score)
