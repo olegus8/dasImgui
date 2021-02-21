@@ -137,9 +137,9 @@ def imgui_vulkan_app ( title:string; blk : block )
     if glfwInit()==0
 		panic("can't init glfw")
     if true
-        var sis <- create_simple_sis(title, 1280, 720)
+        var sis <- vulkan_boost::create_simple_sis(title, 1280, 720)
         defer <| { delete sis; }
-        var sds <- create_simple_sds(sis)
+        var sds <- vulkan_boost::create_simple_sds(sis)
         defer <| { delete sds; }
         CreateContext(null)
         StyleColorsDark(null)
