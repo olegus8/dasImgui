@@ -204,8 +204,9 @@ static void glfw_error_callback(int error, const char* description)
 */
 
 
-// Have to keep this goo here because currently "require" does not resolve 
-// dependencies properly if this is moved to internal/setup.das
+let
+    MAX_FRAMES_IN_FLIGHT = 2
+
 
 struct SwapchainIndependentState
     window       : Window
