@@ -146,12 +146,12 @@ def imgui_vulkan_app ( title:string; blk : block )
         ImGui_ImplGlfw_InitForVulkan(sis.window.window, true)
 
         var init_info <- [[ ImGui_ImplVulkan_InitInfo
-            Instance = sis.instance.instance.instance,
-            PhysicalDevice = sis.phys_dev.physical_device,
-            Device = sis.device.device,
+            Instance = sis |> vk_instance,
+            PhysicalDevice = sis |> vk_phys_dev,
+            Device = sis |> vk_device
             QueueFamily = sis.gfx_qfam,
-            Queue = sis.queue.queue,
-            DescriptorPool = sis.desc_pool.descriptor_pool,
+            Queue = sis |> vk_queue,
+            DescriptorPool = sis |> desc_pool,
             MinImageCount = 2,
             ImageCount = sds.images |> length
         ]]
