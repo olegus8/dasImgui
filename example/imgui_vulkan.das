@@ -359,14 +359,10 @@ static void glfw_error_callback(int error, const char* description)
 [export]
 def main()
     print("hello world\n")
-/*
-int main(int, char**)
-{
-    // Setup GLFW window
-    glfwSetErrorCallback(glfw_error_callback);
-    if (!glfwInit())
-        return 1;
+    if glfwInit()==0
+		panic("can't init glfw")
 
+/*
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     GLFWwindow* window = glfwCreateWindow(1280, 720, "Dear ImGui GLFW+Vulkan example", NULL, NULL);
 
@@ -560,8 +556,5 @@ int main(int, char**)
     CleanupVulkan();
 
     glfwDestroyWindow(window);
-    glfwTerminate();
-
-    return 0;
-}
 */
+    glfwTerminate()
