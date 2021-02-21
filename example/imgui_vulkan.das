@@ -152,13 +152,14 @@ def imgui_vulkan_app ( title:string; blk : block )
             QueueFamily = sis.gfx_qfam,
             Queue = sis.queue.queue,
             DescriptorPool = sis.desc_pool.descriptor_pool,
-        init_info.MinImageCount = g_MinImageCount;
-        init_info.ImageCount = wd->ImageCount;
-        init_info.CheckVkResultFn = check_vk_result;
-        ImGui_ImplVulkan_Init(&init_info, wd->RenderPass);
+            MinImageCount = 2,
+            ImageCount = sds.images |> length,
+        ImGui_ImplVulkan_Init(
+            safe_addr(init_info), sis.render_pass.render_pass);
 
         invoke(blk)
 
+        ImGui_ImplVulkan_Shutdown();
         ImGui_ImplGlfw_Shutdown()
         DestroyContext(null)
     glfwTerminate()
@@ -171,7 +172,7 @@ def main()
     let string_heap_on_start = string_heap_bytes_allocated()
 
 	imgui_vulkan_app("Testing IMGUI Vulkan") <|
-        print("hello world 5\n")
+        print("hello world 6\n")
 
     unsafe
         string_heap_collect()
