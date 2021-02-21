@@ -144,7 +144,21 @@ def imgui_vulkan_app ( title:string; blk : block )
         CreateContext(null)
         StyleColorsDark(null)
         ImGui_ImplGlfw_InitForVulkan(sis.window.window, true)
+
+        var init_info <- [[ ImGui_ImplVulkan_InitInfo
+            Instance = sis.instance.instance,
+            PhysicalDevice = sis.phys_dev.physical_device,
+            Device = sis.device.device,
+            QueueFamily = sis.gfx_qfam,
+            Queue = sis.queue.queue,
+            DescriptorPool = sis.desc_pool.descriptor_pool,
+        init_info.MinImageCount = g_MinImageCount;
+        init_info.ImageCount = wd->ImageCount;
+        init_info.CheckVkResultFn = check_vk_result;
+        ImGui_ImplVulkan_Init(&init_info, wd->RenderPass);
+
         invoke(blk)
+
         ImGui_ImplGlfw_Shutdown()
         DestroyContext(null)
     glfwTerminate()
