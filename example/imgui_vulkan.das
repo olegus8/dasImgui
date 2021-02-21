@@ -255,7 +255,7 @@ def main()
     let heap_on_start = heap_bytes_allocated()
     let string_heap_on_start = string_heap_bytes_allocated()
 
-	imgui_vulkan_app("Testing IMGUI") <|
+	imgui_vulkan_app("Testing IMGUI Vulkan") <|
         print("hello world 3\n")
 
     unsafe
