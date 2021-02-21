@@ -148,7 +148,7 @@ def imgui_vulkan_app ( title:string; blk : block )
         var init_info <- [[ ImGui_ImplVulkan_InitInfo
             Instance = sis |> vk_instance,
             PhysicalDevice = sis |> vk_phys_dev,
-            Device = sis |> vk_device
+            Device = sis |> vk_device,
             QueueFamily = sis.gfx_qfam,
             Queue = sis |> vk_queue,
             DescriptorPool = sis |> vk_desc_pool,
