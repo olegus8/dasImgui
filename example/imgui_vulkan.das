@@ -208,14 +208,16 @@ static void glfw_error_callback(int error, const char* description)
 // dependencies properly if this is moved to internal/setup.das
 
 struct SwapchainIndependentState
-    window    : Window
-    instance  : InstanceEx
-    surface   : SurfaceKHR
-    phys_dev  : PhysicalDevice
-    device    : Device
-    queue     : Queue
-    desc_pool : DescriptorPool
-    gfx_qfam  : uint
+    window       : Window
+    instance     : InstanceEx
+    surface      : SurfaceKHR
+    phys_dev     : PhysicalDevice
+    device       : Device
+    queue        : Queue
+    desc_pool    : DescriptorPool
+    gfx_qfam     : uint
+    surf_fmt     : SurfaceFormatKHR
+    present_mode : VkPresentModeKHR
 
 
 def finalize(var x : SwapchainIndependentState explicit)
@@ -227,19 +229,58 @@ def finalize(var x : SwapchainIndependentState explicit)
     delete x.window
 
 
-def create_sis(title : string; width,height : int
-) : SwapchainIndependentState
-    var s : SwapchainIndependentState
-    s.window <- create_window(width, height, title)
-    s.instance <- create_instance_ex()
-    s.surface <- s.instance.instance |> create_window_surface(s.window)
-    s.phys_dev <- s.instance.instance |> find_best_physical_device(
-        s.surface, @@simple_device_score)
-    s.gfx_qfam = s.phys_dev |> get_graphics_queue_family(s.surface, 1)
-    s.device <- s.phys_dev |> create_simple_device(s.gfx_qfam)
-    s.queue <- s.device |> get_device_queue(s.gfx_qfam)
-    s.desc_pool <- s.device |> create_simple_descriptor_pool
-    return <- s
+struct SwapchainDependentState
+    swapchain           : SwapchainEx
+    img_avail_sems      : array<Semaphore>
+    render_done_sems    : array<Semaphore>
+    frame_fences        : array<Fence>
+    frames_since_start  : int
+    imgs_used_by_frames : array<int>
+    _device             : Device
+
+
+def finalize(var s : SwapchainDependentState explicit)
+    s._device |> device_wait_idle()
+    delete s.imgs_used_by_frames
+    delete s.swapchain
+    delete s.frame_fences
+    delete s.render_done_sems
+    delete s.img_avail_sems
+    memzero(s)
+
+
+def create_sis(title : string; width,height : int) : SwapchainIndependentState
+    var sis : SwapchainIndependentState
+    sis.window <- create_window(width, height, title)
+    sis.instance <- create_instance_ex()
+    sis.surface <- sis.instance.instance |> create_window_surface(sis.window)
+    sis.phys_dev <- sis.instance.instance |> find_best_physical_device(
+        sis.surface, @@simple_device_score)
+    sis.gfx_qfam = sis.phys_dev |> get_graphics_queue_family(sis.surface, 1)
+    sis.device <- sis.phys_dev |> create_simple_device(sis.gfx_qfam)
+    sis.queue <- sis.device |> get_device_queue(sis.gfx_qfam)
+    sis.desc_pool <- sis.device |> create_simple_descriptor_pool
+    sis.present_mode = VkPresentModeKHR VK_PRESENT_MODE_FIFO_KHR
+    sis.surf_fmt <- sis.phys_dev |> find_format_like_srgb_bgra8(sis.surface)
+    return <- sis
+
+
+def create_sds(sis : SwapchainIndependentState) : SwapchainDependentState
+    var sds <- [[ SwapchainDependentState _device <- weak_copy(sis.device) ]]
+    sds.img_avail_sems <- [{for x in range(MAX_FRAMES_IN_FLIGHT);
+        sis.device |> create_semaphore() }]
+    sds.render_done_sems <- [{for x in range(MAX_FRAMES_IN_FLIGHT);
+        sis.device |> create_semaphore() }]
+    sds.frame_fences <- [{for x in range(MAX_FRAMES_IN_FLIGHT);
+        sis.device |> create_fence([[FenceCreateInfo
+            flags=uint(VkFenceCreateFlagBits VK_FENCE_CREATE_SIGNALED_BIT)
+    ]]) }]
+    sds.swapchain <- sis.device |> create_swapchain_ex(sis.phys_dev,
+        sis.surface, sis.window, sis.surf_fmt, sis.present_mode,
+        sis.render_pass)
+    sds.imgs_used_by_frames <- [{for x in sds.swapchain.framebuffers; -1}]
+
+    return <- sds
 
 
 def imgui_vulkan_app ( title:string; blk : block )
