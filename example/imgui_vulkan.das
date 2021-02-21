@@ -244,7 +244,7 @@ def imgui_vulkan_app ( title:string; blk : block )
         defer <| { delete device; }
         var queue <- device |> get_device_queue(gfx_qfam)
         var desc_pool <- device |> create_simple_descriptor_pool
-        defer <| { delete device; }
+        defer <| { delete desc_pool; }
         invoke(blk)
     glfwTerminate()
 
