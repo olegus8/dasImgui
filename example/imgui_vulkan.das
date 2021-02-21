@@ -153,7 +153,8 @@ def imgui_vulkan_app ( title:string; blk : block )
             Queue = sis.queue.queue,
             DescriptorPool = sis.desc_pool.descriptor_pool,
             MinImageCount = 2,
-            ImageCount = sds.images |> length,
+            ImageCount = sds.images |> length
+        ]]
         ImGui_ImplVulkan_Init(
             safe_addr(init_info), sis.render_pass.render_pass);
 
