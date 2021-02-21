@@ -151,16 +151,15 @@ def imgui_vulkan_app ( title:string; blk : block )
             Device = sis |> vk_device
             QueueFamily = sis.gfx_qfam,
             Queue = sis |> vk_queue,
-            DescriptorPool = sis |> desc_pool,
+            DescriptorPool = sis |> vk_desc_pool,
             MinImageCount = 2,
             ImageCount = sds.images |> length
         ]]
-        ImGui_ImplVulkan_Init(
-            safe_addr(init_info), sis.render_pass.render_pass);
+        ImGui_ImplVulkan_Init(safe_addr(init_info), sis |> vk_render_pass)
 
         invoke(blk)
 
-        ImGui_ImplVulkan_Shutdown();
+        ImGui_ImplVulkan_Shutdown()
         ImGui_ImplGlfw_Shutdown()
         DestroyContext(null)
     glfwTerminate()
