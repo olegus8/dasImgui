@@ -289,6 +289,8 @@ def imgui_vulkan_app ( title:string; blk : block )
     if true
         var sis <- create_sis(title, 1280, 720)
         defer <| { delete sis; }
+        var sds <- create_sds(sis)
+        defer <| { delete sds; }
         invoke(blk)
     glfwTerminate()
 
