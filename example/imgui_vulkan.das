@@ -359,7 +359,6 @@ static void glfw_error_callback(int error, const char* description)
 def imgui_vulkan_app ( title:string; blk : block )
     if glfwInit()==0
 		panic("can't init glfw")
-    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API)
     var window <- create_window(1280, 720, title)
     defer <| { delete window; }
     invoke(blk)
