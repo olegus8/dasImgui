@@ -143,7 +143,7 @@ def imgui_vulkan_app ( title:string; blk : block )
         defer <| { delete sds; }
         CreateContext(null)
         StyleColorsDark(null)
-        ImGui_ImplGlfw_InitForVulkan(sis.window.window, true)
+        ImGui_ImplGlfw_InitForVulkan(sis |> glfw_window, true)
 
         var init_info <- [[ ImGui_ImplVulkan_InitInfo
             Instance = sis |> vk_instance,
