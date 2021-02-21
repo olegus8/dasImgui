@@ -76,7 +76,8 @@ addExtern<DAS_BIND_FUN(ImGui::GetForegroundDrawList)>(*this, lib, "GetForeground
 ;
 addExtern<bool (*)(const char *, bool *, ImGuiTreeNodeFlags),ImGui::CollapsingHeader>(*this, lib, "CollapsingHeader",SideEffects::worstDefault, "ImGui::CollapsingHeader")
 	->args({"label","p_visible","flags"})
-		->arg_init(2,make_smart<ExprConstInt>(0))
+		->arg_type(2,makeType<ImGuiTreeNodeFlags_>(lib))
+		->arg_init(2,make_smart<ExprConstEnumeration>(0,makeType<ImGuiTreeNodeFlags_>(lib)))
 ;
 addExtern<DAS_BIND_FUN(ImGui::GetStyleColorName)>(*this, lib, "GetStyleColorName",SideEffects::worstDefault, "ImGui::GetStyleColorName")
 	->args({"idx"})
@@ -164,7 +165,8 @@ addExtern<DAS_BIND_FUN(ImGui::InputInt4)>(*this, lib, "InputInt4",SideEffects::w
 ;
 addExtern<DAS_BIND_FUN(ImGui::InvisibleButton)>(*this, lib, "InvisibleButton",SideEffects::worstDefault, "ImGui::InvisibleButton")
 	->args({"str_id","size","flags"})
-		->arg_init(2,make_smart<ExprConstInt>(0))
+		->arg_type(2,makeType<ImGuiButtonFlags_>(lib))
+		->arg_init(2,make_smart<ExprConstEnumeration>(0,makeType<ImGuiButtonFlags_>(lib)))
 ;
 addExtern<DAS_BIND_FUN(ImGui::CreateContext)>(*this, lib, "CreateContext",SideEffects::worstDefault, "ImGui::CreateContext")
 	->args({"shared_font_atlas"})
@@ -310,6 +312,7 @@ addExtern<DAS_BIND_FUN(ImGui::SetScrollX)>(*this, lib, "SetScrollX",SideEffects:
 ;
 addExtern<bool (*)(const void *, ImGuiTreeNodeFlags, const char *, va_list),ImGui::TreeNodeExV>(*this, lib, "TreeNodeExV",SideEffects::worstDefault, "ImGui::TreeNodeExV")
 	->args({"ptr_id","flags","fmt","args"})
+		->arg_type(1,makeType<ImGuiTreeNodeFlags_>(lib))
 ;
 addExtern<void (*)(const char *, const float *, int, int, const char *, float, float, ImVec2, int),ImGui::PlotHistogram>(*this, lib, "PlotHistogram",SideEffects::worstDefault, "ImGui::PlotHistogram")
 	->args({"label","values","values_count","values_offset","overlay_text","scale_min","scale_max","graph_size","stride"})
@@ -494,7 +497,8 @@ addExtern<DAS_BIND_FUN(ImGui::GetCursorPosX)>(*this, lib, "GetCursorPosX",SideEf
 ;
 addExtern<DAS_BIND_FUN(ImGui::TabItemButton)>(*this, lib, "TabItemButton",SideEffects::worstDefault, "ImGui::TabItemButton")
 	->args({"label","flags"})
-		->arg_init(1,make_smart<ExprConstInt>(0))
+		->arg_type(1,makeType<ImGuiTabItemFlags_>(lib))
+		->arg_init(1,make_smart<ExprConstEnumeration>(0,makeType<ImGuiTabItemFlags_>(lib)))
 ;
 addExtern<DAS_BIND_FUN(ImGui::EndTooltip)>(*this, lib, "EndTooltip",SideEffects::worstDefault, "ImGui::EndTooltip")
 	->args({})
@@ -577,6 +581,7 @@ addExtern<DAS_BIND_FUN(ImGui::GetColumnOffset)>(*this, lib, "GetColumnOffset",Si
 ;
 addExtern<bool (*)(const char *, ImGuiTreeNodeFlags, const char *, va_list),ImGui::TreeNodeExV>(*this, lib, "TreeNodeExV",SideEffects::worstDefault, "ImGui::TreeNodeExV")
 	->args({"str_id","flags","fmt","args"})
+		->arg_type(1,makeType<ImGuiTreeNodeFlags_>(lib))
 ;
 addExtern<bool (*)(const void *, const char *, va_list),ImGui::TreeNodeV>(*this, lib, "TreeNodeV",SideEffects::worstDefault, "ImGui::TreeNodeV")
 	->args({"ptr_id","fmt","args"})
@@ -600,7 +605,8 @@ addExtern<DAS_BIND_FUN(ImGui::GetWindowContentRegionMax), SimNode_ExtFuncCallAnd
 ;
 addExtern<bool (*)(const char *, ImGuiTreeNodeFlags),ImGui::CollapsingHeader>(*this, lib, "CollapsingHeader",SideEffects::worstDefault, "ImGui::CollapsingHeader")
 	->args({"label","flags"})
-		->arg_init(1,make_smart<ExprConstInt>(0))
+		->arg_type(1,makeType<ImGuiTreeNodeFlags_>(lib))
+		->arg_init(1,make_smart<ExprConstEnumeration>(0,makeType<ImGuiTreeNodeFlags_>(lib)))
 ;
 addExtern<DAS_BIND_FUN(ImGui::SetScrollHereX)>(*this, lib, "SetScrollHereX",SideEffects::worstDefault, "ImGui::SetScrollHereX")
 	->args({"center_x_ratio"})
@@ -720,7 +726,8 @@ addExtern<bool (*)(const char *, float *, float, float, float, const char *, flo
 ;
 addExtern<bool (*)(const char *, ImGuiTreeNodeFlags),ImGui::TreeNodeEx>(*this, lib, "TreeNodeEx",SideEffects::worstDefault, "ImGui::TreeNodeEx")
 	->args({"label","flags"})
-		->arg_init(1,make_smart<ExprConstInt>(0))
+		->arg_type(1,makeType<ImGuiTreeNodeFlags_>(lib))
+		->arg_init(1,make_smart<ExprConstEnumeration>(0,makeType<ImGuiTreeNodeFlags_>(lib)))
 ;
 addExtern<DAS_BIND_FUN(ImGui::GetFrameHeight)>(*this, lib, "GetFrameHeight",SideEffects::worstDefault, "ImGui::GetFrameHeight")
 	->args({})
@@ -783,7 +790,8 @@ addExtern<DAS_BIND_FUN(ImGui::GetStyle), SimNode_ExtFuncCallRef>(*this, lib, "Ge
 addExtern<DAS_BIND_FUN(ImGui::BeginTabItem)>(*this, lib, "BeginTabItem",SideEffects::worstDefault, "ImGui::BeginTabItem")
 	->args({"label","p_open","flags"})
 		->arg_init(1,make_smart<ExprConstPtr>())
-		->arg_init(2,make_smart<ExprConstInt>(0))
+		->arg_type(2,makeType<ImGuiTabItemFlags_>(lib))
+		->arg_init(2,make_smart<ExprConstEnumeration>(0,makeType<ImGuiTabItemFlags_>(lib)))
 ;
 addExtern<DAS_BIND_FUN(ImGui::BeginChildFrame)>(*this, lib, "BeginChildFrame",SideEffects::worstDefault, "ImGui::BeginChildFrame")
 	->args({"id","size","flags"})

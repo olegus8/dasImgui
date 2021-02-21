@@ -338,392 +338,387 @@ using _DeleteChars_method_79 = DAS_CALL_MEMBER(ImGuiInputTextCallbackData::Delet
 addExtern<DAS_CALL_METHOD(_DeleteChars_method_79)>(*this, lib, "DeleteChars",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiInputTextCallbackData::DeleteChars))
 	->args({"self","pos","bytes_count"})
 ;
-using _InsertChars_method_80 = DAS_CALL_MEMBER(ImGuiInputTextCallbackData::InsertChars);
-addExtern<DAS_CALL_METHOD(_InsertChars_method_80)>(*this, lib, "InsertChars",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiInputTextCallbackData::InsertChars))
-	->args({"self","pos","text","text_end"})
-		->arg_init(3,make_smart<ExprConstString>(""))
-;
-using _SelectAll_method_81 = DAS_CALL_MEMBER(ImGuiInputTextCallbackData::SelectAll);
-addExtern<DAS_CALL_METHOD(_SelectAll_method_81)>(*this, lib, "SelectAll",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiInputTextCallbackData::SelectAll))
+using _SelectAll_method_80 = DAS_CALL_MEMBER(ImGuiInputTextCallbackData::SelectAll);
+addExtern<DAS_CALL_METHOD(_SelectAll_method_80)>(*this, lib, "SelectAll",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiInputTextCallbackData::SelectAll))
 	->args({"self",})
 ;
-using _ClearSelection_method_82 = DAS_CALL_MEMBER(ImGuiInputTextCallbackData::ClearSelection);
-addExtern<DAS_CALL_METHOD(_ClearSelection_method_82)>(*this, lib, "ClearSelection",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiInputTextCallbackData::ClearSelection))
+using _ClearSelection_method_81 = DAS_CALL_MEMBER(ImGuiInputTextCallbackData::ClearSelection);
+addExtern<DAS_CALL_METHOD(_ClearSelection_method_81)>(*this, lib, "ClearSelection",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiInputTextCallbackData::ClearSelection))
 	->args({"self",})
 ;
-using _HasSelection_method_83 = DAS_CALL_MEMBER(ImGuiInputTextCallbackData::HasSelection);
-addExtern<DAS_CALL_METHOD(_HasSelection_method_83)>(*this, lib, "HasSelection",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiInputTextCallbackData::HasSelection))
+using _HasSelection_method_82 = DAS_CALL_MEMBER(ImGuiInputTextCallbackData::HasSelection);
+addExtern<DAS_CALL_METHOD(_HasSelection_method_82)>(*this, lib, "HasSelection",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiInputTextCallbackData::HasSelection))
 	->args({"self",})
 ;
-using _GetCenter_method_84 = DAS_CALL_MEMBER(ImGuiViewport::GetCenter);
-addExtern<DAS_CALL_METHOD(_GetCenter_method_84), SimNode_ExtFuncCallAndCopyOrMove>(*this, lib, "GetCenter",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiViewport::GetCenter))
+using _GetCenter_method_83 = DAS_CALL_MEMBER(ImGuiViewport::GetCenter);
+addExtern<DAS_CALL_METHOD(_GetCenter_method_83), SimNode_ExtFuncCallAndCopyOrMove>(*this, lib, "GetCenter",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiViewport::GetCenter))
 	->args({"self",})
 ;
-using _GetWorkCenter_method_85 = DAS_CALL_MEMBER(ImGuiViewport::GetWorkCenter);
-addExtern<DAS_CALL_METHOD(_GetWorkCenter_method_85), SimNode_ExtFuncCallAndCopyOrMove>(*this, lib, "GetWorkCenter",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiViewport::GetWorkCenter))
+using _GetWorkCenter_method_84 = DAS_CALL_MEMBER(ImGuiViewport::GetWorkCenter);
+addExtern<DAS_CALL_METHOD(_GetWorkCenter_method_84), SimNode_ExtFuncCallAndCopyOrMove>(*this, lib, "GetWorkCenter",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiViewport::GetWorkCenter))
 	->args({"self",})
 ;
-using _IsPacked_method_86 = DAS_CALL_MEMBER(ImFontAtlasCustomRect::IsPacked);
-addExtern<DAS_CALL_METHOD(_IsPacked_method_86)>(*this, lib, "IsPacked",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImFontAtlasCustomRect::IsPacked))
+using _IsPacked_method_85 = DAS_CALL_MEMBER(ImFontAtlasCustomRect::IsPacked);
+addExtern<DAS_CALL_METHOD(_IsPacked_method_85)>(*this, lib, "IsPacked",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImFontAtlasCustomRect::IsPacked))
 	->args({"self",})
 ;
-using _ScaleAllSizes_method_87 = DAS_CALL_MEMBER(ImGuiStyle::ScaleAllSizes);
-addExtern<DAS_CALL_METHOD(_ScaleAllSizes_method_87)>(*this, lib, "ScaleAllSizes",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiStyle::ScaleAllSizes))
+using _ScaleAllSizes_method_86 = DAS_CALL_MEMBER(ImGuiStyle::ScaleAllSizes);
+addExtern<DAS_CALL_METHOD(_ScaleAllSizes_method_86)>(*this, lib, "ScaleAllSizes",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiStyle::ScaleAllSizes))
 	->args({"self","scale_factor"})
 ;
-using _SetHSV_method_88 = DAS_CALL_MEMBER(ImColor::SetHSV);
-addExtern<DAS_CALL_METHOD(_SetHSV_method_88)>(*this, lib, "SetHSV",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImColor::SetHSV))
+using _SetHSV_method_87 = DAS_CALL_MEMBER(ImColor::SetHSV);
+addExtern<DAS_CALL_METHOD(_SetHSV_method_87)>(*this, lib, "SetHSV",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImColor::SetHSV))
 	->args({"self","h","s","v","a"})
 		->arg_init(4,make_smart<ExprConstFloat>(1))
 ;
-using _Clear_method_89 = DAS_CALL_MEMBER(ImDrawListSplitter::Clear);
-addExtern<DAS_CALL_METHOD(_Clear_method_89)>(*this, lib, "Clear",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawListSplitter::Clear))
+using _Clear_method_88 = DAS_CALL_MEMBER(ImDrawListSplitter::Clear);
+addExtern<DAS_CALL_METHOD(_Clear_method_88)>(*this, lib, "Clear",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawListSplitter::Clear))
 	->args({"self",})
 ;
-using _ClearFreeMemory_method_90 = DAS_CALL_MEMBER(ImDrawListSplitter::ClearFreeMemory);
-addExtern<DAS_CALL_METHOD(_ClearFreeMemory_method_90)>(*this, lib, "ClearFreeMemory",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawListSplitter::ClearFreeMemory))
+using _ClearFreeMemory_method_89 = DAS_CALL_MEMBER(ImDrawListSplitter::ClearFreeMemory);
+addExtern<DAS_CALL_METHOD(_ClearFreeMemory_method_89)>(*this, lib, "ClearFreeMemory",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawListSplitter::ClearFreeMemory))
 	->args({"self",})
 ;
-using _Split_method_91 = DAS_CALL_MEMBER(ImDrawListSplitter::Split);
-addExtern<DAS_CALL_METHOD(_Split_method_91)>(*this, lib, "Split",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawListSplitter::Split))
+using _Split_method_90 = DAS_CALL_MEMBER(ImDrawListSplitter::Split);
+addExtern<DAS_CALL_METHOD(_Split_method_90)>(*this, lib, "Split",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawListSplitter::Split))
 	->args({"self","draw_list","count"})
 ;
-using _Merge_method_92 = DAS_CALL_MEMBER(ImDrawListSplitter::Merge);
-addExtern<DAS_CALL_METHOD(_Merge_method_92)>(*this, lib, "Merge",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawListSplitter::Merge))
+using _Merge_method_91 = DAS_CALL_MEMBER(ImDrawListSplitter::Merge);
+addExtern<DAS_CALL_METHOD(_Merge_method_91)>(*this, lib, "Merge",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawListSplitter::Merge))
 	->args({"self","draw_list"})
 ;
-using _SetCurrentChannel_method_93 = DAS_CALL_MEMBER(ImDrawListSplitter::SetCurrentChannel);
-addExtern<DAS_CALL_METHOD(_SetCurrentChannel_method_93)>(*this, lib, "SetCurrentChannel",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawListSplitter::SetCurrentChannel))
+using _SetCurrentChannel_method_92 = DAS_CALL_MEMBER(ImDrawListSplitter::SetCurrentChannel);
+addExtern<DAS_CALL_METHOD(_SetCurrentChannel_method_92)>(*this, lib, "SetCurrentChannel",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawListSplitter::SetCurrentChannel))
 	->args({"self","draw_list","channel_idx"})
 ;
-using _Clear_method_94 = DAS_CALL_MEMBER(ImGuiStorage::Clear);
-addExtern<DAS_CALL_METHOD(_Clear_method_94)>(*this, lib, "Clear",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiStorage::Clear))
+using _Clear_method_93 = DAS_CALL_MEMBER(ImGuiStorage::Clear);
+addExtern<DAS_CALL_METHOD(_Clear_method_93)>(*this, lib, "Clear",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiStorage::Clear))
 	->args({"self",})
 ;
-using _GetInt_method_95 = DAS_CALL_MEMBER(ImGuiStorage::GetInt);
-addExtern<DAS_CALL_METHOD(_GetInt_method_95)>(*this, lib, "GetInt",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiStorage::GetInt))
+using _GetInt_method_94 = DAS_CALL_MEMBER(ImGuiStorage::GetInt);
+addExtern<DAS_CALL_METHOD(_GetInt_method_94)>(*this, lib, "GetInt",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiStorage::GetInt))
 	->args({"self","key","default_val"})
 		->arg_init(2,make_smart<ExprConstInt>(0))
 ;
-using _SetInt_method_96 = DAS_CALL_MEMBER(ImGuiStorage::SetInt);
-addExtern<DAS_CALL_METHOD(_SetInt_method_96)>(*this, lib, "SetInt",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiStorage::SetInt))
+using _SetInt_method_95 = DAS_CALL_MEMBER(ImGuiStorage::SetInt);
+addExtern<DAS_CALL_METHOD(_SetInt_method_95)>(*this, lib, "SetInt",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiStorage::SetInt))
 	->args({"self","key","val"})
 ;
-using _GetBool_method_97 = DAS_CALL_MEMBER(ImGuiStorage::GetBool);
-addExtern<DAS_CALL_METHOD(_GetBool_method_97)>(*this, lib, "GetBool",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiStorage::GetBool))
+using _GetBool_method_96 = DAS_CALL_MEMBER(ImGuiStorage::GetBool);
+addExtern<DAS_CALL_METHOD(_GetBool_method_96)>(*this, lib, "GetBool",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiStorage::GetBool))
 	->args({"self","key","default_val"})
 		->arg_init(2,make_smart<ExprConstBool>(false))
 ;
-using _SetBool_method_98 = DAS_CALL_MEMBER(ImGuiStorage::SetBool);
-addExtern<DAS_CALL_METHOD(_SetBool_method_98)>(*this, lib, "SetBool",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiStorage::SetBool))
+using _SetBool_method_97 = DAS_CALL_MEMBER(ImGuiStorage::SetBool);
+addExtern<DAS_CALL_METHOD(_SetBool_method_97)>(*this, lib, "SetBool",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiStorage::SetBool))
 	->args({"self","key","val"})
 ;
-using _GetFloat_method_99 = DAS_CALL_MEMBER(ImGuiStorage::GetFloat);
-addExtern<DAS_CALL_METHOD(_GetFloat_method_99)>(*this, lib, "GetFloat",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiStorage::GetFloat))
+using _GetFloat_method_98 = DAS_CALL_MEMBER(ImGuiStorage::GetFloat);
+addExtern<DAS_CALL_METHOD(_GetFloat_method_98)>(*this, lib, "GetFloat",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiStorage::GetFloat))
 	->args({"self","key","default_val"})
 		->arg_init(2,make_smart<ExprConstFloat>(0))
 ;
-using _SetFloat_method_100 = DAS_CALL_MEMBER(ImGuiStorage::SetFloat);
-addExtern<DAS_CALL_METHOD(_SetFloat_method_100)>(*this, lib, "SetFloat",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiStorage::SetFloat))
+using _SetFloat_method_99 = DAS_CALL_MEMBER(ImGuiStorage::SetFloat);
+addExtern<DAS_CALL_METHOD(_SetFloat_method_99)>(*this, lib, "SetFloat",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiStorage::SetFloat))
 	->args({"self","key","val"})
 ;
-using _GetVoidPtr_method_101 = DAS_CALL_MEMBER(ImGuiStorage::GetVoidPtr);
-addExtern<DAS_CALL_METHOD(_GetVoidPtr_method_101)>(*this, lib, "GetVoidPtr",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiStorage::GetVoidPtr))
+using _GetVoidPtr_method_100 = DAS_CALL_MEMBER(ImGuiStorage::GetVoidPtr);
+addExtern<DAS_CALL_METHOD(_GetVoidPtr_method_100)>(*this, lib, "GetVoidPtr",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiStorage::GetVoidPtr))
 	->args({"self","key"})
 ;
-using _SetVoidPtr_method_102 = DAS_CALL_MEMBER(ImGuiStorage::SetVoidPtr);
-addExtern<DAS_CALL_METHOD(_SetVoidPtr_method_102)>(*this, lib, "SetVoidPtr",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiStorage::SetVoidPtr))
+using _SetVoidPtr_method_101 = DAS_CALL_MEMBER(ImGuiStorage::SetVoidPtr);
+addExtern<DAS_CALL_METHOD(_SetVoidPtr_method_101)>(*this, lib, "SetVoidPtr",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiStorage::SetVoidPtr))
 	->args({"self","key","val"})
 ;
-using _GetIntRef_method_103 = DAS_CALL_MEMBER(ImGuiStorage::GetIntRef);
-addExtern<DAS_CALL_METHOD(_GetIntRef_method_103)>(*this, lib, "GetIntRef",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiStorage::GetIntRef))
+using _GetIntRef_method_102 = DAS_CALL_MEMBER(ImGuiStorage::GetIntRef);
+addExtern<DAS_CALL_METHOD(_GetIntRef_method_102)>(*this, lib, "GetIntRef",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiStorage::GetIntRef))
 	->args({"self","key","default_val"})
 		->arg_init(2,make_smart<ExprConstInt>(0))
 ;
-using _GetBoolRef_method_104 = DAS_CALL_MEMBER(ImGuiStorage::GetBoolRef);
-addExtern<DAS_CALL_METHOD(_GetBoolRef_method_104)>(*this, lib, "GetBoolRef",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiStorage::GetBoolRef))
+using _GetBoolRef_method_103 = DAS_CALL_MEMBER(ImGuiStorage::GetBoolRef);
+addExtern<DAS_CALL_METHOD(_GetBoolRef_method_103)>(*this, lib, "GetBoolRef",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiStorage::GetBoolRef))
 	->args({"self","key","default_val"})
 		->arg_init(2,make_smart<ExprConstBool>(false))
 ;
-using _GetFloatRef_method_105 = DAS_CALL_MEMBER(ImGuiStorage::GetFloatRef);
-addExtern<DAS_CALL_METHOD(_GetFloatRef_method_105)>(*this, lib, "GetFloatRef",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiStorage::GetFloatRef))
+using _GetFloatRef_method_104 = DAS_CALL_MEMBER(ImGuiStorage::GetFloatRef);
+addExtern<DAS_CALL_METHOD(_GetFloatRef_method_104)>(*this, lib, "GetFloatRef",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiStorage::GetFloatRef))
 	->args({"self","key","default_val"})
 		->arg_init(2,make_smart<ExprConstFloat>(0))
 ;
-using _GetVoidPtrRef_method_106 = DAS_CALL_MEMBER(ImGuiStorage::GetVoidPtrRef);
-addExtern<DAS_CALL_METHOD(_GetVoidPtrRef_method_106)>(*this, lib, "GetVoidPtrRef",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiStorage::GetVoidPtrRef))
+using _GetVoidPtrRef_method_105 = DAS_CALL_MEMBER(ImGuiStorage::GetVoidPtrRef);
+addExtern<DAS_CALL_METHOD(_GetVoidPtrRef_method_105)>(*this, lib, "GetVoidPtrRef",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiStorage::GetVoidPtrRef))
 	->args({"self","key","default_val"})
 		->arg_init(2,make_smart<ExprConstPtr>())
 ;
-using _SetAllInt_method_107 = DAS_CALL_MEMBER(ImGuiStorage::SetAllInt);
-addExtern<DAS_CALL_METHOD(_SetAllInt_method_107)>(*this, lib, "SetAllInt",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiStorage::SetAllInt))
+using _SetAllInt_method_106 = DAS_CALL_MEMBER(ImGuiStorage::SetAllInt);
+addExtern<DAS_CALL_METHOD(_SetAllInt_method_106)>(*this, lib, "SetAllInt",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiStorage::SetAllInt))
 	->args({"self","val"})
 ;
-using _BuildSortByKey_method_108 = DAS_CALL_MEMBER(ImGuiStorage::BuildSortByKey);
-addExtern<DAS_CALL_METHOD(_BuildSortByKey_method_108)>(*this, lib, "BuildSortByKey",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiStorage::BuildSortByKey))
+using _BuildSortByKey_method_107 = DAS_CALL_MEMBER(ImGuiStorage::BuildSortByKey);
+addExtern<DAS_CALL_METHOD(_BuildSortByKey_method_107)>(*this, lib, "BuildSortByKey",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiStorage::BuildSortByKey))
 	->args({"self",})
 ;
-using _empty_method_109 = DAS_CALL_MEMBER(ImGuiTextFilter::ImGuiTextRange::empty);
-addExtern<DAS_CALL_METHOD(_empty_method_109)>(*this, lib, "empty",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiTextFilter::ImGuiTextRange::empty))
+using _empty_method_108 = DAS_CALL_MEMBER(ImGuiTextFilter::ImGuiTextRange::empty);
+addExtern<DAS_CALL_METHOD(_empty_method_108)>(*this, lib, "empty",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiTextFilter::ImGuiTextRange::empty))
 	->args({"self",})
 ;
-using _split_method_110 = DAS_CALL_MEMBER(ImGuiTextFilter::ImGuiTextRange::split);
-addExtern<DAS_CALL_METHOD(_split_method_110)>(*this, lib, "split",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiTextFilter::ImGuiTextRange::split))
+using _split_method_109 = DAS_CALL_MEMBER(ImGuiTextFilter::ImGuiTextRange::split);
+addExtern<DAS_CALL_METHOD(_split_method_109)>(*this, lib, "split",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImGuiTextFilter::ImGuiTextRange::split))
 	->args({"self","separator","out"})
 ;
-using _PushClipRect_method_111 = DAS_CALL_MEMBER(ImDrawList::PushClipRect);
-addExtern<DAS_CALL_METHOD(_PushClipRect_method_111)>(*this, lib, "PushClipRect",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PushClipRect))
+using _PushClipRect_method_110 = DAS_CALL_MEMBER(ImDrawList::PushClipRect);
+addExtern<DAS_CALL_METHOD(_PushClipRect_method_110)>(*this, lib, "PushClipRect",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PushClipRect))
 	->args({"self","clip_rect_min","clip_rect_max","intersect_with_current_clip_rect"})
 		->arg_init(3,make_smart<ExprConstBool>(false))
 ;
-using _PushClipRectFullScreen_method_112 = DAS_CALL_MEMBER(ImDrawList::PushClipRectFullScreen);
-addExtern<DAS_CALL_METHOD(_PushClipRectFullScreen_method_112)>(*this, lib, "PushClipRectFullScreen",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PushClipRectFullScreen))
+using _PushClipRectFullScreen_method_111 = DAS_CALL_MEMBER(ImDrawList::PushClipRectFullScreen);
+addExtern<DAS_CALL_METHOD(_PushClipRectFullScreen_method_111)>(*this, lib, "PushClipRectFullScreen",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PushClipRectFullScreen))
 	->args({"self",})
 ;
-using _PopClipRect_method_113 = DAS_CALL_MEMBER(ImDrawList::PopClipRect);
-addExtern<DAS_CALL_METHOD(_PopClipRect_method_113)>(*this, lib, "PopClipRect",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PopClipRect))
+using _PopClipRect_method_112 = DAS_CALL_MEMBER(ImDrawList::PopClipRect);
+addExtern<DAS_CALL_METHOD(_PopClipRect_method_112)>(*this, lib, "PopClipRect",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PopClipRect))
 	->args({"self",})
 ;
-using _PushTextureID_method_114 = DAS_CALL_MEMBER(ImDrawList::PushTextureID);
-addExtern<DAS_CALL_METHOD(_PushTextureID_method_114)>(*this, lib, "PushTextureID",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PushTextureID))
+using _PushTextureID_method_113 = DAS_CALL_MEMBER(ImDrawList::PushTextureID);
+addExtern<DAS_CALL_METHOD(_PushTextureID_method_113)>(*this, lib, "PushTextureID",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PushTextureID))
 	->args({"self","texture_id"})
 ;
-using _PopTextureID_method_115 = DAS_CALL_MEMBER(ImDrawList::PopTextureID);
-addExtern<DAS_CALL_METHOD(_PopTextureID_method_115)>(*this, lib, "PopTextureID",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PopTextureID))
+using _PopTextureID_method_114 = DAS_CALL_MEMBER(ImDrawList::PopTextureID);
+addExtern<DAS_CALL_METHOD(_PopTextureID_method_114)>(*this, lib, "PopTextureID",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PopTextureID))
 	->args({"self",})
 ;
-using _GetClipRectMin_method_116 = DAS_CALL_MEMBER(ImDrawList::GetClipRectMin);
-addExtern<DAS_CALL_METHOD(_GetClipRectMin_method_116), SimNode_ExtFuncCallAndCopyOrMove>(*this, lib, "GetClipRectMin",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::GetClipRectMin))
+using _GetClipRectMin_method_115 = DAS_CALL_MEMBER(ImDrawList::GetClipRectMin);
+addExtern<DAS_CALL_METHOD(_GetClipRectMin_method_115), SimNode_ExtFuncCallAndCopyOrMove>(*this, lib, "GetClipRectMin",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::GetClipRectMin))
 	->args({"self",})
 ;
-using _GetClipRectMax_method_117 = DAS_CALL_MEMBER(ImDrawList::GetClipRectMax);
-addExtern<DAS_CALL_METHOD(_GetClipRectMax_method_117), SimNode_ExtFuncCallAndCopyOrMove>(*this, lib, "GetClipRectMax",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::GetClipRectMax))
+using _GetClipRectMax_method_116 = DAS_CALL_MEMBER(ImDrawList::GetClipRectMax);
+addExtern<DAS_CALL_METHOD(_GetClipRectMax_method_116), SimNode_ExtFuncCallAndCopyOrMove>(*this, lib, "GetClipRectMax",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::GetClipRectMax))
 	->args({"self",})
 ;
-using _AddLine_method_118 = DAS_CALL_MEMBER(ImDrawList::AddLine);
-addExtern<DAS_CALL_METHOD(_AddLine_method_118)>(*this, lib, "AddLine",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddLine))
+using _AddLine_method_117 = DAS_CALL_MEMBER(ImDrawList::AddLine);
+addExtern<DAS_CALL_METHOD(_AddLine_method_117)>(*this, lib, "AddLine",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddLine))
 	->args({"self","p1","p2","col","thickness"})
 		->arg_init(4,make_smart<ExprConstFloat>(1))
 ;
-using _AddRect_method_119 = DAS_CALL_MEMBER(ImDrawList::AddRect);
-addExtern<DAS_CALL_METHOD(_AddRect_method_119)>(*this, lib, "AddRect",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddRect))
+using _AddRect_method_118 = DAS_CALL_MEMBER(ImDrawList::AddRect);
+addExtern<DAS_CALL_METHOD(_AddRect_method_118)>(*this, lib, "AddRect",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddRect))
 	->args({"self","p_min","p_max","col","rounding","rounding_corners","thickness"})
 		->arg_init(4,make_smart<ExprConstFloat>(0))
 		->arg_type(5,makeType<ImDrawCornerFlags_>(lib))
 		->arg_init(6,make_smart<ExprConstFloat>(1))
 ;
-using _AddRectFilled_method_120 = DAS_CALL_MEMBER(ImDrawList::AddRectFilled);
-addExtern<DAS_CALL_METHOD(_AddRectFilled_method_120)>(*this, lib, "AddRectFilled",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddRectFilled))
+using _AddRectFilled_method_119 = DAS_CALL_MEMBER(ImDrawList::AddRectFilled);
+addExtern<DAS_CALL_METHOD(_AddRectFilled_method_119)>(*this, lib, "AddRectFilled",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddRectFilled))
 	->args({"self","p_min","p_max","col","rounding","rounding_corners"})
 		->arg_init(4,make_smart<ExprConstFloat>(0))
 		->arg_type(5,makeType<ImDrawCornerFlags_>(lib))
 ;
-using _AddRectFilledMultiColor_method_121 = DAS_CALL_MEMBER(ImDrawList::AddRectFilledMultiColor);
-addExtern<DAS_CALL_METHOD(_AddRectFilledMultiColor_method_121)>(*this, lib, "AddRectFilledMultiColor",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddRectFilledMultiColor))
+using _AddRectFilledMultiColor_method_120 = DAS_CALL_MEMBER(ImDrawList::AddRectFilledMultiColor);
+addExtern<DAS_CALL_METHOD(_AddRectFilledMultiColor_method_120)>(*this, lib, "AddRectFilledMultiColor",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddRectFilledMultiColor))
 	->args({"self","p_min","p_max","col_upr_left","col_upr_right","col_bot_right","col_bot_left"})
 ;
-using _AddQuad_method_122 = DAS_CALL_MEMBER(ImDrawList::AddQuad);
-addExtern<DAS_CALL_METHOD(_AddQuad_method_122)>(*this, lib, "AddQuad",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddQuad))
+using _AddQuad_method_121 = DAS_CALL_MEMBER(ImDrawList::AddQuad);
+addExtern<DAS_CALL_METHOD(_AddQuad_method_121)>(*this, lib, "AddQuad",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddQuad))
 	->args({"self","p1","p2","p3","p4","col","thickness"})
 		->arg_init(6,make_smart<ExprConstFloat>(1))
 ;
-using _AddQuadFilled_method_123 = DAS_CALL_MEMBER(ImDrawList::AddQuadFilled);
-addExtern<DAS_CALL_METHOD(_AddQuadFilled_method_123)>(*this, lib, "AddQuadFilled",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddQuadFilled))
+using _AddQuadFilled_method_122 = DAS_CALL_MEMBER(ImDrawList::AddQuadFilled);
+addExtern<DAS_CALL_METHOD(_AddQuadFilled_method_122)>(*this, lib, "AddQuadFilled",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddQuadFilled))
 	->args({"self","p1","p2","p3","p4","col"})
 ;
-using _AddTriangle_method_124 = DAS_CALL_MEMBER(ImDrawList::AddTriangle);
-addExtern<DAS_CALL_METHOD(_AddTriangle_method_124)>(*this, lib, "AddTriangle",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddTriangle))
+using _AddTriangle_method_123 = DAS_CALL_MEMBER(ImDrawList::AddTriangle);
+addExtern<DAS_CALL_METHOD(_AddTriangle_method_123)>(*this, lib, "AddTriangle",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddTriangle))
 	->args({"self","p1","p2","p3","col","thickness"})
 		->arg_init(5,make_smart<ExprConstFloat>(1))
 ;
-using _AddTriangleFilled_method_125 = DAS_CALL_MEMBER(ImDrawList::AddTriangleFilled);
-addExtern<DAS_CALL_METHOD(_AddTriangleFilled_method_125)>(*this, lib, "AddTriangleFilled",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddTriangleFilled))
+using _AddTriangleFilled_method_124 = DAS_CALL_MEMBER(ImDrawList::AddTriangleFilled);
+addExtern<DAS_CALL_METHOD(_AddTriangleFilled_method_124)>(*this, lib, "AddTriangleFilled",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddTriangleFilled))
 	->args({"self","p1","p2","p3","col"})
 ;
-using _AddCircle_method_126 = DAS_CALL_MEMBER(ImDrawList::AddCircle);
-addExtern<DAS_CALL_METHOD(_AddCircle_method_126)>(*this, lib, "AddCircle",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddCircle))
+using _AddCircle_method_125 = DAS_CALL_MEMBER(ImDrawList::AddCircle);
+addExtern<DAS_CALL_METHOD(_AddCircle_method_125)>(*this, lib, "AddCircle",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddCircle))
 	->args({"self","center","radius","col","num_segments","thickness"})
 		->arg_init(4,make_smart<ExprConstInt>(0))
 		->arg_init(5,make_smart<ExprConstFloat>(1))
 ;
-using _AddCircleFilled_method_127 = DAS_CALL_MEMBER(ImDrawList::AddCircleFilled);
-addExtern<DAS_CALL_METHOD(_AddCircleFilled_method_127)>(*this, lib, "AddCircleFilled",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddCircleFilled))
+using _AddCircleFilled_method_126 = DAS_CALL_MEMBER(ImDrawList::AddCircleFilled);
+addExtern<DAS_CALL_METHOD(_AddCircleFilled_method_126)>(*this, lib, "AddCircleFilled",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddCircleFilled))
 	->args({"self","center","radius","col","num_segments"})
 		->arg_init(4,make_smart<ExprConstInt>(0))
 ;
-using _AddNgon_method_128 = DAS_CALL_MEMBER(ImDrawList::AddNgon);
-addExtern<DAS_CALL_METHOD(_AddNgon_method_128)>(*this, lib, "AddNgon",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddNgon))
+using _AddNgon_method_127 = DAS_CALL_MEMBER(ImDrawList::AddNgon);
+addExtern<DAS_CALL_METHOD(_AddNgon_method_127)>(*this, lib, "AddNgon",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddNgon))
 	->args({"self","center","radius","col","num_segments","thickness"})
 		->arg_init(5,make_smart<ExprConstFloat>(1))
 ;
-using _AddNgonFilled_method_129 = DAS_CALL_MEMBER(ImDrawList::AddNgonFilled);
-addExtern<DAS_CALL_METHOD(_AddNgonFilled_method_129)>(*this, lib, "AddNgonFilled",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddNgonFilled))
+using _AddNgonFilled_method_128 = DAS_CALL_MEMBER(ImDrawList::AddNgonFilled);
+addExtern<DAS_CALL_METHOD(_AddNgonFilled_method_128)>(*this, lib, "AddNgonFilled",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddNgonFilled))
 	->args({"self","center","radius","col","num_segments"})
 ;
-using _AddPolyline_method_130 = DAS_CALL_MEMBER(ImDrawList::AddPolyline);
-addExtern<DAS_CALL_METHOD(_AddPolyline_method_130)>(*this, lib, "AddPolyline",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddPolyline))
+using _AddPolyline_method_129 = DAS_CALL_MEMBER(ImDrawList::AddPolyline);
+addExtern<DAS_CALL_METHOD(_AddPolyline_method_129)>(*this, lib, "AddPolyline",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddPolyline))
 	->args({"self","points","num_points","col","closed","thickness"})
 ;
-using _AddConvexPolyFilled_method_131 = DAS_CALL_MEMBER(ImDrawList::AddConvexPolyFilled);
-addExtern<DAS_CALL_METHOD(_AddConvexPolyFilled_method_131)>(*this, lib, "AddConvexPolyFilled",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddConvexPolyFilled))
+using _AddConvexPolyFilled_method_130 = DAS_CALL_MEMBER(ImDrawList::AddConvexPolyFilled);
+addExtern<DAS_CALL_METHOD(_AddConvexPolyFilled_method_130)>(*this, lib, "AddConvexPolyFilled",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddConvexPolyFilled))
 	->args({"self","points","num_points","col"})
 ;
-using _AddBezierCubic_method_132 = DAS_CALL_MEMBER(ImDrawList::AddBezierCubic);
-addExtern<DAS_CALL_METHOD(_AddBezierCubic_method_132)>(*this, lib, "AddBezierCubic",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddBezierCubic))
+using _AddBezierCubic_method_131 = DAS_CALL_MEMBER(ImDrawList::AddBezierCubic);
+addExtern<DAS_CALL_METHOD(_AddBezierCubic_method_131)>(*this, lib, "AddBezierCubic",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddBezierCubic))
 	->args({"self","p1","p2","p3","p4","col","thickness","num_segments"})
 		->arg_init(7,make_smart<ExprConstInt>(0))
 ;
-using _AddBezierQuadratic_method_133 = DAS_CALL_MEMBER(ImDrawList::AddBezierQuadratic);
-addExtern<DAS_CALL_METHOD(_AddBezierQuadratic_method_133)>(*this, lib, "AddBezierQuadratic",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddBezierQuadratic))
+using _AddBezierQuadratic_method_132 = DAS_CALL_MEMBER(ImDrawList::AddBezierQuadratic);
+addExtern<DAS_CALL_METHOD(_AddBezierQuadratic_method_132)>(*this, lib, "AddBezierQuadratic",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddBezierQuadratic))
 	->args({"self","p1","p2","p3","col","thickness","num_segments"})
 		->arg_init(6,make_smart<ExprConstInt>(0))
 ;
-using _AddImage_method_134 = DAS_CALL_MEMBER(ImDrawList::AddImage);
-addExtern<DAS_CALL_METHOD(_AddImage_method_134)>(*this, lib, "AddImage",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddImage))
+using _AddImage_method_133 = DAS_CALL_MEMBER(ImDrawList::AddImage);
+addExtern<DAS_CALL_METHOD(_AddImage_method_133)>(*this, lib, "AddImage",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddImage))
 	->args({"self","user_texture_id","p_min","p_max","uv_min","uv_max","col"})
 ;
-using _AddImageQuad_method_135 = DAS_CALL_MEMBER(ImDrawList::AddImageQuad);
-addExtern<DAS_CALL_METHOD(_AddImageQuad_method_135)>(*this, lib, "AddImageQuad",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddImageQuad))
+using _AddImageQuad_method_134 = DAS_CALL_MEMBER(ImDrawList::AddImageQuad);
+addExtern<DAS_CALL_METHOD(_AddImageQuad_method_134)>(*this, lib, "AddImageQuad",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddImageQuad))
 	->args({"self","user_texture_id","p1","p2","p3","p4","uv1","uv2","uv3","uv4","col"})
 ;
-using _AddImageRounded_method_136 = DAS_CALL_MEMBER(ImDrawList::AddImageRounded);
-addExtern<DAS_CALL_METHOD(_AddImageRounded_method_136)>(*this, lib, "AddImageRounded",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddImageRounded))
+using _AddImageRounded_method_135 = DAS_CALL_MEMBER(ImDrawList::AddImageRounded);
+addExtern<DAS_CALL_METHOD(_AddImageRounded_method_135)>(*this, lib, "AddImageRounded",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddImageRounded))
 	->args({"self","user_texture_id","p_min","p_max","uv_min","uv_max","col","rounding","rounding_corners"})
 		->arg_type(8,makeType<ImDrawCornerFlags_>(lib))
 ;
-using _PathClear_method_137 = DAS_CALL_MEMBER(ImDrawList::PathClear);
-addExtern<DAS_CALL_METHOD(_PathClear_method_137)>(*this, lib, "PathClear",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PathClear))
+using _PathClear_method_136 = DAS_CALL_MEMBER(ImDrawList::PathClear);
+addExtern<DAS_CALL_METHOD(_PathClear_method_136)>(*this, lib, "PathClear",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PathClear))
 	->args({"self",})
 ;
-using _PathLineTo_method_138 = DAS_CALL_MEMBER(ImDrawList::PathLineTo);
-addExtern<DAS_CALL_METHOD(_PathLineTo_method_138)>(*this, lib, "PathLineTo",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PathLineTo))
+using _PathLineTo_method_137 = DAS_CALL_MEMBER(ImDrawList::PathLineTo);
+addExtern<DAS_CALL_METHOD(_PathLineTo_method_137)>(*this, lib, "PathLineTo",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PathLineTo))
 	->args({"self","pos"})
 ;
-using _PathLineToMergeDuplicate_method_139 = DAS_CALL_MEMBER(ImDrawList::PathLineToMergeDuplicate);
-addExtern<DAS_CALL_METHOD(_PathLineToMergeDuplicate_method_139)>(*this, lib, "PathLineToMergeDuplicate",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PathLineToMergeDuplicate))
+using _PathLineToMergeDuplicate_method_138 = DAS_CALL_MEMBER(ImDrawList::PathLineToMergeDuplicate);
+addExtern<DAS_CALL_METHOD(_PathLineToMergeDuplicate_method_138)>(*this, lib, "PathLineToMergeDuplicate",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PathLineToMergeDuplicate))
 	->args({"self","pos"})
 ;
-using _PathFillConvex_method_140 = DAS_CALL_MEMBER(ImDrawList::PathFillConvex);
-addExtern<DAS_CALL_METHOD(_PathFillConvex_method_140)>(*this, lib, "PathFillConvex",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PathFillConvex))
+using _PathFillConvex_method_139 = DAS_CALL_MEMBER(ImDrawList::PathFillConvex);
+addExtern<DAS_CALL_METHOD(_PathFillConvex_method_139)>(*this, lib, "PathFillConvex",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PathFillConvex))
 	->args({"self","col"})
 ;
-using _PathStroke_method_141 = DAS_CALL_MEMBER(ImDrawList::PathStroke);
-addExtern<DAS_CALL_METHOD(_PathStroke_method_141)>(*this, lib, "PathStroke",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PathStroke))
+using _PathStroke_method_140 = DAS_CALL_MEMBER(ImDrawList::PathStroke);
+addExtern<DAS_CALL_METHOD(_PathStroke_method_140)>(*this, lib, "PathStroke",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PathStroke))
 	->args({"self","col","closed","thickness"})
 		->arg_init(3,make_smart<ExprConstFloat>(1))
 ;
-using _PathArcTo_method_142 = DAS_CALL_MEMBER(ImDrawList::PathArcTo);
-addExtern<DAS_CALL_METHOD(_PathArcTo_method_142)>(*this, lib, "PathArcTo",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PathArcTo))
+using _PathArcTo_method_141 = DAS_CALL_MEMBER(ImDrawList::PathArcTo);
+addExtern<DAS_CALL_METHOD(_PathArcTo_method_141)>(*this, lib, "PathArcTo",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PathArcTo))
 	->args({"self","center","radius","a_min","a_max","num_segments"})
 		->arg_init(5,make_smart<ExprConstInt>(10))
 ;
-using _PathArcToFast_method_143 = DAS_CALL_MEMBER(ImDrawList::PathArcToFast);
-addExtern<DAS_CALL_METHOD(_PathArcToFast_method_143)>(*this, lib, "PathArcToFast",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PathArcToFast))
+using _PathArcToFast_method_142 = DAS_CALL_MEMBER(ImDrawList::PathArcToFast);
+addExtern<DAS_CALL_METHOD(_PathArcToFast_method_142)>(*this, lib, "PathArcToFast",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PathArcToFast))
 	->args({"self","center","radius","a_min_of_12","a_max_of_12"})
 ;
-using _PathBezierCubicCurveTo_method_144 = DAS_CALL_MEMBER(ImDrawList::PathBezierCubicCurveTo);
-addExtern<DAS_CALL_METHOD(_PathBezierCubicCurveTo_method_144)>(*this, lib, "PathBezierCubicCurveTo",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PathBezierCubicCurveTo))
+using _PathBezierCubicCurveTo_method_143 = DAS_CALL_MEMBER(ImDrawList::PathBezierCubicCurveTo);
+addExtern<DAS_CALL_METHOD(_PathBezierCubicCurveTo_method_143)>(*this, lib, "PathBezierCubicCurveTo",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PathBezierCubicCurveTo))
 	->args({"self","p2","p3","p4","num_segments"})
 		->arg_init(4,make_smart<ExprConstInt>(0))
 ;
-using _PathBezierQuadraticCurveTo_method_145 = DAS_CALL_MEMBER(ImDrawList::PathBezierQuadraticCurveTo);
-addExtern<DAS_CALL_METHOD(_PathBezierQuadraticCurveTo_method_145)>(*this, lib, "PathBezierQuadraticCurveTo",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PathBezierQuadraticCurveTo))
+using _PathBezierQuadraticCurveTo_method_144 = DAS_CALL_MEMBER(ImDrawList::PathBezierQuadraticCurveTo);
+addExtern<DAS_CALL_METHOD(_PathBezierQuadraticCurveTo_method_144)>(*this, lib, "PathBezierQuadraticCurveTo",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PathBezierQuadraticCurveTo))
 	->args({"self","p2","p3","num_segments"})
 		->arg_init(3,make_smart<ExprConstInt>(0))
 ;
-using _PathRect_method_146 = DAS_CALL_MEMBER(ImDrawList::PathRect);
-addExtern<DAS_CALL_METHOD(_PathRect_method_146)>(*this, lib, "PathRect",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PathRect))
+using _PathRect_method_145 = DAS_CALL_MEMBER(ImDrawList::PathRect);
+addExtern<DAS_CALL_METHOD(_PathRect_method_145)>(*this, lib, "PathRect",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PathRect))
 	->args({"self","rect_min","rect_max","rounding","rounding_corners"})
 		->arg_init(3,make_smart<ExprConstFloat>(0))
 		->arg_type(4,makeType<ImDrawCornerFlags_>(lib))
 ;
-using _AddCallback_method_147 = DAS_CALL_MEMBER(ImDrawList::AddCallback);
-addExtern<DAS_CALL_METHOD(_AddCallback_method_147)>(*this, lib, "AddCallback",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddCallback))
+using _AddCallback_method_146 = DAS_CALL_MEMBER(ImDrawList::AddCallback);
+addExtern<DAS_CALL_METHOD(_AddCallback_method_146)>(*this, lib, "AddCallback",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddCallback))
 	->args({"self","callback","callback_data"})
 ;
-using _AddDrawCmd_method_148 = DAS_CALL_MEMBER(ImDrawList::AddDrawCmd);
-addExtern<DAS_CALL_METHOD(_AddDrawCmd_method_148)>(*this, lib, "AddDrawCmd",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddDrawCmd))
+using _AddDrawCmd_method_147 = DAS_CALL_MEMBER(ImDrawList::AddDrawCmd);
+addExtern<DAS_CALL_METHOD(_AddDrawCmd_method_147)>(*this, lib, "AddDrawCmd",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddDrawCmd))
 	->args({"self",})
 ;
-using _CloneOutput_method_149 = DAS_CALL_MEMBER(ImDrawList::CloneOutput);
-addExtern<DAS_CALL_METHOD(_CloneOutput_method_149)>(*this, lib, "CloneOutput",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::CloneOutput))
+using _CloneOutput_method_148 = DAS_CALL_MEMBER(ImDrawList::CloneOutput);
+addExtern<DAS_CALL_METHOD(_CloneOutput_method_148)>(*this, lib, "CloneOutput",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::CloneOutput))
 	->args({"self",})
 ;
-using _ChannelsSplit_method_150 = DAS_CALL_MEMBER(ImDrawList::ChannelsSplit);
-addExtern<DAS_CALL_METHOD(_ChannelsSplit_method_150)>(*this, lib, "ChannelsSplit",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::ChannelsSplit))
+using _ChannelsSplit_method_149 = DAS_CALL_MEMBER(ImDrawList::ChannelsSplit);
+addExtern<DAS_CALL_METHOD(_ChannelsSplit_method_149)>(*this, lib, "ChannelsSplit",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::ChannelsSplit))
 	->args({"self","count"})
 ;
-using _ChannelsMerge_method_151 = DAS_CALL_MEMBER(ImDrawList::ChannelsMerge);
-addExtern<DAS_CALL_METHOD(_ChannelsMerge_method_151)>(*this, lib, "ChannelsMerge",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::ChannelsMerge))
+using _ChannelsMerge_method_150 = DAS_CALL_MEMBER(ImDrawList::ChannelsMerge);
+addExtern<DAS_CALL_METHOD(_ChannelsMerge_method_150)>(*this, lib, "ChannelsMerge",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::ChannelsMerge))
 	->args({"self",})
 ;
-using _ChannelsSetCurrent_method_152 = DAS_CALL_MEMBER(ImDrawList::ChannelsSetCurrent);
-addExtern<DAS_CALL_METHOD(_ChannelsSetCurrent_method_152)>(*this, lib, "ChannelsSetCurrent",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::ChannelsSetCurrent))
+using _ChannelsSetCurrent_method_151 = DAS_CALL_MEMBER(ImDrawList::ChannelsSetCurrent);
+addExtern<DAS_CALL_METHOD(_ChannelsSetCurrent_method_151)>(*this, lib, "ChannelsSetCurrent",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::ChannelsSetCurrent))
 	->args({"self","n"})
 ;
-using _PrimReserve_method_153 = DAS_CALL_MEMBER(ImDrawList::PrimReserve);
-addExtern<DAS_CALL_METHOD(_PrimReserve_method_153)>(*this, lib, "PrimReserve",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PrimReserve))
+using _PrimReserve_method_152 = DAS_CALL_MEMBER(ImDrawList::PrimReserve);
+addExtern<DAS_CALL_METHOD(_PrimReserve_method_152)>(*this, lib, "PrimReserve",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PrimReserve))
 	->args({"self","idx_count","vtx_count"})
 ;
-using _PrimUnreserve_method_154 = DAS_CALL_MEMBER(ImDrawList::PrimUnreserve);
-addExtern<DAS_CALL_METHOD(_PrimUnreserve_method_154)>(*this, lib, "PrimUnreserve",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PrimUnreserve))
+using _PrimUnreserve_method_153 = DAS_CALL_MEMBER(ImDrawList::PrimUnreserve);
+addExtern<DAS_CALL_METHOD(_PrimUnreserve_method_153)>(*this, lib, "PrimUnreserve",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PrimUnreserve))
 	->args({"self","idx_count","vtx_count"})
 ;
-using _PrimRect_method_155 = DAS_CALL_MEMBER(ImDrawList::PrimRect);
-addExtern<DAS_CALL_METHOD(_PrimRect_method_155)>(*this, lib, "PrimRect",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PrimRect))
+using _PrimRect_method_154 = DAS_CALL_MEMBER(ImDrawList::PrimRect);
+addExtern<DAS_CALL_METHOD(_PrimRect_method_154)>(*this, lib, "PrimRect",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PrimRect))
 	->args({"self","a","b","col"})
 ;
-using _PrimRectUV_method_156 = DAS_CALL_MEMBER(ImDrawList::PrimRectUV);
-addExtern<DAS_CALL_METHOD(_PrimRectUV_method_156)>(*this, lib, "PrimRectUV",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PrimRectUV))
+using _PrimRectUV_method_155 = DAS_CALL_MEMBER(ImDrawList::PrimRectUV);
+addExtern<DAS_CALL_METHOD(_PrimRectUV_method_155)>(*this, lib, "PrimRectUV",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PrimRectUV))
 	->args({"self","a","b","uv_a","uv_b","col"})
 ;
-using _PrimQuadUV_method_157 = DAS_CALL_MEMBER(ImDrawList::PrimQuadUV);
-addExtern<DAS_CALL_METHOD(_PrimQuadUV_method_157)>(*this, lib, "PrimQuadUV",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PrimQuadUV))
+using _PrimQuadUV_method_156 = DAS_CALL_MEMBER(ImDrawList::PrimQuadUV);
+addExtern<DAS_CALL_METHOD(_PrimQuadUV_method_156)>(*this, lib, "PrimQuadUV",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PrimQuadUV))
 	->args({"self","a","b","c","d","uv_a","uv_b","uv_c","uv_d","col"})
 ;
-using _PrimWriteVtx_method_158 = DAS_CALL_MEMBER(ImDrawList::PrimWriteVtx);
-addExtern<DAS_CALL_METHOD(_PrimWriteVtx_method_158)>(*this, lib, "PrimWriteVtx",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PrimWriteVtx))
+using _PrimWriteVtx_method_157 = DAS_CALL_MEMBER(ImDrawList::PrimWriteVtx);
+addExtern<DAS_CALL_METHOD(_PrimWriteVtx_method_157)>(*this, lib, "PrimWriteVtx",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PrimWriteVtx))
 	->args({"self","pos","uv","col"})
 ;
-using _PrimWriteIdx_method_159 = DAS_CALL_MEMBER(ImDrawList::PrimWriteIdx);
-addExtern<DAS_CALL_METHOD(_PrimWriteIdx_method_159)>(*this, lib, "PrimWriteIdx",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PrimWriteIdx))
+using _PrimWriteIdx_method_158 = DAS_CALL_MEMBER(ImDrawList::PrimWriteIdx);
+addExtern<DAS_CALL_METHOD(_PrimWriteIdx_method_158)>(*this, lib, "PrimWriteIdx",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PrimWriteIdx))
 	->args({"self","idx"})
 ;
-using _PrimVtx_method_160 = DAS_CALL_MEMBER(ImDrawList::PrimVtx);
-addExtern<DAS_CALL_METHOD(_PrimVtx_method_160)>(*this, lib, "PrimVtx",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PrimVtx))
+using _PrimVtx_method_159 = DAS_CALL_MEMBER(ImDrawList::PrimVtx);
+addExtern<DAS_CALL_METHOD(_PrimVtx_method_159)>(*this, lib, "PrimVtx",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PrimVtx))
 	->args({"self","pos","uv","col"})
 ;
-using _AddBezierCurve_method_161 = DAS_CALL_MEMBER(ImDrawList::AddBezierCurve);
-addExtern<DAS_CALL_METHOD(_AddBezierCurve_method_161)>(*this, lib, "AddBezierCurve",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddBezierCurve))
+using _AddBezierCurve_method_160 = DAS_CALL_MEMBER(ImDrawList::AddBezierCurve);
+addExtern<DAS_CALL_METHOD(_AddBezierCurve_method_160)>(*this, lib, "AddBezierCurve",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::AddBezierCurve))
 	->args({"self","p1","p2","p3","p4","col","thickness","num_segments"})
 		->arg_init(7,make_smart<ExprConstInt>(0))
 ;
-using _PathBezierCurveTo_method_162 = DAS_CALL_MEMBER(ImDrawList::PathBezierCurveTo);
-addExtern<DAS_CALL_METHOD(_PathBezierCurveTo_method_162)>(*this, lib, "PathBezierCurveTo",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PathBezierCurveTo))
+using _PathBezierCurveTo_method_161 = DAS_CALL_MEMBER(ImDrawList::PathBezierCurveTo);
+addExtern<DAS_CALL_METHOD(_PathBezierCurveTo_method_161)>(*this, lib, "PathBezierCurveTo",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::PathBezierCurveTo))
 	->args({"self","p2","p3","p4","num_segments"})
 		->arg_init(4,make_smart<ExprConstInt>(0))
 ;
-using __ResetForNewFrame_method_163 = DAS_CALL_MEMBER(ImDrawList::_ResetForNewFrame);
-addExtern<DAS_CALL_METHOD(__ResetForNewFrame_method_163)>(*this, lib, "_ResetForNewFrame",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::_ResetForNewFrame))
+using __ResetForNewFrame_method_162 = DAS_CALL_MEMBER(ImDrawList::_ResetForNewFrame);
+addExtern<DAS_CALL_METHOD(__ResetForNewFrame_method_162)>(*this, lib, "_ResetForNewFrame",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::_ResetForNewFrame))
 	->args({"self",})
 ;
-using __ClearFreeMemory_method_164 = DAS_CALL_MEMBER(ImDrawList::_ClearFreeMemory);
-addExtern<DAS_CALL_METHOD(__ClearFreeMemory_method_164)>(*this, lib, "_ClearFreeMemory",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::_ClearFreeMemory))
+using __ClearFreeMemory_method_163 = DAS_CALL_MEMBER(ImDrawList::_ClearFreeMemory);
+addExtern<DAS_CALL_METHOD(__ClearFreeMemory_method_163)>(*this, lib, "_ClearFreeMemory",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::_ClearFreeMemory))
 	->args({"self",})
 ;
-using __PopUnusedDrawCmd_method_165 = DAS_CALL_MEMBER(ImDrawList::_PopUnusedDrawCmd);
-addExtern<DAS_CALL_METHOD(__PopUnusedDrawCmd_method_165)>(*this, lib, "_PopUnusedDrawCmd",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::_PopUnusedDrawCmd))
+using __PopUnusedDrawCmd_method_164 = DAS_CALL_MEMBER(ImDrawList::_PopUnusedDrawCmd);
+addExtern<DAS_CALL_METHOD(__PopUnusedDrawCmd_method_164)>(*this, lib, "_PopUnusedDrawCmd",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::_PopUnusedDrawCmd))
 	->args({"self",})
 ;
-using __OnChangedClipRect_method_166 = DAS_CALL_MEMBER(ImDrawList::_OnChangedClipRect);
-addExtern<DAS_CALL_METHOD(__OnChangedClipRect_method_166)>(*this, lib, "_OnChangedClipRect",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::_OnChangedClipRect))
+using __OnChangedClipRect_method_165 = DAS_CALL_MEMBER(ImDrawList::_OnChangedClipRect);
+addExtern<DAS_CALL_METHOD(__OnChangedClipRect_method_165)>(*this, lib, "_OnChangedClipRect",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::_OnChangedClipRect))
 	->args({"self",})
 ;
-using __OnChangedTextureID_method_167 = DAS_CALL_MEMBER(ImDrawList::_OnChangedTextureID);
-addExtern<DAS_CALL_METHOD(__OnChangedTextureID_method_167)>(*this, lib, "_OnChangedTextureID",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::_OnChangedTextureID))
+using __OnChangedTextureID_method_166 = DAS_CALL_MEMBER(ImDrawList::_OnChangedTextureID);
+addExtern<DAS_CALL_METHOD(__OnChangedTextureID_method_166)>(*this, lib, "_OnChangedTextureID",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::_OnChangedTextureID))
 	->args({"self",})
 ;
-using __OnChangedVtxOffset_method_168 = DAS_CALL_MEMBER(ImDrawList::_OnChangedVtxOffset);
-addExtern<DAS_CALL_METHOD(__OnChangedVtxOffset_method_168)>(*this, lib, "_OnChangedVtxOffset",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::_OnChangedVtxOffset))
+using __OnChangedVtxOffset_method_167 = DAS_CALL_MEMBER(ImDrawList::_OnChangedVtxOffset);
+addExtern<DAS_CALL_METHOD(__OnChangedVtxOffset_method_167)>(*this, lib, "_OnChangedVtxOffset",SideEffects::worstDefault, DAS_CALL_MEMBER_CPP(ImDrawList::_OnChangedVtxOffset))
 	->args({"self",})
 ;

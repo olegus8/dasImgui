@@ -7,8 +7,10 @@ require daslib/vulkan_boost
 require daslib/defer
 require math
 require strings
+
 require imgui
 require imgui_vulkan
+require imgui_app
 
 let
     MAX_FRAMES_IN_FLIGHT = 2
@@ -601,7 +603,7 @@ def get_suitability_score(device : PhysicalDevice; surface : SurfaceKHR)
     var score = 1
 
     var has_graphics = false
-    device |> find_graphics_queue_family(surface) <| $(qfam)
+    device |> find_graphics_queue_family(surface, 1) <| $(qfam)
         has_graphics = true
     if ! has_graphics
         print("No graphics. No go.\n")
@@ -704,15 +706,15 @@ def create_swapchain_independent_state(
     s.phys_dev <- s.instance.instance |> find_best_physical_device(s.surface)
     s.present_mode = VkPresentModeKHR VK_PRESENT_MODE_FIFO_KHR
     s.surf_fmt <- s.phys_dev |> find_format_like_srgb_bgra8(s.surface)
-    s.graphics_family <- s.phys_dev |> get_graphics_queue_family(s.surface)
+    s.graphics_family <- s.phys_dev |> get_graphics_queue_family(s.surface, 1)
     s.device <- s.phys_dev |> create_example_device(s.graphics_family)
     s.queue <- s.device |> get_device_queue(s.graphics_family)
     s.cmd_pool <- create_command_pool([device=s.device,
         queue_family=s.graphics_family])
     s.vert_shmod <- s.device |> create_shader_module_from_file(
-        "{get_das_root()}/modules/dasImGui/example/vert.spv")
+        "{get_das_root()}/modules/dasVulkan/example/vert.spv")
     s.frag_shmod <- s.device |> create_shader_module_from_file(
-        "{get_das_root()}/modules/dasImGui/example/frag.spv")
+        "{get_das_root()}/modules/dasVulkan/example/frag.spv")
     s.render_pass <- s.device |> create_example_render_pass(s.surf_fmt)
     s.desc_set_layout <- s.device |> create_example_descriptor_set_layout()
     s.pipeline_layout <- s.device |> create_example_pipeline_layout(
@@ -968,12 +970,48 @@ def draw_frame(
     return img_acquired && presented
 
 
-[export]
-def key_callback(
-    window : GLFWwindow_DasHandle;
-    key, scancode, action, mods : int
-)
-    print("key={key} scancode={scancode} action={action} mods={mods}\n")
+def run_example
+    var key_callback <- @ <| (
+      window : GLFWwindow const ?; key, scancode, action, mods : int
+    )
+        print("key={key} scancode={scancode} action={action} mods={mods}\n")
+    defer <| { delete key_callback; }
+
+    var sis <- create_swapchain_independent_state(800, 600, "dasVulkanExample")
+    defer <| { delete sis; }
+
+    sis.window.window |> glfwSetKeyCallback <| key_callback
+
+    var props <- sis.phys_dev |> get_physical_device_properties()
+    defer <| { delete props ; }
+    print("Using {props.device_name}\n")
+
+    var keep_running = true
+    while keep_running // swapchain re-creation loop
+        // waiting while window is minimized
+        while uint2(0,0) == sis.window |> get_framebuffer_size()
+            glfwWaitEvents()
+        sis.device |> device_wait_idle()
+
+        if true
+            var sds <- create_swapchain_dependent_state(sis)
+            defer <| { delete sds; }
+
+            print("{sds.swapchain.framebuffers |> length()} " +
+                "images in swap chain\n")
+
+            // BBATKIN: initializing imgui vulkan here
+            init_vulkan_glfw(sis, sds)
+
+            while keep_running
+                keep_running = sis.window.window |> glfwWindowShouldClose()==0
+                glfwPollEvents()
+                if ! draw_frame(sis, sds)
+                    break
+
+            sis.device |> device_wait_idle()
+
+// BBATKIN: now for the imgui_vulkan
 
 var g_MainWindowData = new [[ImGui_ImplVulkanH_Window() ]]
 var g_MinImageCount  : uint = 2u
@@ -1039,12 +1077,49 @@ def SetupVulkanWindow(sis:SwapchainIndependentState; sds:SwapchainDependentState
         g_MinImageCount
     )
 
+/*
+static void SetupVulkanWindow(ImGui_ImplVulkanH_Window* wd, VkSurfaceKHR surface, int width, int height)
+{
+    wd->Surface = surface;
 
-def init_glfw( sis:SwapchainIndependentState; sds:SwapchainDependentState )
-    debug(sis,"SIS=")
+    // Check for WSI support
+    VkBool32 res;
+    vkGetPhysicalDeviceSurfaceSupportKHR(g_PhysicalDevice, g_QueueFamily, wd->Surface, &res);
+    if (res != VK_TRUE)
+    {
+        fprintf(stderr, "Error no WSI support on physical device 0\n");
+        exit(-1);
+    }
+
+    // Select Surface Format
+    const VkFormat requestSurfaceImageFormat[] = { VK_FORMAT_B8G8R8A8_UNORM, VK_FORMAT_R8G8B8A8_UNORM, VK_FORMAT_B8G8R8_UNORM, VK_FORMAT_R8G8B8_UNORM };
+    const VkColorSpaceKHR requestSurfaceColorSpace = VK_COLORSPACE_SRGB_NONLINEAR_KHR;
+    wd->SurfaceFormat = ImGui_ImplVulkanH_SelectSurfaceFormat(g_PhysicalDevice, wd->Surface, requestSurfaceImageFormat, (size_t)IM_ARRAYSIZE(requestSurfaceImageFormat), requestSurfaceColorSpace);
+
+    // Select Present Mode
+#ifdef IMGUI_UNLIMITED_FRAME_RATE
+    VkPresentModeKHR present_modes[] = { VK_PRESENT_MODE_MAILBOX_KHR, VK_PRESENT_MODE_IMMEDIATE_KHR, VK_PRESENT_MODE_FIFO_KHR };
+#else
+    VkPresentModeKHR present_modes[] = { VK_PRESENT_MODE_FIFO_KHR };
+#endif
+    wd->PresentMode = ImGui_ImplVulkanH_SelectPresentMode(g_PhysicalDevice, wd->Surface, &present_modes[0], IM_ARRAYSIZE(present_modes));
+    //printf("[vulkan] Selected PresentMode = %d\n", wd->PresentMode);
+
+    // Create SwapChain, RenderPass, Framebuffer, etc.
+    IM_ASSERT(g_MinImageCount >= 2);
+    ImGui_ImplVulkanH_CreateOrResizeWindow(g_Instance, g_PhysicalDevice, g_Device, wd, g_QueueFamily, g_Allocator, width, height, g_MinImageCount);
+}
+static void CleanupVulkanWindow()
+{
+    ImGui_ImplVulkanH_DestroyWindow(g_Instance, g_Device, &g_MainWindowData, g_Allocator);
+}
+
+*/
+
+def init_vulkan_glfw( sis:SwapchainIndependentState; sds:SwapchainDependentState )
     // Create Framebuffers
     var w, h : int
-    vulkan::glfwGetFramebufferSize(sis.window.window, safe_addr(w), safe_addr(h))
+    glfwGetFramebufferSize(sis.window.window, safe_addr(w), safe_addr(h))
     SetupVulkanWindow(sis, sds, w, h)
     // Create context
     imgui::CreateContext(null)
@@ -1075,53 +1150,22 @@ def init_glfw( sis:SwapchainIndependentState; sds:SwapchainDependentState )
     */
     ImGui_ImplVulkan_Init(safe_addr(init_info), g_MainWindowData.RenderPass)
 
-def run_example
-    var sis <- create_swapchain_independent_state(1280, 720, "dasImGuiExample")
-    defer() <| { delete sis; }
-
-    sis.window.window |> vulkan::glfwSetKeyCallback(@@key_callback)
-    var props <- sis.phys_dev |> get_physical_device_properties()
-    defer() <| { delete props ; }
-    print("Using {props.device_name}\n")
-
-    var keep_running = true
-    while keep_running // swapchain re-creation loop
-        // waiting while window is minimized
-        while uint2(0,0) == sis.window |> get_framebuffer_size()
-            vulkan::glfwWaitEvents()
-        sis.device |> device_wait_idle()
-
-        if true
-            var sds <- create_swapchain_dependent_state(sis)
-            defer() <| { delete sds; }
-
-            print("{sds.swapchain.framebuffers |> length()} " +
-                "images in swap chain\n")
-
-            init_glfw(sis, sds)
-
-            while keep_running
-                keep_running = sis.window.window |> vulkan::glfwWindowShouldClose()==0
-                vulkan::glfwPollEvents()
-                if ! draw_frame(sis, sds)
-                    break
-            sis.device |> device_wait_idle()
-
-
 [export]
 def main
+    unsafe
+        string_heap_collect()
     let heap_on_start = heap_bytes_allocated()
     let string_heap_on_start = string_heap_bytes_allocated()
+
     print("\nStarted\n")
-    vulkan::glfwInit()
-    vulkan::glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API)
-    vulkan::glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE)
+    glfwInit()
+    glfwWindowHint(int(GLFW_CLIENT_API), GLFW_NO_API)
+    glfwWindowHint(int(GLFW_RESIZABLE), GLFW_TRUE)
     run_example()
-    vulkan::glfwTerminate()
+    glfwTerminate()
 
     unsafe
         string_heap_collect()
-
     let heap_leaks = int(heap_bytes_allocated() - heap_on_start)
     let string_heap_leaks = int(string_heap_bytes_allocated()
         - string_heap_on_start)

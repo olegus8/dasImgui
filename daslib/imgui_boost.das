@@ -7,6 +7,59 @@ require imgui public
 require glfw
 require imgui_app
 require daslib/safe_addr
+require rtti
+require strings
+require math
+
+// note - this has to correspond to C++ das::DasImguiInputText structure
+struct ImGuiInputTextBuffer
+    context : Context?
+    callback : lambda<(var it:ImGuiInputTextBuffer; var itc:ImGuiInputTextCallbackData):int>
+    buffer : array<uint8>
+    at : LineInfo
+
+def make_input_buffer ( var buf : ImGuiInputTextBuffer; txt:string; len:int )
+    buf.buffer |> resize(len)
+    let bytes = clamp ( length(txt)-1, 0, len-1 )
+    unsafe
+        memcpy ( addr(buf.buffer[0]), reinterpret<void?> txt, bytes )
+
+def ImGuiInputTextBuffer ( txt:string; len:int )
+    var buf : ImGuiInputTextBuffer
+    make_input_buffer(buf, txt, len)
+    return <- buf
+
+def lock ( buf : ImGuiInputTextBuffer; blk : block < ( st:string# ) : void > )
+    unsafe
+        let pbuf = addr(buf.buffer[0])
+        blk |> invoke ( reinterpret<string#> pbuf )
+
+def to_string ( buf : ImGuiInputTextBuffer )
+    unsafe
+        let pbuf = addr(buf.buffer[0])
+        return clone_string(reinterpret<string> pbuf)
+
+def clear ( var buf : ImGuiInputTextBuffer )
+    for t in buf.buffer
+        t = uint8(0)
+
+def InputText ( lab:string; buf:ImGuiInputTextBuffer; flags:ImGuiInputTextFlags = ImGuiInputTextFlags None )
+    return _builtin_InputText(buf, lab, flags)
+
+// note - this needs to correspond to C++ structure
+
+struct ImGuiSizeConstraints
+    context: Context?
+    callback: lambda<(var data:ImGuiSizeCallbackData):void>
+    at: LineInfo
+
+def ImGuiSizeConstraints(var lmb:lambda<(var data:ImGuiSizeCallbackData):void>)
+    var self : ImGuiSizeConstraints
+    self.callback <- lmb
+    return <- self
+
+def SetNextWindowSizeConstraints(size_min,size_max:ImVec2; var cn:ImGuiSizeConstraints)
+    _builtin_SetNextWindowSizeConstraints(cn,size_min,size_max)
 
 let IM_COL32_WHITE = IM_COL32(255,255,255,255)
 let IM_COL32_BLACK = IM_COL32(0,0,0,255)

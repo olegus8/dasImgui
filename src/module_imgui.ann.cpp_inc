@@ -302,6 +302,7 @@ struct ImGuiListClipper_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiLi
 };
 struct ImVec2_GeneratedAnnotation : ManagedStructureAnnotation<ImVec2> {
 	virtual bool isLocal() const override { return true; }
+	virtual bool canBePlacedInContainer() const override { return true; }
 	ImVec2_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImVec2", ml) {
 	}
 	void init () {
@@ -311,6 +312,7 @@ struct ImVec2_GeneratedAnnotation : ManagedStructureAnnotation<ImVec2> {
 };
 struct ImVec4_GeneratedAnnotation : ManagedStructureAnnotation<ImVec4> {
 	virtual bool isLocal() const override { return true; }
+	virtual bool canBePlacedInContainer() const override { return true; }
 	ImVec4_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImVec4", ml) {
 	}
 	void init () {
@@ -354,11 +356,11 @@ struct ImGuiInputTextCallbackData_GeneratedAnnotation : ManagedStructureAnnotati
 	ImGuiInputTextCallbackData_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImGuiInputTextCallbackData", ml) {
 	}
 	void init () {
-		addField<DAS_BIND_MANAGED_FIELD(EventFlag)>("EventFlag","EventFlag");
-		addField<DAS_BIND_MANAGED_FIELD(Flags)>("Flags","Flags");
+		addField<ImGuiInputTextFlags_,offsetof(ManagedType,EventFlag)>("EventFlag","EventFlag");
+		addField<ImGuiInputTextFlags_,offsetof(ManagedType,Flags)>("Flags","Flags");
 		addField<DAS_BIND_MANAGED_FIELD(UserData)>("UserData","UserData");
 		addField<DAS_BIND_MANAGED_FIELD(EventChar)>("EventChar","EventChar");
-		addField<DAS_BIND_MANAGED_FIELD(EventKey)>("EventKey","EventKey");
+		addField<ImGuiKey_,offsetof(ManagedType,EventKey)>("EventKey","EventKey");
 		addField<DAS_BIND_MANAGED_FIELD(Buf)>("Buf","Buf");
 		addField<DAS_BIND_MANAGED_FIELD(BufTextLen)>("BufTextLen","BufTextLen");
 		addField<DAS_BIND_MANAGED_FIELD(BufSize)>("BufSize","BufSize");
@@ -454,6 +456,7 @@ struct ImGuiStyle_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiStyle> {
 };
 struct ImColor_GeneratedAnnotation : ManagedStructureAnnotation<ImColor> {
 	virtual bool isLocal() const override { return true; }
+	virtual bool canBePlacedInContainer() const override { return true; }
 	ImColor_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImColor", ml) {
 	}
 	void init () {

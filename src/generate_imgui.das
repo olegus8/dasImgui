@@ -19,7 +19,8 @@ def main
         "__security_check_cookie";
         "ImGui::TextUnformatted";
         "ImGuiTextFilter::PassFilter";
-        "ImGuiTextBuffer::append"
+        "ImGuiTextBuffer::append";
+        "ImGuiInputTextCallbackData::InsertChars"
     }]
 
     cmres_functions <- [{auto[]
@@ -46,12 +47,21 @@ def main
         "ImGuiColorEditFlags_" => [[ExEnum() name = "ImGuiColorEditFlags", isFlags=true]];
         "ImDrawCornerFlags_" => [[ExEnum() name = "ImDrawCornerFlags", isFlags=true]];
         "ImGuiTabBarFlags_" => [[ExEnum() name = "ImGuiTabBarFlags", isFlags=true]];
+        "ImGuiTabItemFlags_" => [[ExEnum() name = "ImGuiTabItemFlags", isFlags=true]];
+        "ImGuiTreeNodeFlags_" => [[ExEnum() name = "ImGuiTreeNodeFlags", isFlags=true]];
+        "ImGuiButtonFlags_"  => [[ExEnum() name = "ImGuiButtonFlags", isFlags=true]];
 
     // not flags
         "ImGuiStyleVar_" => [[ExEnum() name = "ImGuiStyleVar"]];
         "ImGuiCol_" => [[ExEnum() name = "ImGuiCol"]];
         "ImGuiKey_" => [[ExEnum() name = "ImGuiKey"]];
         "ImGuiMouseButton_" => [[ExEnum() name = "ImGuiMouseButton"]]
+    }}
+
+    substitute_field_types <- {{
+        "ImGuiInputTextCallbackData::EventFlag" => "ImGuiInputTextFlags_";
+        "ImGuiInputTextCallbackData::Flags" => "ImGuiInputTextFlags_";
+        "ImGuiInputTextCallbackData::EventKey" => "ImGuiKey_"
     }}
 
     // generate

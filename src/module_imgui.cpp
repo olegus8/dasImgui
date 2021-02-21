@@ -37,14 +37,14 @@ namespace das {
     void LogText ( const char * txt ) {
         ImGui::LogText(txt);
     }
-    void TreeNode ( const char * id, const char * txt ) {
-        ImGui::TreeNode(id,txt);
+    bool TreeNode ( const char * id, const char * txt ) {
+        return ImGui::TreeNode(id,txt);
     }
-    void TreeNodeEx ( const char * id, ImGuiTreeNodeFlags flags, const char * txt ) {
-        ImGui::TreeNodeEx(id, flags, txt);
+    bool TreeNodeEx ( const char * id, ImGuiTreeNodeFlags_ flags, const char * txt ) {
+        return ImGui::TreeNodeEx(id, flags, txt);
     }
-    void TreeNodeEx2 ( const void * id, ImGuiTreeNodeFlags flags, const char * txt ) {
-        ImGui::TreeNodeEx(id, flags, txt);
+    bool TreeNodeEx2 ( const void * id, ImGuiTreeNodeFlags_ flags, const char * txt ) {
+        return ImGui::TreeNodeEx(id, flags, txt);
     }
     void TextUnformatted ( const char * txt ) {
         ImGui::TextUnformatted(txt, nullptr);
@@ -62,8 +62,41 @@ namespace das {
     IMGUI_API bool          InputTextWithHint(const char* label, const char* hint, char* buf, size_t buf_size, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = NULL, void* user_data = NULL);
     */
 
-    bool InputText ( const char* label, char* buf, int32_t buf_size, ImGuiInputTextFlags flags ) {
-        return ImGui::InputText(label,buf,buf_size,flags);
+    struct DasImguiInputText {
+        Context *  context;
+        TLambda<void,DasImguiInputText *,ImGuiInputTextCallbackData *>    callback;
+        TArray<uint8_t> buffer;
+        LineInfo        at;
+    };
+
+    int InputTextCallback (ImGuiInputTextCallbackData* data) {
+        auto diit = (DasImguiInputText *) data->UserData;
+        DAS_VERIFY(diit->context && "context is always specified");
+        if ( !diit->callback.capture ) {
+            diit->context->throw_error("ImguiTextCallback: missing capture");
+        }
+        return das_invoke_lambda<int>::invoke<DasImguiInputText *,ImGuiInputTextCallbackData *>(diit->context, diit->callback, diit, data);
+    }
+
+    bool InputText(vec4f vdiit, const char * label, ImGuiInputTextFlags_ flags, LineInfoArg * at, Context * context ) {
+        auto diit = cast<DasImguiInputText *>::to(vdiit);
+        if ( diit->buffer.size==0 ) {
+            builtin_array_resize(diit->buffer, 256, 1, context);
+        }
+        if ( diit->callback.capture ) {
+            diit->context = context;
+            diit->at = *at;
+            return ImGui::InputText(
+                label,
+                diit->buffer.data,
+                diit->buffer.size,
+                flags,
+                &InputTextCallback,
+                diit
+            );
+        } else {
+            return ImGui::InputText(label, diit->buffer.data, diit->buffer.size, flags);
+        }
     }
 
     // ImGui::ImGuiTextFilter::PassFilter
@@ -107,6 +140,35 @@ namespace das {
         }
         return context->stringHeap->allocateString(buf.begin() + head,len+1);
     }
+
+    // ImGuiInputTextCallbackData
+
+    void InsertChars(ImGuiInputTextCallbackData & data, int pos, const char* text ) {
+        data.InsertChars(pos, text);
+    }
+
+    // SetNextWindowSizeConstraints
+
+    struct SNWSCC {
+        Context *   context;
+        Lambda      lambda;
+        LineInfo    at;
+    };
+
+    void SetNextWindowSizeConstraintsCallback ( ImGuiSizeCallbackData* data ) {
+        SNWSCC * temp = (SNWSCC *) data->UserData;
+        if ( !temp->lambda.capture ) {
+            temp->context->throw_error_at(temp->at, "expecting lambda");
+        }
+        das_invoke_lambda<void>::invoke<ImGuiSizeCallbackData*>(temp->context,temp->lambda,data);
+    }
+
+    void SetNextWindowSizeConstraints(vec4f snwscc, const ImVec2& size_min, const ImVec2& size_max, Context * context, LineInfoArg * at ) {
+        SNWSCC * temp = cast<SNWSCC *>::to(snwscc);
+        temp->context = context;
+        temp->at = *at;
+        ImGui::SetNextWindowSizeConstraints(size_min, size_max, &SetNextWindowSizeConstraintsCallback, temp);
+    }
 }
 
 Module_imgui::Module_imgui() : Module("imgui") {
@@ -149,6 +211,8 @@ bool Module_imgui::initDependencies() {
     addExtern<DAS_BIND_FUN(das::PassFilter)>(*this, lib, "PassFilter",
         SideEffects::worstDefault, "das::PassFilter");
     // imcolor
+    addCtor<ImColor>(*this,lib,"ImColor","ImColor");
+    addCtor<ImColor,const ImVec4 &>(*this,lib,"ImColor","ImColor");
     addExtern<DAS_BIND_FUN(das::HSV),SimNode_ExtFuncCallAndCopyOrMove>(*this, lib, "HSV",
         SideEffects::worstDefault, "das::HSV")
             ->args({"h","s","v","a"})
@@ -187,9 +251,8 @@ bool Module_imgui::initDependencies() {
         SideEffects::worstDefault, "das::TextUnformatted")
         ->arg("text");
     // input text
-    addExtern<DAS_BIND_FUN(das::InputText)>(*this, lib, "InputText",
-        SideEffects::worstDefault, "das::InputText")
-            ->arg_init(3, make_smart<ExprConstInt>(0));
+    addExtern<DAS_BIND_FUN(das::InputText)>(*this, lib, "_builtin_InputText",
+        SideEffects::worstDefault, "das::InputText");
     // imgui text buffer
     addExtern<DAS_BIND_FUN(das::ImGTB_Append)>(*this,lib,"append",
         SideEffects::worstDefault,"das::ImGTB_Append");
@@ -197,7 +260,17 @@ bool Module_imgui::initDependencies() {
         SideEffects::worstDefault,"das::ImGTB_At");
     addExtern<DAS_BIND_FUN(das::ImGTB_Slice)>(*this,lib,"slice",
         SideEffects::worstDefault,"das::ImGTB_Slice");
+    // ImGuiInputTextCallbackData
+    addExtern<DAS_BIND_FUN(das::InsertChars)>(*this,lib,"InsertChars",
+        SideEffects::worstDefault,"das::InsertChars");
+    // clipper
+    addUsing<ImGuiListClipper>(*this,lib,"ImGuiListClipper");
+    // SetNextWindowSizeConstraints
+    addExtern<DAS_BIND_FUN(das::SetNextWindowSizeConstraints)>(*this,lib,"_builtin_SetNextWindowSizeConstraints",
+        SideEffects::worstDefault,"das::SetNextWindowSizeConstraints");
     // additional default values
+    findUniqueFunction("AddRect")
+        ->arg_init(5, make_smart<ExprConstEnumeration>("All",makeType<ImDrawCornerFlags_>(lib)));
     findUniqueFunction("AddRectFilled")
         ->arg_init(5, make_smart<ExprConstEnumeration>("All",makeType<ImDrawCornerFlags_>(lib)));
     findUniqueFunction("BeginTable")

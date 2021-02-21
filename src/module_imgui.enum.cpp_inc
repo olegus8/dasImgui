@@ -404,18 +404,18 @@ public:
 	}
 };
 
-class EnumerationImGuiButtonFlags_ : public das::Enumeration {
+class EnumerationImGuiButtonFlags : public das::Enumeration {
 public:
-    EnumerationImGuiButtonFlags_() : das::Enumeration("ImGuiButtonFlags_") {
+    EnumerationImGuiButtonFlags() : das::Enumeration("ImGuiButtonFlags") {
         external = true;
         cppName = "ImGuiButtonFlags_";
         baseType = (das::Type) das::ToBasicType< das::underlying_type< ImGuiButtonFlags_ >::type >::type;
-		addI("ImGuiButtonFlags_None", int64_t(ImGuiButtonFlags_::ImGuiButtonFlags_None), das::LineInfo());
-		addI("ImGuiButtonFlags_MouseButtonLeft", int64_t(ImGuiButtonFlags_::ImGuiButtonFlags_MouseButtonLeft), das::LineInfo());
-		addI("ImGuiButtonFlags_MouseButtonRight", int64_t(ImGuiButtonFlags_::ImGuiButtonFlags_MouseButtonRight), das::LineInfo());
-		addI("ImGuiButtonFlags_MouseButtonMiddle", int64_t(ImGuiButtonFlags_::ImGuiButtonFlags_MouseButtonMiddle), das::LineInfo());
-		addI("ImGuiButtonFlags_MouseButtonMask_", int64_t(ImGuiButtonFlags_::ImGuiButtonFlags_MouseButtonMask_), das::LineInfo());
-		addI("ImGuiButtonFlags_MouseButtonDefault_", int64_t(ImGuiButtonFlags_::ImGuiButtonFlags_MouseButtonDefault_), das::LineInfo());
+		addI("None", int64_t(ImGuiButtonFlags_::ImGuiButtonFlags_None), das::LineInfo());
+		addI("MouseButtonLeft", int64_t(ImGuiButtonFlags_::ImGuiButtonFlags_MouseButtonLeft), das::LineInfo());
+		addI("MouseButtonRight", int64_t(ImGuiButtonFlags_::ImGuiButtonFlags_MouseButtonRight), das::LineInfo());
+		addI("MouseButtonMiddle", int64_t(ImGuiButtonFlags_::ImGuiButtonFlags_MouseButtonMiddle), das::LineInfo());
+		addI("MouseButtonMask_", int64_t(ImGuiButtonFlags_::ImGuiButtonFlags_MouseButtonMask_), das::LineInfo());
+		addI("MouseButtonDefault_", int64_t(ImGuiButtonFlags_::ImGuiButtonFlags_MouseButtonDefault_), das::LineInfo());
 	}
 };
 
@@ -452,46 +452,46 @@ public:
 	}
 };
 
-class EnumerationImGuiTreeNodeFlags_ : public das::Enumeration {
+class EnumerationImGuiTreeNodeFlags : public das::Enumeration {
 public:
-    EnumerationImGuiTreeNodeFlags_() : das::Enumeration("ImGuiTreeNodeFlags_") {
+    EnumerationImGuiTreeNodeFlags() : das::Enumeration("ImGuiTreeNodeFlags") {
         external = true;
         cppName = "ImGuiTreeNodeFlags_";
         baseType = (das::Type) das::ToBasicType< das::underlying_type< ImGuiTreeNodeFlags_ >::type >::type;
-		addI("ImGuiTreeNodeFlags_None", int64_t(ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_None), das::LineInfo());
-		addI("ImGuiTreeNodeFlags_Selected", int64_t(ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_Selected), das::LineInfo());
-		addI("ImGuiTreeNodeFlags_Framed", int64_t(ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_Framed), das::LineInfo());
-		addI("ImGuiTreeNodeFlags_AllowItemOverlap", int64_t(ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_AllowItemOverlap), das::LineInfo());
-		addI("ImGuiTreeNodeFlags_NoTreePushOnOpen", int64_t(ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_NoTreePushOnOpen), das::LineInfo());
-		addI("ImGuiTreeNodeFlags_NoAutoOpenOnLog", int64_t(ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_NoAutoOpenOnLog), das::LineInfo());
-		addI("ImGuiTreeNodeFlags_DefaultOpen", int64_t(ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_DefaultOpen), das::LineInfo());
-		addI("ImGuiTreeNodeFlags_OpenOnDoubleClick", int64_t(ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_OpenOnDoubleClick), das::LineInfo());
-		addI("ImGuiTreeNodeFlags_OpenOnArrow", int64_t(ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_OpenOnArrow), das::LineInfo());
-		addI("ImGuiTreeNodeFlags_Leaf", int64_t(ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_Leaf), das::LineInfo());
-		addI("ImGuiTreeNodeFlags_Bullet", int64_t(ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_Bullet), das::LineInfo());
-		addI("ImGuiTreeNodeFlags_FramePadding", int64_t(ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_FramePadding), das::LineInfo());
-		addI("ImGuiTreeNodeFlags_SpanAvailWidth", int64_t(ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_SpanAvailWidth), das::LineInfo());
-		addI("ImGuiTreeNodeFlags_SpanFullWidth", int64_t(ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_SpanFullWidth), das::LineInfo());
-		addI("ImGuiTreeNodeFlags_NavLeftJumpsBackHere", int64_t(ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_NavLeftJumpsBackHere), das::LineInfo());
-		addI("ImGuiTreeNodeFlags_CollapsingHeader", int64_t(ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_CollapsingHeader), das::LineInfo());
+		addI("None", int64_t(ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_None), das::LineInfo());
+		addI("Selected", int64_t(ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_Selected), das::LineInfo());
+		addI("Framed", int64_t(ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_Framed), das::LineInfo());
+		addI("AllowItemOverlap", int64_t(ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_AllowItemOverlap), das::LineInfo());
+		addI("NoTreePushOnOpen", int64_t(ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_NoTreePushOnOpen), das::LineInfo());
+		addI("NoAutoOpenOnLog", int64_t(ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_NoAutoOpenOnLog), das::LineInfo());
+		addI("DefaultOpen", int64_t(ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_DefaultOpen), das::LineInfo());
+		addI("OpenOnDoubleClick", int64_t(ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_OpenOnDoubleClick), das::LineInfo());
+		addI("OpenOnArrow", int64_t(ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_OpenOnArrow), das::LineInfo());
+		addI("Leaf", int64_t(ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_Leaf), das::LineInfo());
+		addI("Bullet", int64_t(ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_Bullet), das::LineInfo());
+		addI("FramePadding", int64_t(ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_FramePadding), das::LineInfo());
+		addI("SpanAvailWidth", int64_t(ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_SpanAvailWidth), das::LineInfo());
+		addI("SpanFullWidth", int64_t(ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_SpanFullWidth), das::LineInfo());
+		addI("NavLeftJumpsBackHere", int64_t(ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_NavLeftJumpsBackHere), das::LineInfo());
+		addI("CollapsingHeader", int64_t(ImGuiTreeNodeFlags_::ImGuiTreeNodeFlags_CollapsingHeader), das::LineInfo());
 	}
 };
 
-class EnumerationImGuiTabItemFlags_ : public das::Enumeration {
+class EnumerationImGuiTabItemFlags : public das::Enumeration {
 public:
-    EnumerationImGuiTabItemFlags_() : das::Enumeration("ImGuiTabItemFlags_") {
+    EnumerationImGuiTabItemFlags() : das::Enumeration("ImGuiTabItemFlags") {
         external = true;
         cppName = "ImGuiTabItemFlags_";
         baseType = (das::Type) das::ToBasicType< das::underlying_type< ImGuiTabItemFlags_ >::type >::type;
-		addI("ImGuiTabItemFlags_None", int64_t(ImGuiTabItemFlags_::ImGuiTabItemFlags_None), das::LineInfo());
-		addI("ImGuiTabItemFlags_UnsavedDocument", int64_t(ImGuiTabItemFlags_::ImGuiTabItemFlags_UnsavedDocument), das::LineInfo());
-		addI("ImGuiTabItemFlags_SetSelected", int64_t(ImGuiTabItemFlags_::ImGuiTabItemFlags_SetSelected), das::LineInfo());
-		addI("ImGuiTabItemFlags_NoCloseWithMiddleMouseButton", int64_t(ImGuiTabItemFlags_::ImGuiTabItemFlags_NoCloseWithMiddleMouseButton), das::LineInfo());
-		addI("ImGuiTabItemFlags_NoPushId", int64_t(ImGuiTabItemFlags_::ImGuiTabItemFlags_NoPushId), das::LineInfo());
-		addI("ImGuiTabItemFlags_NoTooltip", int64_t(ImGuiTabItemFlags_::ImGuiTabItemFlags_NoTooltip), das::LineInfo());
-		addI("ImGuiTabItemFlags_NoReorder", int64_t(ImGuiTabItemFlags_::ImGuiTabItemFlags_NoReorder), das::LineInfo());
-		addI("ImGuiTabItemFlags_Leading", int64_t(ImGuiTabItemFlags_::ImGuiTabItemFlags_Leading), das::LineInfo());
-		addI("ImGuiTabItemFlags_Trailing", int64_t(ImGuiTabItemFlags_::ImGuiTabItemFlags_Trailing), das::LineInfo());
+		addI("None", int64_t(ImGuiTabItemFlags_::ImGuiTabItemFlags_None), das::LineInfo());
+		addI("UnsavedDocument", int64_t(ImGuiTabItemFlags_::ImGuiTabItemFlags_UnsavedDocument), das::LineInfo());
+		addI("SetSelected", int64_t(ImGuiTabItemFlags_::ImGuiTabItemFlags_SetSelected), das::LineInfo());
+		addI("NoCloseWithMiddleMouseButton", int64_t(ImGuiTabItemFlags_::ImGuiTabItemFlags_NoCloseWithMiddleMouseButton), das::LineInfo());
+		addI("NoPushId", int64_t(ImGuiTabItemFlags_::ImGuiTabItemFlags_NoPushId), das::LineInfo());
+		addI("NoTooltip", int64_t(ImGuiTabItemFlags_::ImGuiTabItemFlags_NoTooltip), das::LineInfo());
+		addI("NoReorder", int64_t(ImGuiTabItemFlags_::ImGuiTabItemFlags_NoReorder), das::LineInfo());
+		addI("Leading", int64_t(ImGuiTabItemFlags_::ImGuiTabItemFlags_Leading), das::LineInfo());
+		addI("Trailing", int64_t(ImGuiTabItemFlags_::ImGuiTabItemFlags_Trailing), das::LineInfo());
 	}
 };
 

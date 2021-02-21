@@ -5,7 +5,7 @@
 
 using namespace das;
 
-#define USE_GENERATED 0
+#define USE_GENERATED 1
 
 #if USE_GENERATED
 
@@ -22,7 +22,8 @@ MAKE_EXTERNAL_TYPE_FACTORY(ImDrawData,ImDrawData);
 
 #include "module_imgui_vulkan.h"
 
-#include "module_imgui_vulkan.cpp_inc"
+#include "module_imgui_vulkan.enum.cpp_inc"
+#include "module_imgui_vulkan.ann.cpp_inc"
 
 #endif
 
@@ -61,7 +62,14 @@ public:
 #endif
         // generated
 #if USE_GENERATED
+#include "module_imgui_vulkan.enum.inc"
+#include "module_imgui_vulkan.ann.inc"
+#include "module_imgui_vulkan.method.inc"
 #include "module_imgui_vulkan.inc"
+        addExtern<DAS_BIND_FUN(ImGui_ImplVulkanH_SelectPresentMode)>(*this, lib, "ImGui_ImplVulkanH_SelectPresentMode",
+                SideEffects::worstDefault, "ImGui_ImplVulkanH_SelectPresentMode");
+        addExtern<DAS_BIND_FUN(ImGui_ImplVulkanH_SelectSurfaceFormat),SimNode_ExtFuncCallAndCopyOrMove>(*this, lib, "ImGui_ImplVulkanH_SelectSurfaceFormat",
+                SideEffects::worstDefault, "ImGui_ImplVulkanH_SelectSurfaceFormat");
 #endif
         // all good
         return true;

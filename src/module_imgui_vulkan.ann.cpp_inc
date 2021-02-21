@@ -1,8 +1,4 @@
 // ------------
-// enumerations
-// ------------
-
-// ------------
 // structures
 // ------------
 
@@ -71,7 +67,3 @@ struct ImGui_ImplVulkan_InitInfo_GeneratedAnnotation : ManagedStructureAnnotatio
 		addField<DAS_BIND_MANAGED_FIELD(CheckVkResultFn)>("CheckVkResultFn","CheckVkResultFn");
 	}
 };
-// ------------
-// functions
-// ------------
-
