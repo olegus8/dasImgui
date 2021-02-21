@@ -146,7 +146,7 @@ def imgui_vulkan_app ( title:string; blk : block )
         ImGui_ImplGlfw_InitForVulkan(sis.window.window, true)
 
         var init_info <- [[ ImGui_ImplVulkan_InitInfo
-            Instance = sis.instance.instance,
+            Instance = sis.instance.instance.instance,
             PhysicalDevice = sis.phys_dev.physical_device,
             Device = sis.device.device,
             QueueFamily = sis.gfx_qfam,
