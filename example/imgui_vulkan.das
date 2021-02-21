@@ -141,7 +141,13 @@ def imgui_vulkan_app ( title:string; blk : block )
         defer <| { delete sis; }
         var sds <- create_simple_sds(sis)
         defer <| { delete sds; }
+        CreateContext(null)
+        var io & = GetIO()
+        io.FontGlobalScale = 2.0;   // BBATKIN: note - my monitor is HUGE
+        StyleColorsDark(null)
+        ImGui_ImplGlfw_InitForVulkan(sis.window, true)
         invoke(blk)
+        ImGui_ImplGlfw_Shutdown()
     glfwTerminate()
 
 [export]
@@ -166,10 +172,6 @@ def main()
     assert(string_heap_leaks == 0)
 /*
     // Create Framebuffers
-    int w, h;
-    glfwGetFramebufferSize(window, &w, &h);
-    ImGui_ImplVulkanH_Window* wd = &g_MainWindowData;
-    SetupVulkanWindow(wd, surface, w, h);
 
     // Setup Dear ImGui context
     IMGUI_CHECKVERSION();
