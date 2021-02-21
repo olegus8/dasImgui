@@ -250,8 +250,24 @@ def imgui_vulkan_app ( title:string; blk : block )
 
 [export]
 def main()
+    unsafe
+        string_heap_collect()
+    let heap_on_start = heap_bytes_allocated()
+    let string_heap_on_start = string_heap_bytes_allocated()
+
 	imgui_vulkan_app("Testing IMGUI") <|
         print("hello world 3\n")
+
+    unsafe
+        string_heap_collect()
+    let heap_leaks = int(heap_bytes_allocated() - heap_on_start)
+    let string_heap_leaks = int(string_heap_bytes_allocated()
+        - string_heap_on_start)
+
+    print("{heap_leaks} heap bytes have leaked\n")
+    print("{string_heap_leaks} string heap bytes have leaked\n")
+    assert(heap_leaks == 0)
+    assert(string_heap_leaks == 0)
 /*
     uint32_t extensions_count = 0;
     const char** extensions = glfwGetRequiredInstanceExtensions(&extensions_count);
