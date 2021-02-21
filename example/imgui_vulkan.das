@@ -294,6 +294,7 @@ def imgui_vulkan_app ( title:string; blk : block )
         let gfx_qfam = phys_dev |> get_graphics_queue_family(surface, 1)
         var device <- phys_dev |> create_simple_device(gfx_qfam)
         defer <| { delete device; }
+        var queue <- device |> get_device_queue(gfx_qfam)
         invoke(blk)
     glfwTerminate()
 
