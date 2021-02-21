@@ -217,20 +217,8 @@ def imgui_vulkan_app ( title:string; blk : block )
     if glfwInit()==0
 		panic("can't init glfw")
     if true
-        var window <- create_window(1280, 720, title)
-        defer <| { delete window; }
-        var instance <- create_instance_ex()
-        defer <| { delete instance; }
-        var surface <- instance.instance |> create_window_surface(window)
-        defer <| { delete surface; }
-        let phys_dev <- instance.instance |> find_best_physical_device(
-            surface, @@simple_device_score)
-        let gfx_qfam = phys_dev |> get_graphics_queue_family(surface, 1)
-        var device <- phys_dev |> create_simple_device(gfx_qfam)
-        defer <| { delete device; }
-        var queue <- device |> get_device_queue(gfx_qfam)
-        var desc_pool <- device |> create_simple_descriptor_pool
-        defer <| { delete desc_pool; }
+        var vk <- simple_vulkan_setup(title, 1280, 720)
+        defer <| { delete vk; }
         invoke(blk)
     glfwTerminate()
 
