@@ -12,1072 +12,204 @@ require imgui
 require imgui_vulkan
 require imgui_app
 
-let
-    MAX_FRAMES_IN_FLIGHT = 2
-
-
-struct Vertex
-    pos : float2
-    color : float3
-    tex_pos : float2
-
-
-struct UniformBufferObject
-    offset : float2
-
-
-struct SwapchainEx
-    swapchain       : SwapchainKHR
-    images          : array<Image>
-    views           : array<ImageView>
-    framebuffers    : array<Framebuffer>
-
-
-def create_swapchain_ex(
-    device          : Device;
-    phys_dev        : PhysicalDevice;
-    surface         : SurfaceKHR;
-    window          : Window;
-    surf_fmt        : SurfaceFormatKHR;
-    present_mode    : VkPresentModeKHR;
-    render_pass     : RenderPass
-) : SwapchainEx
-
-    var swapchain <- device |> create_multibuffered_swapchain(
-        phys_dev, surface, window, surf_fmt, present_mode)
-
-    var images <- device |> get_swapchain_images_khr(swapchain)
-
-    var views <- [{ for image in images;
-        device |> create_image_view([[ ImageViewCreateInfo
-            image = image,
-            format = surf_fmt.format,
-            view_type = VkImageViewType VK_IMAGE_VIEW_TYPE_2D,
-            subresource_range = IMAGE_SUBRESOURCE_RANGE_SINGLE_COLOR,
-            components = COMPONENT_MAPPING_IDENTITY
-        ]])}]
-
-    let extent <- phys_dev |> get_swap_extent(surface, window)
-
-    var framebuffers <- [{ for view in views;
-        create_single_view_framebuffer([
-            device = device,
-            render_pass = render_pass,
-            view = view,
-            width = extent.width,
-            height = extent.height
-        ])}]
-
-    return <- [[SwapchainEx
-        swapchain <- swapchain,
-        images <- images,
-        views <- views,
-        framebuffers <- framebuffers
-    ]]
-
-
-def finalize(var sc : SwapchainEx)
-    delete sc.framebuffers
-    delete sc.views
-    delete sc.images
-    delete sc.swapchain
-    memzero(sc)
-
-
-def create_example_descriptor_set_layout(
-    device : Device
-) : DescriptorSetLayout
-    var info <- [[ DescriptorSetLayoutCreateInfo
-        bindings <- [{ auto[]
-            [[ DescriptorSetLayoutBinding
-                binding = 0u,
-                descriptor_count = 1u,
-                descriptor_type = (VkDescriptorType
-                    VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER),
-                stage_flags = uint(VkShaderStageFlagBits
-                    VK_SHADER_STAGE_VERTEX_BIT)
-            ]];
-            [[ DescriptorSetLayoutBinding
-                binding = 1u,
-                descriptor_count = 1u,
-                descriptor_type = (VkDescriptorType
-                    VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER),
-                stage_flags = uint(VkShaderStageFlagBits
-                    VK_SHADER_STAGE_FRAGMENT_BIT)
-            ]]
-        }] ]]
-    defer() <| { delete info; }
-    return <- device |> create_descriptor_set_layout(info)
-
-
-def create_example_pipeline_layout(
-    device : Device;
-    desc_set_layout : DescriptorSetLayout
-) : PipelineLayout
-    var info <- [[ PipelineLayoutCreateInfo
-        set_layouts <- [{ auto[] weak_copy(desc_set_layout) }]
-    ]]
-    defer() <| { delete info; }
-    return <- device |> create_pipeline_layout(info)
-
-
-def create_example_graphics_pipeline(
-    sis : SwapchainIndependentState
-) : Pipeline
-    var extent <- sis.phys_dev |> get_swap_extent(sis.surface, sis.window)
-    var create_info <- [[GraphicsPipelineCreateInfo
-        layout = weak_copy(sis.pipeline_layout),
-        render_pass = weak_copy(sis.render_pass),
-        base_pipeline_index = -1,
-        input_assembly_state <- [[ PipelineInputAssemblyStateCreateInfo
-            topology=VkPrimitiveTopology VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST]],
-        rasterization_state <- [[ PipelineRasterizationStateCreateInfo
-            polygon_mode = VkPolygonMode VK_POLYGON_MODE_FILL,
-            line_width = 1.0f,
-            cull_mode = uint(VkCullModeFlagBits VK_CULL_MODE_BACK_BIT),
-            front_face = VkFrontFace VK_FRONT_FACE_CLOCKWISE]],
-        multisample_state <- [[ PipelineMultisampleStateCreateInfo
-            rasterization_samples=VkSampleCountFlagBits VK_SAMPLE_COUNT_1_BIT,
-            min_sample_shading = 1.0f ]],
-        color_blend_state <- [[ PipelineColorBlendStateCreateInfo
-            attachments <- [{ auto[] [[PipelineColorBlendAttachmentState
-                color_write_mask =
-                    uint(VkColorComponentFlagBits VK_COLOR_COMPONENT_R_BIT) |
-                    uint(VkColorComponentFlagBits VK_COLOR_COMPONENT_G_BIT) |
-                    uint(VkColorComponentFlagBits VK_COLOR_COMPONENT_B_BIT) |
-                    uint(VkColorComponentFlagBits VK_COLOR_COMPONENT_A_BIT)
-        ]]}]]],
-        vertex_input_state <- [[PipelineVertexInputStateCreateInfo
-            vertex_binding_descriptions <- [{ auto[]
-                [[VertexInputBindingDescription binding = 0u,
-                    stride = uint(typeinfo(sizeof type<Vertex>)),
-                    input_rate=VkVertexInputRate VK_VERTEX_INPUT_RATE_VERTEX]]
-            }],
-            vertex_attribute_descriptions <- [{ auto[]
-                [[VertexInputAttributeDescription binding=0u, location=0u,
-                    format = VkFormat VK_FORMAT_R32G32_SFLOAT,
-                    offset = uint(typeinfo(offsetof<pos> type<Vertex>))]];
-                [[VertexInputAttributeDescription binding=0u, location=1u,
-                    format = VkFormat VK_FORMAT_R32G32B32_SFLOAT,
-                    offset = uint(typeinfo(offsetof<color> type<Vertex>))]];
-                [[VertexInputAttributeDescription binding=0u, location=2u,
-                    format = VkFormat VK_FORMAT_R32G32_SFLOAT,
-                    offset = uint(typeinfo(offsetof<tex_pos> type<Vertex>))]]
-            }]
-        ]],
-        viewport_state <- [[PipelineViewportStateCreateInfo
-            viewports <- [{ auto[] [[Viewport min_depth=0.f, max_depth=1.f,
-                width=float(extent.width), height=float(extent.height) ]]}],
-            scissors <- [{ auto[] [[Rect2D extent = extent]] }]
-        ]],
-        stages <- [{ auto[]
-            [[PipelineShaderStageCreateInfo
-                module_ = weak_copy(sis.vert_shmod), name = "main",
-                stage = VkShaderStageFlagBits VK_SHADER_STAGE_VERTEX_BIT]];
-            [[PipelineShaderStageCreateInfo
-                module_ = weak_copy(sis.frag_shmod), name = "main",
-                stage = VkShaderStageFlagBits VK_SHADER_STAGE_FRAGMENT_BIT]]
-        }]
-    ]]
-    defer() <| { delete create_info; }
-
-    return <- create_graphics_pipeline([
-        device=sis.device, create_info=create_info])
-
-
-def create_example_draw_commands(
-    sis : SwapchainIndependentState;
-    sds : SwapchainDependentState
-) : CommandBuffers
-    var cmd_bufs <- sis.device |> allocate_command_buffers_primary(
-        sis.cmd_pool, sds.swapchain.framebuffers |> length())
-    var clear_values <- [{ auto[] [[VkClearValue]] }]
-    defer() <| { delete clear_values; }
-    for cmd_buf, fbuf, dset in cmd_bufs.command_buffers, sds.swapchain.framebuffers, sds.desc_sets.descriptor_sets
-        cmd_buf |> record_command_buffer() <|
-            cmd_buf |> record_render_pass(
-                sis.phys_dev, sis.window, sis.surface, sis.render_pass,
-                fbuf, clear_values
-            ) <|
-                cmd_buf |> cmd_bind_pipeline(
-                    VkPipelineBindPoint VK_PIPELINE_BIND_POINT_GRAPHICS,
-                    sds.pipeline)
-                cmd_buf |> cmd_bind_vertex_buffer(sis.vbuf.buffer)
-                cmd_bind_index_buffer([
-                    command_buffer = cmd_buf,
-                    buffer = sis.ibuf.buffer,
-                    index_type = VkIndexType VK_INDEX_TYPE_UINT32])
-
-                cmd_buf |> cmd_bind_descriptor_set(
-                    VkPipelineBindPoint VK_PIPELINE_BIND_POINT_GRAPHICS,
-                    sis.pipeline_layout, dset)
-
-                cmd_draw_indexed([command_buffer = cmd_buf,
-                    index_count = uint(sis.indices |> length()),
-                    instance_count = 1u])
-    return <- cmd_bufs
-
-
-struct MemoryBackedImage
-    image : Image
-    memory : DeviceMemory
-    format : VkFormat
-    width : int
-    height : int
-
-
-def finalize(var b: MemoryBackedImage explicit)
-    delete b.memory
-    delete b.image
-    memzero(b)
-
-
-def create_memory_backed_image(
-    device      : Device;
-    phys_dev    : PhysicalDevice;
-    width       : int;
-    height      : int;
-    format      : VkFormat;
-    tiling      : VkImageTiling;
-    usage       : uint;
-    mem_props   : uint
-) : MemoryBackedImage
-
-    var created = false
-    var mbi<-[[ MemoryBackedImage format=format, width=width, height=height ]]
-    mbi.image <- device |> create_image( [[ ImageCreateInfo
-        image_type = VkImageType VK_IMAGE_TYPE_2D,
-        extent <- [[Extent3D width=uint(width),height=uint(height),depth=1u]],
-        mip_levels = 1u,
-        array_layers = 1u,
-        format = format,
-        tiling = tiling,
-        initial_layout = VkImageLayout VK_IMAGE_LAYOUT_UNDEFINED,
-        usage = usage,
-        samples = VkSampleCountFlagBits VK_SAMPLE_COUNT_1_BIT,
-        sharing_mode = VkSharingMode VK_SHARING_MODE_EXCLUSIVE]])
-    device |> find_image_memory_type(phys_dev, mbi.image, mem_props
-    ) <| $(mem_type, mem_size)
-        mbi.memory <- device |> allocate_memory([[MemoryAllocateInfo
-            allocation_size=mem_size, memory_type_index=mem_type]])
-        device |> bind_image_memory(mbi.image, mbi.memory)
-        created = true
-    assert(created)
-    return <- mbi
-
-
-struct MemoryBackedBuffer
-    buffer : Buffer
-    memory : DeviceMemory
-
-
-def finalize(var b: MemoryBackedBuffer explicit)
-    delete b.memory
-    delete b.buffer
-    memzero(b)
-
-
-def create_memory_backed_buffer(
-    device      : Device;
-    phys_dev    : PhysicalDevice;
-    buf_size    : uint64;
-    usage       : uint;
-    mem_props   : uint
-) : MemoryBackedBuffer
-    var created = false
-    var mbb : MemoryBackedBuffer
-    mbb.buffer <- device |> create_buffer_exclusive(buf_size, usage)
-    device |> find_buffer_memory_type(phys_dev, mbb.buffer, mem_props
-    ) <| $(mem_type, mem_size)
-        mbb.memory <- device |> allocate_memory([[MemoryAllocateInfo
-            allocation_size=mem_size, memory_type_index=mem_type]])
-        device |> bind_buffer_memory(mbb.buffer, mbb.memory)
-        created = true
-    assert(created)
-    return <- mbb
-
-
-def create_device_local_buffer(
-    sis     : SwapchainIndependentState;
-    data    : array<auto(T)>;
-    usage   : uint
-) : MemoryBackedBuffer
-    let buf_size = typeinfo(sizeof type<T>) * data |> length()
-
-    var buf <- sis.device |> create_memory_backed_buffer(
-        sis.phys_dev, uint64(buf_size),
-        usage | uint(VkBufferUsageFlagBits VK_BUFFER_USAGE_TRANSFER_DST_BIT),
-        uint(VkMemoryPropertyFlagBits VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT))
-
-    var staging <- sis.device |> create_memory_backed_buffer(
-        sis.phys_dev, uint64(buf_size),
-        uint(VkBufferUsageFlagBits VK_BUFFER_USAGE_TRANSFER_SRC_BIT),
-        uint(VkMemoryPropertyFlagBits VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)|
-        uint(VkMemoryPropertyFlagBits VK_MEMORY_PROPERTY_HOST_COHERENT_BIT))
-    defer() <| { delete staging; }
-
-    sis.device |> map_device_memory_to_array(
-        staging.memory, uint64(buf_size), uint64(0), 0u
-    ) <| $(var mapped_data : array<T>#)
-        for dst, src in mapped_data, data
-            dst = src
-    sis.device |> run_cmd_sync(sis.cmd_pool, sis.queue) <| $(cmd_buf)
-        cmd_buf |> cmd_copy_buffer(staging.buffer,buf.buffer,uint64(buf_size))
-
-    return <- buf
-
-
-def create_image_view(
-    device : Device;
-    image : MemoryBackedImage
-) : ImageView
-    return <- device |> create_image_view([[ ImageViewCreateInfo
-        image = image.image,
-        format = image.format,
-        view_type = VkImageViewType VK_IMAGE_VIEW_TYPE_2D,
-        subresource_range = IMAGE_SUBRESOURCE_RANGE_SINGLE_COLOR,
-        components = COMPONENT_MAPPING_IDENTITY
-    ]])
-
-
-def create_device_local_sampled_image_rgba8(
-    sis     : SwapchainIndependentState;
-    width   : int;
-    height  : int;
-    b       : block<(var mapped_data : array<uint4>#)>
-) : MemoryBackedImage
-    assert(width % 4 == 0)
-    let buf_size = typeinfo(sizeof type<uint>) * width * height
-
-    var staging <- sis.device |> create_memory_backed_buffer(
-        sis.phys_dev, uint64(buf_size),
-        uint(VkBufferUsageFlagBits VK_BUFFER_USAGE_TRANSFER_SRC_BIT),
-        uint(VkMemoryPropertyFlagBits VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)|
-        uint(VkMemoryPropertyFlagBits VK_MEMORY_PROPERTY_HOST_COHERENT_BIT))
-    defer() <| { delete staging; }
-
-    sis.device |> map_device_memory_to_array(
-        staging.memory, uint64(buf_size), uint64(0), 0u
-    ) <| $(var mapped_data : array<uint4>#)
-        b |> invoke(mapped_data)
-
-    var img <- create_memory_backed_image([
-        device = sis.device,
-        phys_dev = sis.phys_dev,
-        width = width,
-        height = height,
-        format = VkFormat VK_FORMAT_R8G8B8A8_SRGB,
-        tiling = VkImageTiling VK_IMAGE_TILING_OPTIMAL,
-        usage = uint(VkImageUsageFlagBits VK_IMAGE_USAGE_TRANSFER_DST_BIT)
-              | uint(VkImageUsageFlagBits VK_IMAGE_USAGE_SAMPLED_BIT),
-        mem_props = uint(VkMemoryPropertyFlagBits
-            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT)
-    ])
-
-    sis |> transition_image_layout(img,
-        VkImageLayout VK_IMAGE_LAYOUT_UNDEFINED,
-        VkImageLayout VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)
-
-    sis |> copy_buffer_to_image(staging, img)
-
-    sis |> transition_image_layout(img,
-        VkImageLayout VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-        VkImageLayout VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
-
-    return <- img
-
-
-def copy_buffer_to_image(
-    sis : SwapchainIndependentState;
-    buffer : MemoryBackedBuffer;
-    image : MemoryBackedImage
-)
-    sis.device |> run_cmd_sync(sis.cmd_pool, sis.queue) <| $(cmd_buf)
-        var regions <- [{ auto[] [[ BufferImageCopy
-            image_subresource <- [[ ImageSubresourceLayers
-                aspect_mask = uint(
-                    VkImageAspectFlagBits VK_IMAGE_ASPECT_COLOR_BIT),
-                layer_count = 1u ]],
-            image_extent <- [[ Extent3D
-                width = uint(image.width),
-                height = uint(image.height),
-                depth = 1u ]]
-        ]] }]
-        defer() <| { delete regions; }
-        cmd_buf |> cmd_copy_buffer_to_image(buffer.buffer, image.image,
-            VkImageLayout VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-            regions)
-
-
-def transition_image_layout(
-    sis : SwapchainIndependentState;
-    image : MemoryBackedImage;
-    old_layout : VkImageLayout;
-    new_layout : VkImageLayout
-)
-    var src_stage_mask : uint
-    var dst_stage_mask : uint
-    var src_access_mask : uint
-    var dst_access_mask : uint
-
-    if (old_layout == VkImageLayout VK_IMAGE_LAYOUT_UNDEFINED
-    &&  new_layout == VkImageLayout VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL
-    )
-        src_access_mask = 0u
-        dst_access_mask = uint(
-            VkAccessFlagBits VK_ACCESS_TRANSFER_WRITE_BIT)
-        src_stage_mask = uint(
-            VkPipelineStageFlagBits VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT)
-        dst_stage_mask = uint(
-            VkPipelineStageFlagBits VK_PIPELINE_STAGE_TRANSFER_BIT)
-    elif (old_layout == VkImageLayout VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL
-    &&    new_layout == (
-            VkImageLayout VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
-    )
-        src_access_mask = uint(
-            VkAccessFlagBits VK_ACCESS_TRANSFER_WRITE_BIT)
-        dst_access_mask = uint(
-            VkAccessFlagBits VK_ACCESS_SHADER_READ_BIT)
-        src_stage_mask = uint(
-            VkPipelineStageFlagBits VK_PIPELINE_STAGE_TRANSFER_BIT)
-        dst_stage_mask = uint(
-            VkPipelineStageFlagBits VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT)
-    else
-        panic("unsupported layout transition!")
-
-    var barriers <- [{ auto[] [[ ImageMemoryBarrier
-        src_access_mask = src_access_mask,
-        dst_access_mask = dst_access_mask,
-        old_layout = old_layout,
-        new_layout = new_layout,
-        src_queue_family_index = VK_QUEUE_FAMILY_IGNORED,
-        dst_queue_family_index = VK_QUEUE_FAMILY_IGNORED,
-        image = weak_copy(image.image),
-        subresource_range <- [[ ImageSubresourceRange
-            aspect_mask = uint(
-                VkImageAspectFlagBits VK_IMAGE_ASPECT_COLOR_BIT),
-            level_count = 1u,
-            layer_count = 1u ]]
-    ]] }]
-    defer() <| { delete barriers; }
-
-    sis.device |> run_cmd_sync(sis.cmd_pool, sis.queue) <| $(cmd_buf)
-        cmd_pipeline_barrier([
-            command_buffer = cmd_buf,
-            src_stage_mask = src_stage_mask,
-            dst_stage_mask = dst_stage_mask,
-            image_memory_barriers = barriers])
-
-
-def create_example_sampler(sis : SwapchainIndependentState) : Sampler
-    let props <- sis.phys_dev |> get_physical_device_properties()
-    return <- sis.device |> create_sampler( [[ SamplerCreateInfo
-        mag_filter = VkFilter VK_FILTER_LINEAR,
-        min_filter = VkFilter VK_FILTER_LINEAR,
-        address_mode_u = VkSamplerAddressMode VK_SAMPLER_ADDRESS_MODE_REPEAT,
-        address_mode_v = VkSamplerAddressMode VK_SAMPLER_ADDRESS_MODE_REPEAT,
-        address_mode_w = VkSamplerAddressMode VK_SAMPLER_ADDRESS_MODE_REPEAT,
-        anisotropy_enable = 1u,
-        max_anisotropy = props.limits.max_sampler_anisotropy,
-        border_color = VkBorderColor VK_BORDER_COLOR_INT_OPAQUE_BLACK,
-        compare_op = VkCompareOp VK_COMPARE_OP_ALWAYS,
-        mipmap_mode = VkSamplerMipmapMode VK_SAMPLER_MIPMAP_MODE_LINEAR
-    ]] )
-
-
-def create_example_texture(
-    sis : SwapchainIndependentState
-) : MemoryBackedImage
-    let width1 = 1 << 8
-    let height = 1 << 8
-    return <- sis |> create_device_local_sampled_image_rgba8(
-        width1, height
-    ) <| $(var texels : array<uint4>#)
-        let width = width1 / 4
-        let one = float4(1.f, 1.f, 1.f, 1.f)
-        let s = 0.5f
-        for iy in range(height)
-            for ix in range(width)
-                var x = float(ix)*one*4.f + float4(0.f, 1.f, 2.f, 3.f)
-                var y = float(iy)*one
-                x /= float(width1)
-                y /= float(height)
-                var r = 0.5f*(one + sin(s*(17.f*x + 63.f*y) + 0.1f*one))
-                var g = 0.5f*(one + sin(s*(33.f*x + 37.f*y) + 0.5f*one))
-                var b = 0.5f*(one + sin(s*(61.f*x + 15.f*y) + 1.0f*one))
-                r = 255.f*lerp(0.5f*one, one, r)
-                g = 255.f*lerp(0.5f*one, one, g)
-                b = 255.f*lerp(0.5f*one, one, b)
-                texels[iy*width + ix] = uint4(
-                    pack_float_to_byte(float4(r[0], g[0], b[0], 0f)),
-                    pack_float_to_byte(float4(r[1], g[1], b[1], 0f)),
-                    pack_float_to_byte(float4(r[2], g[2], b[2], 0f)),
-                    pack_float_to_byte(float4(r[3], g[3], b[3], 0f)))
-
-
-def create_example_render_pass(
-    device : Device;
-    surf_fmt : SurfaceFormatKHR
-) : RenderPass
-
-    var create_info <- [[RenderPassCreateInfo
-        attachments <- [{auto[] [[AttachmentDescription
-            format = surf_fmt.format,
-            samples = VkSampleCountFlagBits VK_SAMPLE_COUNT_1_BIT,
-            load_op = VkAttachmentLoadOp VK_ATTACHMENT_LOAD_OP_CLEAR,
-            store_op = VkAttachmentStoreOp VK_ATTACHMENT_STORE_OP_STORE,
-            stencil_load_op = (VkAttachmentLoadOp
-                VK_ATTACHMENT_LOAD_OP_DONT_CARE),
-            stencil_store_op = (VkAttachmentStoreOp
-                VK_ATTACHMENT_STORE_OP_DONT_CARE),
-            initial_layout = VkImageLayout VK_IMAGE_LAYOUT_UNDEFINED,
-            final_layout = VkImageLayout VK_IMAGE_LAYOUT_PRESENT_SRC_KHR
-        ]]}],
-        subpasses <- [{auto[] [[SubpassDescription
-            pipeline_bind_point = (VkPipelineBindPoint
-                VK_PIPELINE_BIND_POINT_GRAPHICS),
-            color_attachments <- [{auto[] [[AttachmentReference
-                attachment = 0u,
-                layout = VkImageLayout VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL
-            ]]}]
-        ]]}],
-        dependencies <- [{auto[] [[SubpassDependency
-            src_subpass = VK_SUBPASS_EXTERNAL,
-            dst_subpass = 0u,
-            src_stage_mask = uint(VkPipelineStageFlagBits
-                VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT),
-            src_access_mask = 0u,
-            dst_stage_mask = uint(VkPipelineStageFlagBits
-                VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT),
-            dst_access_mask = uint(VkAccessFlagBits
-                VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT)
-        ]]}]
-    ]]
-    defer() <| { delete create_info; }
-    return <- device |> create_render_pass(create_info)
-
-
-def create_example_device(
-    physical_device : PhysicalDevice;
-    queue_family    : uint
-) : Device
-    var create_info <- [[DeviceCreateInfo
-        queue_create_infos <- [{auto[] [[DeviceQueueCreateInfo
-            queue_family_index = queue_family,
-            queue_priorities <- [{ auto[] 1.0f }]
-        ]]}],
-        enabled_extension_names := DEFAULT_REQUIRED_EXTENSIONS,
-        p_enabled_features = new [[ PhysicalDeviceFeatures
-            sampler_anisotropy = 1u ]]
-    ]]
-    defer() <| ${ delete create_info; }
-
-    return <- physical_device |> create_device(create_info)
-
-
-def find_best_physical_device(
-    instance : Instance;
-    surface : SurfaceKHR
-) : PhysicalDevice
-    var best_score : int = 0
-    var best_device : PhysicalDevice
-    var devices <- instance |> enumerate_physical_devices()
-    defer() <| ${ delete devices; }
-    print("Looking for a suitable physical device\n")
-    for device in devices
-        var props <- device |> get_physical_device_properties()
-        defer() <| { delete props ; }
-        let version = props.api_version |> vk_version_to_boost |> to_string
-        print("Considering {props.device_name} (supports vulkan {version})\n")
-        var score = device |> get_suitability_score(surface)
-        if score > best_score
-            print("Found new best device.\n")
-            best_score = score
-            best_device = device
-    if best_score == 0
-        panic("No suitable physical device found.")
-    return <- best_device
-
-
-def get_suitability_score(device : PhysicalDevice; surface : SurfaceKHR)
-    var score = 1
-
-    var has_graphics = false
-    device |> find_graphics_queue_family(surface, 1) <| $(qfam)
-        has_graphics = true
-    if ! has_graphics
-        print("No graphics. No go.\n")
-        return 0
-
-    var props <- device |> get_physical_device_properties()
-    if (props.device_type ==
-        VkPhysicalDeviceType VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU
-    )
-        score += 1000
-
-    var feats <- device |> get_physical_device_features()
-    if feats.sampler_anisotropy == 0u
-        print("No anisotropy. No go.\n")
-        return 0
-
-    var exts <- device |> enumerate_device_extension_properties()
-    defer() <| ${ delete exts; }
-    for required_ext in DEFAULT_REQUIRED_EXTENSIONS
-        var found = false
-        for ext in exts
-            if ext.extension_name == required_ext
-                found = true
-                break
-        if ! found
-            print("Required extension {required_ext} not found. No go.\n")
-            return 0
-
-    var formats <- device |> get_physical_device_surface_formats_khr(surface)
-    defer() <| ${ delete formats; }
-    if formats |> length() == 0
-        print("No surface formats. No go.\n")
-        return 0
-
-    var present_modes <- (
-        device |> get_physical_device_surface_present_modes_khr(surface))
-    defer() <| ${ delete present_modes; }
-    if present_modes |> length() == 0
-        print("No present modes. No go.\n")
-        return 0
-
-    return score
-
-
-struct SwapchainIndependentState
-    window          : Window
-    instance        : InstanceEx
-    surface         : SurfaceKHR
-    phys_dev        : PhysicalDevice
-    device          : Device
-    queue           : Queue
-    surf_fmt        : SurfaceFormatKHR
-    present_mode    : VkPresentModeKHR
-    vert_shmod      : ShaderModule
-    frag_shmod      : ShaderModule
-    render_pass     : RenderPass
-    desc_set_layout : DescriptorSetLayout
-    pipeline_layout : PipelineLayout
-    cmd_pool        : CommandPool
-    vertices        : array<Vertex>
-    vbuf            : MemoryBackedBuffer
-    indices         : array<uint>
-    ibuf            : MemoryBackedBuffer
-    texture         : MemoryBackedImage
-    texture_view    : ImageView
-    sampler         : Sampler
-    graphics_family : uint
-
-
-def finalize(var s : SwapchainIndependentState explicit)
-    s.device |> device_wait_idle()
-    delete s.sampler
-    delete s.texture_view
-    delete s.texture
-    delete s.ibuf
-    delete s.indices
-    delete s.vbuf
-    delete s.vertices
-    delete s.pipeline_layout
-    delete s.desc_set_layout
-    delete s.render_pass
-    delete s.frag_shmod
-    delete s.vert_shmod
-    delete s.cmd_pool
-    delete s.device
-    delete s.surface
-    delete s.instance
-    delete s.window
-    memzero(s)
-
-
-def create_swapchain_independent_state(
-    width, height : int;
-    title : string
-) : SwapchainIndependentState
-    var s : SwapchainIndependentState
-    s.window <- create_window(width, height, title)
-    s.instance <- create_instance_ex()
-    s.surface <- s.instance.instance |> create_window_surface(s.window)
-    s.phys_dev <- s.instance.instance |> find_best_physical_device(s.surface)
-    s.present_mode = VkPresentModeKHR VK_PRESENT_MODE_FIFO_KHR
-    s.surf_fmt <- s.phys_dev |> find_format_like_srgb_bgra8(s.surface)
-    s.graphics_family <- s.phys_dev |> get_graphics_queue_family(s.surface, 1)
-    s.device <- s.phys_dev |> create_example_device(s.graphics_family)
-    s.queue <- s.device |> get_device_queue(s.graphics_family)
-    s.cmd_pool <- create_command_pool([device=s.device,
-        queue_family=s.graphics_family])
-    s.vert_shmod <- s.device |> create_shader_module_from_file(
-        "{get_das_root()}/modules/dasVulkan/example/vert.spv")
-    s.frag_shmod <- s.device |> create_shader_module_from_file(
-        "{get_das_root()}/modules/dasVulkan/example/frag.spv")
-    s.render_pass <- s.device |> create_example_render_pass(s.surf_fmt)
-    s.desc_set_layout <- s.device |> create_example_descriptor_set_layout()
-    s.pipeline_layout <- s.device |> create_example_pipeline_layout(
-        s.desc_set_layout)
-    s.vertices <- [{auto[]
-        [[Vertex pos=float2(-0.5f, -0.5f), color=float3(1f, 0f, 0f),
-                                                     tex_pos=float2(1f, 0f)]];
-        [[Vertex pos=float2( 0.5f, -0.5f), color=float3(0f, 1f, 0f),
-                                                     tex_pos=float2(0f, 0f)]];
-        [[Vertex pos=float2( 0.5f,  0.5f), color=float3(0f, 0f, 1f),
-                                                     tex_pos=float2(0f, 1f)]];
-        [[Vertex pos=float2(-0.5f,  0.5f), color=float3(1f, 1f, 1f),
-                                                     tex_pos=float2(1f, 1f)]]}]
-    s.indices <- [{auto[] 0u; 1u; 2u; 2u; 3u; 0u}]
-    s.vbuf <- s |> create_device_local_buffer(s.vertices,
-        uint(VkBufferUsageFlagBits VK_BUFFER_USAGE_VERTEX_BUFFER_BIT))
-    s.ibuf <- s |> create_device_local_buffer(s.indices,
-        uint(VkBufferUsageFlagBits VK_BUFFER_USAGE_INDEX_BUFFER_BIT))
-    s.texture <- s |> create_example_texture()
-    s.texture_view <- s.device |> create_image_view(s.texture)
-    s.sampler <- s |> create_example_sampler()
-    return <- s
-
-
-struct SwapchainDependentState
-    swapchain           : SwapchainEx
-    pipeline            : Pipeline
-    img_avail_sems      : array<Semaphore>
-    render_done_sems    : array<Semaphore>
-    frame_fences        : array<Fence>
-    uniform_bufs        : array<MemoryBackedBuffer>
-    desc_pool           : DescriptorPool
-    desc_sets           : DescriptorSets
-    draw_cmds           : CommandBuffers
-    frames_since_start  : int
-    imgs_used_by_frames : array<int>
-    _device             : Device
-
-
-def finalize(var s : SwapchainDependentState explicit)
-    s._device |> device_wait_idle()
-    delete s.imgs_used_by_frames
-    delete s.draw_cmds
-    delete s.pipeline
-    delete s.desc_sets
-    delete s.desc_pool
-    delete s.uniform_bufs
-    delete s.swapchain
-    delete s.frame_fences
-    delete s.render_done_sems
-    delete s.img_avail_sems
-    memzero(s)
-
-
-def create_swapchain_dependent_state(
-    sis : SwapchainIndependentState
-) : SwapchainDependentState
-    var sds <- [[ SwapchainDependentState _device <- weak_copy(sis.device) ]]
-    sds.img_avail_sems <- [{for x in range(MAX_FRAMES_IN_FLIGHT);
-        sis.device |> create_semaphore() }]
-    sds.render_done_sems <- [{for x in range(MAX_FRAMES_IN_FLIGHT);
-        sis.device |> create_semaphore() }]
-    sds.frame_fences <- [{for x in range(MAX_FRAMES_IN_FLIGHT);
-        sis.device |> create_fence([[FenceCreateInfo
-            flags=uint(VkFenceCreateFlagBits VK_FENCE_CREATE_SIGNALED_BIT)
-    ]]) }]
-    sds.swapchain <- sis.device |> create_swapchain_ex(sis.phys_dev,
-        sis.surface, sis.window, sis.surf_fmt, sis.present_mode,
-        sis.render_pass)
-    sds.uniform_bufs <- sis |> create_example_uniform_buffers(
-        sds.swapchain.framebuffers)
-    sds.desc_pool <- sis |> create_example_descriptor_pool(
-        sds.swapchain.framebuffers)
-    sds.desc_sets <- sis |> create_example_descriptor_sets(
-        sds.desc_pool, sds.uniform_bufs)
-    sds.pipeline <- sis |> create_example_graphics_pipeline()
-    sds.draw_cmds <- create_example_draw_commands(sis, sds)
-    sds.imgs_used_by_frames <- [{for x in sds.swapchain.framebuffers; -1}]
-
-    return <- sds
-
-
-def create_example_descriptor_sets(
-    sis : SwapchainIndependentState;
-    pool : DescriptorPool;
-    ubufs : array<MemoryBackedBuffer>
-) : DescriptorSets
-    var create_info <- [[ DescriptorSetAllocateInfo
-        descriptor_pool = weak_copy(pool),
-        set_layouts <- [{ for ubuf in ubufs ;
-            weak_copy(sis.desc_set_layout) }]
-    ]]
-    defer() <| { delete create_info; }
-    var dsets <- sis.device |> allocate_descriptor_sets(create_info)
-    for dset, ubuf in dsets.descriptor_sets, ubufs
-        if true
-            var writes <- [{ auto[]
-                [[ WriteDescriptorSet
-                    dst_set = weak_copy(dset),
-                    dst_binding = 0u,
-                    descriptor_type = (VkDescriptorType
-                        VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER),
-                    buffer_info <- [{ auto[] [[ DescriptorBufferInfo
-                        buffer = weak_copy(ubuf.buffer),
-                        range_ = uint64(
-                            typeinfo(sizeof type<UniformBufferObject>))
-                ]] }] ]];
-                [[ WriteDescriptorSet
-                    dst_set = weak_copy(dset),
-                    dst_binding = 1u,
-                    descriptor_type = (VkDescriptorType
-                        VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER),
-                    image_info <- [{ auto[] [[ DescriptorImageInfo
-                        image_layout = (VkImageLayout
-                            VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL),
-                        image_view = weak_copy(sis.texture_view),
-                        sampler = weak_copy(sis.sampler)
-                ]] }] ]]
-            }]
-            defer <| { delete writes; }
-            sis.device |> update_descriptor_sets(writes)
-    return <- dsets
-
-
-def create_example_descriptor_pool(
-    sis : SwapchainIndependentState;
-    framebuffers : array<Framebuffer>
-) : DescriptorPool
-    var info <- [[ DescriptorPoolCreateInfo
-        pool_sizes <- [{ auto[]
-            [[ DescriptorPoolSize
-                type_ = VkDescriptorType VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
-                descriptor_count = uint(framebuffers |> length())
-            ]];
-            [[ DescriptorPoolSize
-                type_ = (VkDescriptorType
-                    VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER),
-                descriptor_count = uint(framebuffers |> length())
-            ]]
-        }],
-        max_sets = uint(framebuffers |> length()),
-        flags = uint(VkDescriptorPoolCreateFlagBits
-            VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT)
-    ]]
-    defer() <| { delete info; }
-    return <- sis.device |> create_descriptor_pool(info)
-
-
-def create_example_uniform_buffers(
-    sis : SwapchainIndependentState;
-    framebuffers : array<Framebuffer>
-) : array<MemoryBackedBuffer>
-    return <- [{ for fbuf in framebuffers ;
-        sis.device |> create_memory_backed_buffer(
-            sis.phys_dev, uint64(typeinfo(sizeof type<UniformBufferObject>)),
-            uint(VkBufferUsageFlagBits VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT),
-            uint(VkMemoryPropertyFlagBits VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT)|
-            uint(VkMemoryPropertyFlagBits VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)
-        ) }]
-
-
-def with_next_image(device, swapchain, sem_to_signal; b : block<(i:uint)>)
-    var result : VkResult
-    var p_result : VkResult ?
-    unsafe
-        p_result = addr(result)
-    let img_index = device |> acquire_next_image_khr(
-        swapchain, ULONG_MAX, sem_to_signal, [[Fence]], p_result)
-    if result == VkResult VK_SUCCESS
-        b |> invoke(img_index)
-    else
-        assert(result == VkResult VK_ERROR_OUT_OF_DATE_KHR ||
-            result == VkResult VK_SUBOPTIMAL_KHR)
-
-
-def submit_draw(
-    device          : Device;
-    queue           : Queue;
-    cmd_buf         : CommandBuffer;
-    sem_to_wait     : Semaphore;
-    sem_to_signal   : Semaphore;
-    fence_to_signal : Fence
-)
-    queue_submit([queue = queue, command_buffer = cmd_buf,
-        wait_semaphore = safe_addr(sem_to_wait),
-        wait_dst_stage_mask = uint(VkPipelineStageFlagBits
-            VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT),
-        signal_semaphore = safe_addr(sem_to_signal),
-        fence = fence_to_signal])
-
-
-def present(device, queue, swapchain, img_i, sem_to_wait) : bool
-    var result : VkResult
-    var p_result : VkResult ?
-    unsafe
-        p_result = addr(result)
-    queue |> queue_present_khr(
-        swapchain, img_i, safe_addr(sem_to_wait), p_result)
-    if result == VkResult VK_SUCCESS
-        return true
-    assert(result == VkResult VK_ERROR_OUT_OF_DATE_KHR ||
-        result == VkResult VK_SUBOPTIMAL_KHR)
-    return false
-
-
-def update_uniform_buffer(
-    device : Device;
-    ubuf : MemoryBackedBuffer;
-    frames_since_start : int
-)
-    device |> map_device_memory_to_array(
-        ubuf.memory, uint64(typeinfo(sizeof type<UniformBufferObject>)),
-        uint64(0), 0u
-    ) <| $(var mapped_ubos : array<UniformBufferObject>#)
-        mapped_ubos[0] <- [[ UniformBufferObject offset = float2(
-            0.0f,
-            0.1f*sin(float(frames_since_start)*2.0f*PI / 100.0f))
-        ]]
-
-
-def draw_frame(
-    sis : SwapchainIndependentState;
-    var sds : SwapchainDependentState
-)
-    let frame = sds.frames_since_start % MAX_FRAMES_IN_FLIGHT
-    sis.device |> wait_for_fence(sds.frame_fences[frame], ULONG_MAX)
-    var img_acquired = false
-    var presented = false
-    sis.device |> with_next_image(sds.swapchain.swapchain,
-        sds.img_avail_sems[frame]
-    ) <| $(img_i)
-        img_acquired = true
-
-        var img_frame = sds.imgs_used_by_frames[img_i]
-        if img_frame != -1
-            sis.device |> wait_for_fence(
-                sds.frame_fences[img_frame], ULONG_MAX)
-        sds.imgs_used_by_frames[img_i] = frame
-
-        sis.device |> update_uniform_buffer(sds.uniform_bufs[img_i],
-            sds.frames_since_start)
-
-        sis.device |> reset_fence(sds.frame_fences[frame])
-        sis.device |> submit_draw(sis.queue,
-            sds.draw_cmds.command_buffers[img_i],
-            sds.img_avail_sems[frame], sds.render_done_sems[frame],
-            sds.frame_fences[frame])
-
-        presented = sis.device |> present(sis.queue, sds.swapchain.swapchain,
-            img_i, sds.render_done_sems[frame])
-
-    sds.frames_since_start += 1
-    return img_acquired && presented
-
-
-def run_example
-    var key_callback <- @ <| (
-      window : GLFWwindow const ?; key, scancode, action, mods : int
-    )
-        print("key={key} scancode={scancode} action={action} mods={mods}\n")
-    defer <| { delete key_callback; }
-
-    var sis <- create_swapchain_independent_state(800, 600, "dasVulkanExample")
-    defer <| { delete sis; }
-
-    sis.window.window |> glfwSetKeyCallback <| key_callback
-
-    var props <- sis.phys_dev |> get_physical_device_properties()
-    defer <| { delete props ; }
-    print("Using {props.device_name}\n")
-
-    var keep_running = true
-    while keep_running // swapchain re-creation loop
-        // waiting while window is minimized
-        while uint2(0,0) == sis.window |> get_framebuffer_size()
-            glfwWaitEvents()
-        sis.device |> device_wait_idle()
-
-        if true
-            var sds <- create_swapchain_dependent_state(sis)
-            defer <| { delete sds; }
-
-            print("{sds.swapchain.framebuffers |> length()} " +
-                "images in swap chain\n")
-
-            // BBATKIN: initializing imgui vulkan here
-            init_vulkan_glfw(sis, sds)
-
-            while keep_running
-                keep_running = sis.window.window |> glfwWindowShouldClose()==0
-                glfwPollEvents()
-                if ! draw_frame(sis, sds)
-                    break
-
-            sis.device |> device_wait_idle()
-
-// BBATKIN: now for the imgui_vulkan
-
-var g_MainWindowData = new [[ImGui_ImplVulkanH_Window() ]]
-var g_MinImageCount  : uint = 2u
-var g_SwapChainRebuild = false
-
-def SetupVulkanWindow(sis:SwapchainIndependentState; sds:SwapchainDependentState; width,height:int )
-
-    /*
-    // Create Window Surface
-    var surface : VkSurfaceKHR
-    glfwCreateWindowSurface(
-        sis.instance.instance.instance,
-        sis.window.window,
-        null, // g_Allocator,
-        safe_addr(surface)
-    )
-    */
-    g_MainWindowData.Surface = boost_value_to_vk(sis.surface)
-    // Check for WSI support
-    var res : uint
-    vkGetPhysicalDeviceSurfaceSupportKHR(
-        boost_value_to_vk(sis.phys_dev),
-        boost_value_to_vk(sis.graphics_family),
-        g_MainWindowData.Surface,
-        safe_addr(res))
-    assert(res==uint(VK_TRUE), "Error no WSI support on physical device 0\n")
-    // Select Surface Format
-    let requestSurfaceImageFormat <- [[auto
-        VkFormat VK_FORMAT_B8G8R8A8_UNORM;
-        VkFormat VK_FORMAT_R8G8B8A8_UNORM;
-        VkFormat VK_FORMAT_B8G8R8_UNORM;
-        VkFormat VK_FORMAT_R8G8B8_UNORM
-    ]]
-    let requestSurfaceColorSpace = VkColorSpaceKHR VK_COLORSPACE_SRGB_NONLINEAR_KHR
-    g_MainWindowData.SurfaceFormat = ImGui_ImplVulkanH_SelectSurfaceFormat(
-        boost_value_to_vk(sis.phys_dev),
-        g_MainWindowData.Surface,
-        safe_addr(requestSurfaceImageFormat[0]),
-        length(requestSurfaceImageFormat),
-        requestSurfaceColorSpace
-    )
-    // Select Present Mode
-    var present_modes = [[auto []
-        VkPresentModeKHR VK_PRESENT_MODE_FIFO_KHR
-    ]]
-    g_MainWindowData.PresentMode = ImGui_ImplVulkanH_SelectPresentMode(
-        boost_value_to_vk(sis.phys_dev),
-        g_MainWindowData.Surface,
-        safe_addr(present_modes[0]),
-        length(present_modes)
-    )
-    // Create SwapChain, RenderPass, Framebuffer, etc.
-    assert(g_MinImageCount >= 2u)
-    ImGui_ImplVulkanH_CreateOrResizeWindow(
-        boost_value_to_vk(sis.instance.instance),
-        boost_value_to_vk(sis.phys_dev),
-        boost_value_to_vk(sis.device),
-        g_MainWindowData,   // &wd
-        boost_value_to_vk(sis.graphics_family),
-        null, // g_Allocator, DOES NOT EXIST
-        width,
-        height,
-        g_MinImageCount
-    )
-
 /*
+// Dear ImGui: standalone example application for Glfw + Vulkan
+// If you are new to Dear ImGui, read documentation from the docs/ folder + read the top of imgui.cpp.
+// Read online: https://github.com/ocornut/imgui/tree/master/docs
+
+// Important note to the reader who wish to integrate imgui_impl_vulkan.cpp/.h in their own engine/app.
+// - Common ImGui_ImplVulkan_XXX functions and structures are used to interface with imgui_impl_vulkan.cpp/.h.
+//   You will use those if you want to use this rendering backend in your engine/app.
+// - Helper ImGui_ImplVulkanH_XXX functions and structures are only used by this example (main.cpp) and by
+//   the backend itself (imgui_impl_vulkan.cpp), but should PROBABLY NOT be used by your own engine/app code.
+// Read comments in imgui_impl_vulkan.h.
+
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_vulkan.h"
+#include <stdio.h>          // printf, fprintf
+#include <stdlib.h>         // abort
+#define GLFW_INCLUDE_NONE
+#define GLFW_INCLUDE_VULKAN
+#include <GLFW/glfw3.h>
+#include <vulkan/vulkan.h>
+
+// [Win32] Our example includes a copy of glfw3.lib pre-compiled with VS2010 to maximize ease of testing and compatibility with old VS compilers.
+// To link with VS2010-era libraries, VS2015+ requires linking with legacy_stdio_definitions.lib, which we do using this pragma.
+// Your own project should not be affected, as you are likely to link with a newer binary of GLFW that is adequate for your version of Visual Studio.
+#if defined(_MSC_VER) && (_MSC_VER >= 1900) && !defined(IMGUI_DISABLE_WIN32_FUNCTIONS)
+#pragma comment(lib, "legacy_stdio_definitions")
+#endif
+
+//#define IMGUI_UNLIMITED_FRAME_RATE
+#ifdef _DEBUG
+#define IMGUI_VULKAN_DEBUG_REPORT
+#endif
+
+static VkAllocationCallbacks*   g_Allocator = NULL;
+static VkInstance               g_Instance = VK_NULL_HANDLE;
+static VkPhysicalDevice         g_PhysicalDevice = VK_NULL_HANDLE;
+static VkDevice                 g_Device = VK_NULL_HANDLE;
+static uint32_t                 g_QueueFamily = (uint32_t)-1;
+static VkQueue                  g_Queue = VK_NULL_HANDLE;
+static VkDebugReportCallbackEXT g_DebugReport = VK_NULL_HANDLE;
+static VkPipelineCache          g_PipelineCache = VK_NULL_HANDLE;
+static VkDescriptorPool         g_DescriptorPool = VK_NULL_HANDLE;
+
+static ImGui_ImplVulkanH_Window g_MainWindowData;
+static int                      g_MinImageCount = 2;
+static bool                     g_SwapChainRebuild = false;
+
+static void check_vk_result(VkResult err)
+{
+    if (err == 0)
+        return;
+    fprintf(stderr, "[vulkan] Error: VkResult = %d\n", err);
+    if (err < 0)
+        abort();
+}
+
+#ifdef IMGUI_VULKAN_DEBUG_REPORT
+static VKAPI_ATTR VkBool32 VKAPI_CALL debug_report(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objectType, uint64_t object, size_t location, int32_t messageCode, const char* pLayerPrefix, const char* pMessage, void* pUserData)
+{
+    (void)flags; (void)object; (void)location; (void)messageCode; (void)pUserData; (void)pLayerPrefix; // Unused arguments
+    fprintf(stderr, "[vulkan] Debug report from ObjectType: %i\nMessage: %s\n\n", objectType, pMessage);
+    return VK_FALSE;
+}
+#endif // IMGUI_VULKAN_DEBUG_REPORT
+
+static void SetupVulkan(const char** extensions, uint32_t extensions_count)
+{
+    VkResult err;
+
+    // Create Vulkan Instance
+    {
+        VkInstanceCreateInfo create_info = {};
+        create_info.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+        create_info.enabledExtensionCount = extensions_count;
+        create_info.ppEnabledExtensionNames = extensions;
+#ifdef IMGUI_VULKAN_DEBUG_REPORT
+        // Enabling validation layers
+        const char* layers[] = { "VK_LAYER_KHRONOS_validation" };
+        create_info.enabledLayerCount = 1;
+        create_info.ppEnabledLayerNames = layers;
+
+        // Enable debug report extension (we need additional storage, so we duplicate the user array to add our new extension to it)
+        const char** extensions_ext = (const char**)malloc(sizeof(const char*) * (extensions_count + 1));
+        memcpy(extensions_ext, extensions, extensions_count * sizeof(const char*));
+        extensions_ext[extensions_count] = "VK_EXT_debug_report";
+        create_info.enabledExtensionCount = extensions_count + 1;
+        create_info.ppEnabledExtensionNames = extensions_ext;
+
+        // Create Vulkan Instance
+        err = vkCreateInstance(&create_info, g_Allocator, &g_Instance);
+        check_vk_result(err);
+        free(extensions_ext);
+
+        // Get the function pointer (required for any extensions)
+        auto vkCreateDebugReportCallbackEXT = (PFN_vkCreateDebugReportCallbackEXT)vkGetInstanceProcAddr(g_Instance, "vkCreateDebugReportCallbackEXT");
+        IM_ASSERT(vkCreateDebugReportCallbackEXT != NULL);
+
+        // Setup the debug report callback
+        VkDebugReportCallbackCreateInfoEXT debug_report_ci = {};
+        debug_report_ci.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
+        debug_report_ci.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT | VK_DEBUG_REPORT_PERFORMANCE_WARNING_BIT_EXT;
+        debug_report_ci.pfnCallback = debug_report;
+        debug_report_ci.pUserData = NULL;
+        err = vkCreateDebugReportCallbackEXT(g_Instance, &debug_report_ci, g_Allocator, &g_DebugReport);
+        check_vk_result(err);
+#else
+        // Create Vulkan Instance without any debug feature
+        err = vkCreateInstance(&create_info, g_Allocator, &g_Instance);
+        check_vk_result(err);
+        IM_UNUSED(g_DebugReport);
+#endif
+    }
+
+    // Select GPU
+    {
+        uint32_t gpu_count;
+        err = vkEnumeratePhysicalDevices(g_Instance, &gpu_count, NULL);
+        check_vk_result(err);
+        IM_ASSERT(gpu_count > 0);
+
+        VkPhysicalDevice* gpus = (VkPhysicalDevice*)malloc(sizeof(VkPhysicalDevice) * gpu_count);
+        err = vkEnumeratePhysicalDevices(g_Instance, &gpu_count, gpus);
+        check_vk_result(err);
+
+        // If a number >1 of GPUs got reported, you should find the best fit GPU for your purpose
+        // e.g. VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU if available, or with the greatest memory available, etc.
+        // for sake of simplicity we'll just take the first one, assuming it has a graphics queue family.
+        g_PhysicalDevice = gpus[0];
+        free(gpus);
+    }
+
+    // Select graphics queue family
+    {
+        uint32_t count;
+        vkGetPhysicalDeviceQueueFamilyProperties(g_PhysicalDevice, &count, NULL);
+        VkQueueFamilyProperties* queues = (VkQueueFamilyProperties*)malloc(sizeof(VkQueueFamilyProperties) * count);
+        vkGetPhysicalDeviceQueueFamilyProperties(g_PhysicalDevice, &count, queues);
+        for (uint32_t i = 0; i < count; i++)
+            if (queues[i].queueFlags & VK_QUEUE_GRAPHICS_BIT)
+            {
+                g_QueueFamily = i;
+                break;
+            }
+        free(queues);
+        IM_ASSERT(g_QueueFamily != (uint32_t)-1);
+    }
+
+    // Create Logical Device (with 1 queue)
+    {
+        int device_extension_count = 1;
+        const char* device_extensions[] = { "VK_KHR_swapchain" };
+        const float queue_priority[] = { 1.0f };
+        VkDeviceQueueCreateInfo queue_info[1] = {};
+        queue_info[0].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
+        queue_info[0].queueFamilyIndex = g_QueueFamily;
+        queue_info[0].queueCount = 1;
+        queue_info[0].pQueuePriorities = queue_priority;
+        VkDeviceCreateInfo create_info = {};
+        create_info.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+        create_info.queueCreateInfoCount = sizeof(queue_info) / sizeof(queue_info[0]);
+        create_info.pQueueCreateInfos = queue_info;
+        create_info.enabledExtensionCount = device_extension_count;
+        create_info.ppEnabledExtensionNames = device_extensions;
+        err = vkCreateDevice(g_PhysicalDevice, &create_info, g_Allocator, &g_Device);
+        check_vk_result(err);
+        vkGetDeviceQueue(g_Device, g_QueueFamily, 0, &g_Queue);
+    }
+
+    // Create Descriptor Pool
+    {
+        VkDescriptorPoolSize pool_sizes[] =
+        {
+            { VK_DESCRIPTOR_TYPE_SAMPLER, 1000 },
+            { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000 },
+            { VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 1000 },
+            { VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 1000 },
+            { VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER, 1000 },
+            { VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 1000 },
+            { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1000 },
+            { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1000 },
+            { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 1000 },
+            { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC, 1000 },
+            { VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT, 1000 }
+        };
+        VkDescriptorPoolCreateInfo pool_info = {};
+        pool_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+        pool_info.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
+        pool_info.maxSets = 1000 * IM_ARRAYSIZE(pool_sizes);
+        pool_info.poolSizeCount = (uint32_t)IM_ARRAYSIZE(pool_sizes);
+        pool_info.pPoolSizes = pool_sizes;
+        err = vkCreateDescriptorPool(g_Device, &pool_info, g_Allocator, &g_DescriptorPool);
+        check_vk_result(err);
+    }
+}
+
+// All the ImGui_ImplVulkanH_XXX structures/functions are optional helpers used by the demo.
+// Your real engine/app may not use them.
 static void SetupVulkanWindow(ImGui_ImplVulkanH_Window* wd, VkSurfaceKHR surface, int width, int height)
 {
     wd->Surface = surface;
@@ -1109,71 +241,327 @@ static void SetupVulkanWindow(ImGui_ImplVulkanH_Window* wd, VkSurfaceKHR surface
     IM_ASSERT(g_MinImageCount >= 2);
     ImGui_ImplVulkanH_CreateOrResizeWindow(g_Instance, g_PhysicalDevice, g_Device, wd, g_QueueFamily, g_Allocator, width, height, g_MinImageCount);
 }
+
+static void CleanupVulkan()
+{
+    vkDestroyDescriptorPool(g_Device, g_DescriptorPool, g_Allocator);
+
+#ifdef IMGUI_VULKAN_DEBUG_REPORT
+    // Remove the debug report callback
+    auto vkDestroyDebugReportCallbackEXT = (PFN_vkDestroyDebugReportCallbackEXT)vkGetInstanceProcAddr(g_Instance, "vkDestroyDebugReportCallbackEXT");
+    vkDestroyDebugReportCallbackEXT(g_Instance, g_DebugReport, g_Allocator);
+#endif // IMGUI_VULKAN_DEBUG_REPORT
+
+    vkDestroyDevice(g_Device, g_Allocator);
+    vkDestroyInstance(g_Instance, g_Allocator);
+}
+
 static void CleanupVulkanWindow()
 {
     ImGui_ImplVulkanH_DestroyWindow(g_Instance, g_Device, &g_MainWindowData, g_Allocator);
 }
 
+static void FrameRender(ImGui_ImplVulkanH_Window* wd, ImDrawData* draw_data)
+{
+    VkResult err;
+
+    VkSemaphore image_acquired_semaphore  = wd->FrameSemaphores[wd->SemaphoreIndex].ImageAcquiredSemaphore;
+    VkSemaphore render_complete_semaphore = wd->FrameSemaphores[wd->SemaphoreIndex].RenderCompleteSemaphore;
+    err = vkAcquireNextImageKHR(g_Device, wd->Swapchain, UINT64_MAX, image_acquired_semaphore, VK_NULL_HANDLE, &wd->FrameIndex);
+    if (err == VK_ERROR_OUT_OF_DATE_KHR)
+    {
+        g_SwapChainRebuild = true;
+        return;
+    }
+    check_vk_result(err);
+
+    ImGui_ImplVulkanH_Frame* fd = &wd->Frames[wd->FrameIndex];
+    {
+        err = vkWaitForFences(g_Device, 1, &fd->Fence, VK_TRUE, UINT64_MAX);    // wait indefinitely instead of periodically checking
+        check_vk_result(err);
+
+        err = vkResetFences(g_Device, 1, &fd->Fence);
+        check_vk_result(err);
+    }
+    {
+        err = vkResetCommandPool(g_Device, fd->CommandPool, 0);
+        check_vk_result(err);
+        VkCommandBufferBeginInfo info = {};
+        info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+        info.flags |= VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+        err = vkBeginCommandBuffer(fd->CommandBuffer, &info);
+        check_vk_result(err);
+    }
+    {
+        VkRenderPassBeginInfo info = {};
+        info.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+        info.renderPass = wd->RenderPass;
+        info.framebuffer = fd->Framebuffer;
+        info.renderArea.extent.width = wd->Width;
+        info.renderArea.extent.height = wd->Height;
+        info.clearValueCount = 1;
+        info.pClearValues = &wd->ClearValue;
+        vkCmdBeginRenderPass(fd->CommandBuffer, &info, VK_SUBPASS_CONTENTS_INLINE);
+    }
+
+    // Record dear imgui primitives into command buffer
+    ImGui_ImplVulkan_RenderDrawData(draw_data, fd->CommandBuffer);
+
+    // Submit command buffer
+    vkCmdEndRenderPass(fd->CommandBuffer);
+    {
+        VkPipelineStageFlags wait_stage = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+        VkSubmitInfo info = {};
+        info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+        info.waitSemaphoreCount = 1;
+        info.pWaitSemaphores = &image_acquired_semaphore;
+        info.pWaitDstStageMask = &wait_stage;
+        info.commandBufferCount = 1;
+        info.pCommandBuffers = &fd->CommandBuffer;
+        info.signalSemaphoreCount = 1;
+        info.pSignalSemaphores = &render_complete_semaphore;
+
+        err = vkEndCommandBuffer(fd->CommandBuffer);
+        check_vk_result(err);
+        err = vkQueueSubmit(g_Queue, 1, &info, fd->Fence);
+        check_vk_result(err);
+    }
+}
+
+static void FramePresent(ImGui_ImplVulkanH_Window* wd)
+{
+    if (g_SwapChainRebuild)
+        return;
+    VkSemaphore render_complete_semaphore = wd->FrameSemaphores[wd->SemaphoreIndex].RenderCompleteSemaphore;
+    VkPresentInfoKHR info = {};
+    info.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+    info.waitSemaphoreCount = 1;
+    info.pWaitSemaphores = &render_complete_semaphore;
+    info.swapchainCount = 1;
+    info.pSwapchains = &wd->Swapchain;
+    info.pImageIndices = &wd->FrameIndex;
+    VkResult err = vkQueuePresentKHR(g_Queue, &info);
+    if (err == VK_ERROR_OUT_OF_DATE_KHR)
+    {
+        g_SwapChainRebuild = true;
+        return;
+    }
+    check_vk_result(err);
+    wd->SemaphoreIndex = (wd->SemaphoreIndex + 1) % wd->ImageCount; // Now we can use the next set of semaphores
+}
+
+static void glfw_error_callback(int error, const char* description)
+{
+    fprintf(stderr, "Glfw Error %d: %s\n", error, description);
+}
 */
 
-def init_vulkan_glfw( sis:SwapchainIndependentState; sds:SwapchainDependentState )
+[export]
+def main()
+    print("hello world\n")
+/*
+int main(int, char**)
+{
+    // Setup GLFW window
+    glfwSetErrorCallback(glfw_error_callback);
+    if (!glfwInit())
+        return 1;
+
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    GLFWwindow* window = glfwCreateWindow(1280, 720, "Dear ImGui GLFW+Vulkan example", NULL, NULL);
+
+    // Setup Vulkan
+    if (!glfwVulkanSupported())
+    {
+        printf("GLFW: Vulkan Not Supported\n");
+        return 1;
+    }
+    uint32_t extensions_count = 0;
+    const char** extensions = glfwGetRequiredInstanceExtensions(&extensions_count);
+    SetupVulkan(extensions, extensions_count);
+
+    // Create Window Surface
+    VkSurfaceKHR surface;
+    VkResult err = glfwCreateWindowSurface(g_Instance, window, g_Allocator, &surface);
+    check_vk_result(err);
+
     // Create Framebuffers
-    var w, h : int
-    glfwGetFramebufferSize(sis.window.window, safe_addr(w), safe_addr(h))
-    SetupVulkanWindow(sis, sds, w, h)
-    // Create context
-    imgui::CreateContext(null)
-    // var imgui::ImGuiIO & io = imgui::GetIO()
+    int w, h;
+    glfwGetFramebufferSize(window, &w, &h);
+    ImGui_ImplVulkanH_Window* wd = &g_MainWindowData;
+    SetupVulkanWindow(wd, surface, w, h);
+
+    // Setup Dear ImGui context
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     //io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
-    imgui::StyleColorsDark(null)
+
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+    //ImGui::StyleColorsClassic();
+
     // Setup Platform/Renderer backends
-    ImGui_ImplGlfw_InitForVulkan(sis.window.window, true)
-    var init_info : ImGui_ImplVulkan_InitInfo
-    init_info.Instance = sis.instance.instance.instance
-    init_info.PhysicalDevice = sis.phys_dev.physical_device
-    init_info.Device = sis.device.device
-    init_info.Queue = sis.queue.queue
-    init_info.QueueFamily = sis.graphics_family
-    init_info.MinImageCount = g_MinImageCount
-    init_info.ImageCount = g_MainWindowData.ImageCount
-    init_info.DescriptorPool = sds.desc_pool.descriptor_pool
-    /*
-    init_info.PipelineCache = g_PipelineCache
-    */
-    /*
-    // DOES NOT EXIST
-    init_info.Allocator = g_Allocator
-    */
-    /*
-    init_info.CheckVkResultFn = check_vk_result // clalback??
-    */
-    ImGui_ImplVulkan_Init(safe_addr(init_info), g_MainWindowData.RenderPass)
+    ImGui_ImplGlfw_InitForVulkan(window, true);
+    ImGui_ImplVulkan_InitInfo init_info = {};
+    init_info.Instance = g_Instance;
+    init_info.PhysicalDevice = g_PhysicalDevice;
+    init_info.Device = g_Device;
+    init_info.QueueFamily = g_QueueFamily;
+    init_info.Queue = g_Queue;
+    init_info.PipelineCache = g_PipelineCache;
+    init_info.DescriptorPool = g_DescriptorPool;
+    init_info.Allocator = g_Allocator;
+    init_info.MinImageCount = g_MinImageCount;
+    init_info.ImageCount = wd->ImageCount;
+    init_info.CheckVkResultFn = check_vk_result;
+    ImGui_ImplVulkan_Init(&init_info, wd->RenderPass);
 
-[export]
-def main
-    unsafe
-        string_heap_collect()
-    let heap_on_start = heap_bytes_allocated()
-    let string_heap_on_start = string_heap_bytes_allocated()
+    // Load Fonts
+    // - If no fonts are loaded, dear imgui will use the default font. You can also load multiple fonts and use ImGui::PushFont()/PopFont() to select them.
+    // - AddFontFromFileTTF() will return the ImFont* so you can store it if you need to select the font among multiple.
+    // - If the file cannot be loaded, the function will return NULL. Please handle those errors in your application (e.g. use an assertion, or display an error and quit).
+    // - The fonts will be rasterized at a given size (w/ oversampling) and stored into a texture when calling ImFontAtlas::Build()/GetTexDataAsXXXX(), which ImGui_ImplXXXX_NewFrame below will call.
+    // - Read 'docs/FONTS.md' for more instructions and details.
+    // - Remember that in C/C++ if you want to include a backslash \ in a string literal you need to write a double backslash \\ !
+    //io.Fonts->AddFontDefault();
+    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Roboto-Medium.ttf", 16.0f);
+    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/Cousine-Regular.ttf", 15.0f);
+    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/DroidSans.ttf", 16.0f);
+    //io.Fonts->AddFontFromFileTTF("../../misc/fonts/ProggyTiny.ttf", 10.0f);
+    //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
+    //IM_ASSERT(font != NULL);
 
-    print("\nStarted\n")
-    glfwInit()
-    glfwWindowHint(int(GLFW_CLIENT_API), GLFW_NO_API)
-    glfwWindowHint(int(GLFW_RESIZABLE), GLFW_TRUE)
-    run_example()
-    glfwTerminate()
+    // Upload Fonts
+    {
+        // Use any command queue
+        VkCommandPool command_pool = wd->Frames[wd->FrameIndex].CommandPool;
+        VkCommandBuffer command_buffer = wd->Frames[wd->FrameIndex].CommandBuffer;
 
-    unsafe
-        string_heap_collect()
-    let heap_leaks = int(heap_bytes_allocated() - heap_on_start)
-    let string_heap_leaks = int(string_heap_bytes_allocated()
-        - string_heap_on_start)
+        err = vkResetCommandPool(g_Device, command_pool, 0);
+        check_vk_result(err);
+        VkCommandBufferBeginInfo begin_info = {};
+        begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+        begin_info.flags |= VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+        err = vkBeginCommandBuffer(command_buffer, &begin_info);
+        check_vk_result(err);
 
-    print("{heap_leaks} heap bytes have leaked\n")
-    print("{string_heap_leaks} string heap bytes have leaked\n")
-    assert(heap_leaks == 0)
-    assert(string_heap_leaks == 0)
+        ImGui_ImplVulkan_CreateFontsTexture(command_buffer);
 
-    print("Finished\n")
-    return true
+        VkSubmitInfo end_info = {};
+        end_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+        end_info.commandBufferCount = 1;
+        end_info.pCommandBuffers = &command_buffer;
+        err = vkEndCommandBuffer(command_buffer);
+        check_vk_result(err);
+        err = vkQueueSubmit(g_Queue, 1, &end_info, VK_NULL_HANDLE);
+        check_vk_result(err);
+
+        err = vkDeviceWaitIdle(g_Device);
+        check_vk_result(err);
+        ImGui_ImplVulkan_DestroyFontUploadObjects();
+    }
+
+    // Our state
+    bool show_demo_window = true;
+    bool show_another_window = false;
+    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+    // Main loop
+    while (!glfwWindowShouldClose(window))
+    {
+        // Poll and handle events (inputs, window resize, etc.)
+        // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
+        // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
+        // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application.
+        // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
+        glfwPollEvents();
+
+        // Resize swap chain?
+        if (g_SwapChainRebuild)
+        {
+            int width, height;
+            glfwGetFramebufferSize(window, &width, &height);
+            if (width > 0 && height > 0)
+            {
+                ImGui_ImplVulkan_SetMinImageCount(g_MinImageCount);
+                ImGui_ImplVulkanH_CreateOrResizeWindow(g_Instance, g_PhysicalDevice, g_Device, &g_MainWindowData, g_QueueFamily, g_Allocator, width, height, g_MinImageCount);
+                g_MainWindowData.FrameIndex = 0;
+                g_SwapChainRebuild = false;
+            }
+        }
+
+        // Start the Dear ImGui frame
+        ImGui_ImplVulkan_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
+        if (show_demo_window)
+            ImGui::ShowDemoWindow(&show_demo_window);
+
+        // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
+        {
+            static float f = 0.0f;
+            static int counter = 0;
+
+            ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+
+            ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
+            ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
+            ImGui::Checkbox("Another Window", &show_another_window);
+
+            ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+            ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+
+            if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+                counter++;
+            ImGui::SameLine();
+            ImGui::Text("counter = %d", counter);
+
+            ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+            ImGui::End();
+        }
+
+        // 3. Show another simple window.
+        if (show_another_window)
+        {
+            ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+            ImGui::Text("Hello from another window!");
+            if (ImGui::Button("Close Me"))
+                show_another_window = false;
+            ImGui::End();
+        }
+
+        // Rendering
+        ImGui::Render();
+        ImDrawData* draw_data = ImGui::GetDrawData();
+        const bool is_minimized = (draw_data->DisplaySize.x <= 0.0f || draw_data->DisplaySize.y <= 0.0f);
+        if (!is_minimized)
+        {
+            wd->ClearValue.color.float32[0] = clear_color.x * clear_color.w;
+            wd->ClearValue.color.float32[1] = clear_color.y * clear_color.w;
+            wd->ClearValue.color.float32[2] = clear_color.z * clear_color.w;
+            wd->ClearValue.color.float32[3] = clear_color.w;
+            FrameRender(wd, draw_data);
+            FramePresent(wd);
+        }
+    }
+
+    // Cleanup
+    err = vkDeviceWaitIdle(g_Device);
+    check_vk_result(err);
+    ImGui_ImplVulkan_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+
+    CleanupVulkanWindow();
+    CleanupVulkan();
+
+    glfwDestroyWindow(window);
+    glfwTerminate();
+
+    return 0;
+}
+*/
