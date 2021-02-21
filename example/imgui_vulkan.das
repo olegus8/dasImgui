@@ -356,12 +356,20 @@ static void glfw_error_callback(int error, const char* description)
 }
 */
 
+
 def imgui_vulkan_app ( title:string; blk : block )
     if glfwInit()==0
 		panic("can't init glfw")
-    var window <- create_window(1280, 720, title)
-    defer <| { delete window; }
-    invoke(blk)
+    if true
+        var window <- create_window(1280, 720, title)
+        defer <| { delete window; }
+        var instance <- create_instance_ex()
+        defer <| { delete instance; }
+        var surface <- instance.instance |> create_window_surface(s.window)
+        defer <| { delete surface; }
+        var phys_dev <- instance.instance |> find_best_physical_device(
+            surface, simple_device_score)
+        invoke(blk)
     glfwTerminate()
 
 [export]
@@ -369,13 +377,6 @@ def main()
 	imgui_vulkan_app("Testing IMGUI") <|
         print("hello world 2\n")
 /*
-
-    // Setup Vulkan
-    if (!glfwVulkanSupported())
-    {
-        printf("GLFW: Vulkan Not Supported\n");
-        return 1;
-    }
     uint32_t extensions_count = 0;
     const char** extensions = glfwGetRequiredInstanceExtensions(&extensions_count);
     SetupVulkan(extensions, extensions_count);
