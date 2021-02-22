@@ -130,7 +130,7 @@ static void FramePresent(ImGui_ImplVulkanH_Window* wd)
 
 
 def imgui_vulkan_app ( title:string; blk : block )
-    var app <- create_simple_vulkan_app(title, 1280, 720)
+    var app <- SimpleVulkanApp(title, 1280, 720)
 
     CreateContext(null)
     StyleColorsDark(null)
