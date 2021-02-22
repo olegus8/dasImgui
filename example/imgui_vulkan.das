@@ -131,6 +131,7 @@ static void FramePresent(ImGui_ImplVulkanH_Window* wd)
 
 def imgui_vulkan_app ( title:string; blk : block )
     var app <- SimpleVulkanApp(title, 1280, 720)
+    defer <| { delete app; }
 
     CreateContext(null)
     StyleColorsDark(null)
