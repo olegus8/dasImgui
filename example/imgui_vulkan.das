@@ -135,8 +135,7 @@ def imgui_vulkan_app ( title:string; blk : block<(c:CommandBuffer)> )
     defer <| { delete app; }
 
     CreateContext(null)
-    var io & = GetIO()
-    io.FontGlobalScale = 2.0;   // BBATKIN: note - my monitor is HUGE
+    GetIO().FontGlobalScale = 2.0;   // BBATKIN: note - my monitor is HUGE
     StyleColorsDark(null)
     ImGui_ImplGlfw_InitForVulkan(app |> glfw_window, true)
 
