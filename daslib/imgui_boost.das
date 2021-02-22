@@ -20,7 +20,7 @@ struct ImGuiInputTextBuffer
 
 def make_input_buffer ( var buf : ImGuiInputTextBuffer; txt:string; len:int )
     buf.buffer |> resize(len)
-    let bytes = clamp ( length(txt)-1, 0, len-1 )
+    let bytes = clamp ( length(txt), 0, len-1 )
     unsafe
         memcpy ( addr(buf.buffer[0]), reinterpret<void?> txt, bytes )
 
@@ -117,3 +117,16 @@ def PlotHistogram(
     var gsize = graph_size
     unsafe
         imgui::PlotHistogram(lab, addr(values[0]), length(values), values_offset, overlay_text, scale_min, scale_max, gsize, stride)
+
+def CheckboxFlags(lab:string; var p_flags:auto(FLAGT)? implicit; flags:FLAGT )
+    unsafe
+        return imgui::CheckboxFlags(lab,
+            reinterpret<int?> p_flags,
+            int(flags))
+
+def RadioButton(lab:string; var p_flags:auto(FLAGT)? implicit; flags:FLAGT)
+    unsafe
+        return imgui::RadioButton(lab,
+            reinterpret<int?> p_flags,
+            int(flags))
+

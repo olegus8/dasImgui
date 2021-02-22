@@ -324,17 +324,17 @@ public:
 	}
 };
 
-class EnumerationImGuiKeyModFlags_ : public das::Enumeration {
+class EnumerationImGuiKeyModFlags : public das::Enumeration {
 public:
-    EnumerationImGuiKeyModFlags_() : das::Enumeration("ImGuiKeyModFlags_") {
+    EnumerationImGuiKeyModFlags() : das::Enumeration("ImGuiKeyModFlags") {
         external = true;
         cppName = "ImGuiKeyModFlags_";
         baseType = (das::Type) das::ToBasicType< das::underlying_type< ImGuiKeyModFlags_ >::type >::type;
-		addI("ImGuiKeyModFlags_None", int64_t(ImGuiKeyModFlags_::ImGuiKeyModFlags_None), das::LineInfo());
-		addI("ImGuiKeyModFlags_Ctrl", int64_t(ImGuiKeyModFlags_::ImGuiKeyModFlags_Ctrl), das::LineInfo());
-		addI("ImGuiKeyModFlags_Shift", int64_t(ImGuiKeyModFlags_::ImGuiKeyModFlags_Shift), das::LineInfo());
-		addI("ImGuiKeyModFlags_Alt", int64_t(ImGuiKeyModFlags_::ImGuiKeyModFlags_Alt), das::LineInfo());
-		addI("ImGuiKeyModFlags_Super", int64_t(ImGuiKeyModFlags_::ImGuiKeyModFlags_Super), das::LineInfo());
+		addI("None", int64_t(ImGuiKeyModFlags_::ImGuiKeyModFlags_None), das::LineInfo());
+		addI("Ctrl", int64_t(ImGuiKeyModFlags_::ImGuiKeyModFlags_Ctrl), das::LineInfo());
+		addI("Shift", int64_t(ImGuiKeyModFlags_::ImGuiKeyModFlags_Shift), das::LineInfo());
+		addI("Alt", int64_t(ImGuiKeyModFlags_::ImGuiKeyModFlags_Alt), das::LineInfo());
+		addI("Super", int64_t(ImGuiKeyModFlags_::ImGuiKeyModFlags_Super), das::LineInfo());
 	}
 };
 
@@ -524,49 +524,49 @@ public:
 	}
 };
 
-class EnumerationImGuiTableColumnFlags_ : public das::Enumeration {
+class EnumerationImGuiTableColumnFlags : public das::Enumeration {
 public:
-    EnumerationImGuiTableColumnFlags_() : das::Enumeration("ImGuiTableColumnFlags_") {
+    EnumerationImGuiTableColumnFlags() : das::Enumeration("ImGuiTableColumnFlags") {
         external = true;
         cppName = "ImGuiTableColumnFlags_";
         baseType = (das::Type) das::ToBasicType< das::underlying_type< ImGuiTableColumnFlags_ >::type >::type;
-		addI("ImGuiTableColumnFlags_None", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_None), das::LineInfo());
-		addI("ImGuiTableColumnFlags_DefaultHide", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_DefaultHide), das::LineInfo());
-		addI("ImGuiTableColumnFlags_DefaultSort", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_DefaultSort), das::LineInfo());
-		addI("ImGuiTableColumnFlags_WidthStretch", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_WidthStretch), das::LineInfo());
-		addI("ImGuiTableColumnFlags_WidthFixed", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_WidthFixed), das::LineInfo());
-		addI("ImGuiTableColumnFlags_NoResize", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_NoResize), das::LineInfo());
-		addI("ImGuiTableColumnFlags_NoReorder", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_NoReorder), das::LineInfo());
-		addI("ImGuiTableColumnFlags_NoHide", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_NoHide), das::LineInfo());
-		addI("ImGuiTableColumnFlags_NoClip", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_NoClip), das::LineInfo());
-		addI("ImGuiTableColumnFlags_NoSort", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_NoSort), das::LineInfo());
-		addI("ImGuiTableColumnFlags_NoSortAscending", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_NoSortAscending), das::LineInfo());
-		addI("ImGuiTableColumnFlags_NoSortDescending", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_NoSortDescending), das::LineInfo());
-		addI("ImGuiTableColumnFlags_NoHeaderWidth", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_NoHeaderWidth), das::LineInfo());
-		addI("ImGuiTableColumnFlags_PreferSortAscending", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_PreferSortAscending), das::LineInfo());
-		addI("ImGuiTableColumnFlags_PreferSortDescending", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_PreferSortDescending), das::LineInfo());
-		addI("ImGuiTableColumnFlags_IndentEnable", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_IndentEnable), das::LineInfo());
-		addI("ImGuiTableColumnFlags_IndentDisable", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_IndentDisable), das::LineInfo());
-		addI("ImGuiTableColumnFlags_IsEnabled", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_IsEnabled), das::LineInfo());
-		addI("ImGuiTableColumnFlags_IsVisible", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_IsVisible), das::LineInfo());
-		addI("ImGuiTableColumnFlags_IsSorted", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_IsSorted), das::LineInfo());
-		addI("ImGuiTableColumnFlags_IsHovered", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_IsHovered), das::LineInfo());
-		addI("ImGuiTableColumnFlags_WidthMask_", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_WidthMask_), das::LineInfo());
-		addI("ImGuiTableColumnFlags_IndentMask_", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_IndentMask_), das::LineInfo());
-		addI("ImGuiTableColumnFlags_StatusMask_", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_StatusMask_), das::LineInfo());
-		addI("ImGuiTableColumnFlags_NoDirectResize_", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_NoDirectResize_), das::LineInfo());
+		addI("None", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_None), das::LineInfo());
+		addI("DefaultHide", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_DefaultHide), das::LineInfo());
+		addI("DefaultSort", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_DefaultSort), das::LineInfo());
+		addI("WidthStretch", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_WidthStretch), das::LineInfo());
+		addI("WidthFixed", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_WidthFixed), das::LineInfo());
+		addI("NoResize", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_NoResize), das::LineInfo());
+		addI("NoReorder", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_NoReorder), das::LineInfo());
+		addI("NoHide", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_NoHide), das::LineInfo());
+		addI("NoClip", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_NoClip), das::LineInfo());
+		addI("NoSort", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_NoSort), das::LineInfo());
+		addI("NoSortAscending", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_NoSortAscending), das::LineInfo());
+		addI("NoSortDescending", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_NoSortDescending), das::LineInfo());
+		addI("NoHeaderWidth", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_NoHeaderWidth), das::LineInfo());
+		addI("PreferSortAscending", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_PreferSortAscending), das::LineInfo());
+		addI("PreferSortDescending", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_PreferSortDescending), das::LineInfo());
+		addI("IndentEnable", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_IndentEnable), das::LineInfo());
+		addI("IndentDisable", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_IndentDisable), das::LineInfo());
+		addI("IsEnabled", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_IsEnabled), das::LineInfo());
+		addI("IsVisible", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_IsVisible), das::LineInfo());
+		addI("IsSorted", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_IsSorted), das::LineInfo());
+		addI("IsHovered", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_IsHovered), das::LineInfo());
+		addI("WidthMask_", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_WidthMask_), das::LineInfo());
+		addI("IndentMask_", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_IndentMask_), das::LineInfo());
+		addI("StatusMask_", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_StatusMask_), das::LineInfo());
+		addI("NoDirectResize_", int64_t(ImGuiTableColumnFlags_::ImGuiTableColumnFlags_NoDirectResize_), das::LineInfo());
 	}
 };
 
-class EnumerationImGuiSortDirection_ : public das::Enumeration {
+class EnumerationImGuiSortDirection : public das::Enumeration {
 public:
-    EnumerationImGuiSortDirection_() : das::Enumeration("ImGuiSortDirection_") {
+    EnumerationImGuiSortDirection() : das::Enumeration("ImGuiSortDirection") {
         external = true;
         cppName = "ImGuiSortDirection_";
         baseType = (das::Type) das::ToBasicType< das::underlying_type< ImGuiSortDirection_ >::type >::type;
-		addI("ImGuiSortDirection_None", int64_t(ImGuiSortDirection_::ImGuiSortDirection_None), das::LineInfo());
-		addI("ImGuiSortDirection_Ascending", int64_t(ImGuiSortDirection_::ImGuiSortDirection_Ascending), das::LineInfo());
-		addI("ImGuiSortDirection_Descending", int64_t(ImGuiSortDirection_::ImGuiSortDirection_Descending), das::LineInfo());
+		addI("None", int64_t(ImGuiSortDirection_::ImGuiSortDirection_None), das::LineInfo());
+		addI("Ascending", int64_t(ImGuiSortDirection_::ImGuiSortDirection_Ascending), das::LineInfo());
+		addI("Descending", int64_t(ImGuiSortDirection_::ImGuiSortDirection_Descending), das::LineInfo());
 	}
 };
 

@@ -106,8 +106,8 @@ struct ImGuiIO_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiIO> {
 	ImGuiIO_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImGuiIO", ml) {
 	}
 	void init () {
-		addField<DAS_BIND_MANAGED_FIELD(ConfigFlags)>("ConfigFlags","ConfigFlags");
-		addField<DAS_BIND_MANAGED_FIELD(BackendFlags)>("BackendFlags","BackendFlags");
+		addField<ImGuiConfigFlags_,offsetof(ManagedType,ConfigFlags)>("ConfigFlags","ConfigFlags");
+		addField<ImGuiBackendFlags_,offsetof(ManagedType,BackendFlags)>("BackendFlags","BackendFlags");
 		addField<DAS_BIND_MANAGED_FIELD(DisplaySize)>("DisplaySize","DisplaySize");
 		addField<DAS_BIND_MANAGED_FIELD(DeltaTime)>("DeltaTime","DeltaTime");
 		addField<DAS_BIND_MANAGED_FIELD(IniSavingRate)>("IniSavingRate","IniSavingRate");
@@ -487,6 +487,8 @@ struct ImGuiTextRange_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiText
 	}
 };
 struct ImGuiTableColumnSortSpecs_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiTableColumnSortSpecs> {
+	virtual bool isLocal() const override { return true; }
+	virtual bool canBePlacedInContainer() const override { return true; }
 	ImGuiTableColumnSortSpecs_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImGuiTableColumnSortSpecs", ml) {
 	}
 	void init () {

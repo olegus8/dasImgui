@@ -169,6 +169,14 @@ namespace das {
         temp->at = *at;
         ImGui::SetNextWindowSizeConstraints(size_min, size_max, &SetNextWindowSizeConstraintsCallback, temp);
     }
+
+    ImGuiSortDirection_ SortDirection ( const ImGuiTableColumnSortSpecs & specs ) {
+        return ImGuiSortDirection_(specs.SortDirection);
+    }
+
+    ImVec2 CalcTextSize(const char* text,bool hide_text_after_double_hash, float wrap_width) {
+        return ImGui::CalcTextSize(text,nullptr,hide_text_after_double_hash,wrap_width);
+    }
 }
 
 Module_imgui::Module_imgui() : Module("imgui") {
@@ -214,7 +222,7 @@ bool Module_imgui::initDependencies() {
     addCtor<ImColor>(*this,lib,"ImColor","ImColor");
     addCtor<ImColor,const ImVec4 &>(*this,lib,"ImColor","ImColor");
     addExtern<DAS_BIND_FUN(das::HSV),SimNode_ExtFuncCallAndCopyOrMove>(*this, lib, "HSV",
-        SideEffects::worstDefault, "das::HSV")
+        SideEffects::none, "das::HSV")
             ->args({"h","s","v","a"})
                 ->arg_init(3,make_smart<ExprConstFloat>(1.0f));
     // imgui draw list
@@ -268,6 +276,14 @@ bool Module_imgui::initDependencies() {
     // SetNextWindowSizeConstraints
     addExtern<DAS_BIND_FUN(das::SetNextWindowSizeConstraints)>(*this,lib,"_builtin_SetNextWindowSizeConstraints",
         SideEffects::worstDefault,"das::SetNextWindowSizeConstraints");
+    // ImGuiTableColumnSortSpecs
+    addExtern<DAS_BIND_FUN(das::SortDirection)>(*this,lib,"SortDirection",
+        SideEffects::none,"das::SortDirection");
+    // CalcTextSize
+    addExtern<DAS_BIND_FUN(das::CalcTextSize), SimNode_ExtFuncCallAndCopyOrMove>(*this, lib, "CalcTextSize",SideEffects::worstDefault, "ImGui::CalcTextSize")
+	->args({"text","hide_text_after_double_hash","wrap_width"})
+		->arg_init(1,make_smart<ExprConstBool>(false))
+		->arg_init(2,make_smart<ExprConstFloat>(-1.0f));
     // additional default values
     findUniqueFunction("AddRect")
         ->arg_init(5, make_smart<ExprConstEnumeration>("All",makeType<ImDrawCornerFlags_>(lib)));
@@ -288,6 +304,8 @@ bool Module_imgui::initDependencies() {
             fn->arg_init(8, make_smart<ExprConstInt>(int32_t(sizeof(float))));
         }
     }
+    findUniqueFunction("TableSetupColumn")
+        ->arg_init(3, make_smart<ExprConstUInt>(uint32_t(0)));
 #endif
     return true;
 }
