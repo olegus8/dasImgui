@@ -134,7 +134,7 @@ def imgui_vulkan_app ( title:string; blk : block )
 
     CreateContext(null)
     StyleColorsDark(null)
-    ImGui_ImplGlfw_InitForVulkan(sis |> glfw_window, true)
+    ImGui_ImplGlfw_InitForVulkan(app |> glfw_window, true)
 
     var init_info <- [[ ImGui_ImplVulkan_InitInfo
         Instance = app |> vk_instance,
