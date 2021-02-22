@@ -129,7 +129,7 @@ static void FramePresent(ImGui_ImplVulkanH_Window* wd)
 */
 
 
-def imgui_vulkan_app ( title:string; blk : block )
+def imgui_vulkan_app ( title:string; blk : block<(c:CommandBuffer)> )
     var app <- SimpleVulkanApp(title, 1280, 720)
     defer <| { delete app; }
 
@@ -171,7 +171,7 @@ def main()
     let heap_on_start = heap_bytes_allocated()
     let string_heap_on_start = string_heap_bytes_allocated()
 
-	imgui_vulkan_app("Testing IMGUI Vulkan") <|
+	imgui_vulkan_app("Testing IMGUI Vulkan") <| $(cmd : CommandBuffer)
         print("hello world 6\n")
         NewFrame()
         DasShowDemoWindow(null)
