@@ -134,8 +134,10 @@ def imgui_vulkan_app ( title:string; blk : block )
     if true
         var sis <- vulkan_boost::create_simple_sis(title, 1280, 720)
         defer <| { delete sis; }
+
         var sds <- vulkan_boost::create_simple_sds(sis)
         defer <| { delete sds; }
+
         CreateContext(null)
         StyleColorsDark(null)
         ImGui_ImplGlfw_InitForVulkan(sis |> glfw_window, true)
@@ -151,6 +153,25 @@ def imgui_vulkan_app ( title:string; blk : block )
             ImageCount = uint(sds.swapchain.images |> length)
         ]]
         ImGui_ImplVulkan_Init(safe_addr(init_info), sis |> vk_render_pass)
+
+        var keep_running = true
+        while keep_running // swapchain re-creation loop
+            // waiting while window is minimized
+            while uint2(0,0) == sis.setup.window |> get_framebuffer_size()
+                glfwWaitEvents()
+            sis.setup.device |> device_wait_idle()
+
+            if true
+                delete sds
+                sds <- vulkan_boost::create_simple_sds(sis)
+
+                while keep_running
+                    keep_running = glfwWindowShouldClose(sis|>glfw_window) == 0
+                    glfwPollEvents()
+                    if ! draw_frame(sis, sds)
+                        break
+
+            vk_device(sis) |> device_wait_idle
 
         invoke(blk)
 
