@@ -131,7 +131,7 @@ static void FramePresent(ImGui_ImplVulkanH_Window* wd)
 
 
 def imgui_vulkan_app ( title:string; blk : block<(c:CommandBuffer)> )
-    var app <- SimpleVulkanApp(title, 1280, 720)
+    var app <- SimpleVulkanApp(title, 1920, 1080)
     defer <| { delete app; }
 
     CreateContext(null)
