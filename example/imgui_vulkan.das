@@ -174,7 +174,7 @@ def imgui_vulkan_app ( title:string; blk : block )
                 if ! swapchain_valid
                     break
 
-            vk_device(sis) |> device_wait_idle
+            sis |> wait_idle
 
         ImGui_ImplVulkan_Shutdown()
         ImGui_ImplGlfw_Shutdown()
