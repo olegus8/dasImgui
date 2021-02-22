@@ -168,6 +168,7 @@ def imgui_vulkan_app ( title:string; blk : block )
                 keep_running = glfwWindowShouldClose(sis|>glfw_window) == 0
                 glfwPollEvents()
                 swapchain_valid = draw_simple_frame(sis, sds) <| (
+                    cmd : CommandBuffer; fb : Framebuffer
                 )
                     invoke(blk)
                 if ! swapchain_valid
