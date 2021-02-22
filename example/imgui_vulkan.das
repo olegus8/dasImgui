@@ -174,7 +174,6 @@ def main()
     let string_heap_on_start = string_heap_bytes_allocated()
 
 	imgui_vulkan_app("Testing IMGUI Vulkan") <| $(cmd : CommandBuffer)
-        print("hello world 6\n")
         NewFrame()
         DasShowDemoWindow(null)
         Render()
