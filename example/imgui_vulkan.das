@@ -156,7 +156,7 @@ def imgui_vulkan_app ( title:string; blk : block<(c:CommandBuffer)> )
     app |> frame_loop <| $(cmd : CommandBuffer)
         ImGui_ImplVulkan_NewFrame()
         ImGui_ImplGlfw_NewFrame()
-        blk |> invoke
+        blk |> invoke(cmd)
         ImGui_ImplVulkan_RenderDrawData(GetDrawData(), boost_value_to_vk(cmd))
 
     ImGui_ImplVulkan_Shutdown()
