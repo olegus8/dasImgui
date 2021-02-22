@@ -130,38 +130,30 @@ static void FramePresent(ImGui_ImplVulkanH_Window* wd)
 
 
 def imgui_vulkan_app ( title:string; blk : block )
-    if glfwInit()==0
-		panic("can't init glfw")
-    if true
-        var sis <- vulkan_boost::create_simple_sis(title, 1280, 720)
-        defer <| { delete sis; }
+    var app <- create_simple_vulkan_app(title, 1280, 720)
 
-        var sds <- vulkan_boost::create_simple_sds(sis)
-        defer <| { delete sds; }
+    CreateContext(null)
+    StyleColorsDark(null)
+    ImGui_ImplGlfw_InitForVulkan(sis |> glfw_window, true)
 
-        CreateContext(null)
-        StyleColorsDark(null)
-        ImGui_ImplGlfw_InitForVulkan(sis |> glfw_window, true)
+    var init_info <- [[ ImGui_ImplVulkan_InitInfo
+        Instance = app |> vk_instance,
+        PhysicalDevice = app |> vk_phys_dev,
+        Device = app |> vk_device,
+        QueueFamily = app |> vk_gfx_qfam,
+        Queue = app |> vk_queue,
+        DescriptorPool = app |> vk_desc_pool,
+        MinImageCount = 2u,
+        ImageCount = app |> images_in_swapchain
+    ]]
+    ImGui_ImplVulkan_Init(safe_addr(init_info), sis |> vk_render_pass)
 
-        var init_info <- [[ ImGui_ImplVulkan_InitInfo
-            Instance = sis |> vk_instance,
-            PhysicalDevice = sis |> vk_phys_dev,
-            Device = sis |> vk_device,
-            QueueFamily = sis.gfx_qfam,
-            Queue = sis |> vk_queue,
-            DescriptorPool = sis |> vk_desc_pool,
-            MinImageCount = 2u,
-            ImageCount = uint(sds.swapchain.images |> length)
-        ]]
-        ImGui_ImplVulkan_Init(safe_addr(init_info), sis |> vk_render_pass)
+    simple_frame_loop(sis, sds) <| (cmd : CommandBuffer; fb : Framebuffer)
+        blk |> invoke
 
-        simple_frame_loop(sis, sds) <| (cmd : CommandBuffer; fb : Framebuffer)
-            blk |> invoke
-
-        ImGui_ImplVulkan_Shutdown()
-        ImGui_ImplGlfw_Shutdown()
-        DestroyContext(null)
-    glfwTerminate()
+    ImGui_ImplVulkan_Shutdown()
+    ImGui_ImplGlfw_Shutdown()
+    DestroyContext(null)
 
 
 [export]
