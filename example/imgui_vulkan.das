@@ -145,7 +145,7 @@ def imgui_vulkan_app ( title:string; blk : block )
         Queue           = app |> vk_queue,
         DescriptorPool  = app |> vk_desc_pool,
         MinImageCount   = 2u,
-        ImageCount      = app |> images_in_swapchain
+        ImageCount      = uint(app |> images_in_swapchain)
     ]]
     ImGui_ImplVulkan_Init(safe_addr(init_info), app |> vk_render_pass)
 
