@@ -148,7 +148,7 @@ def imgui_vulkan_app ( title:string; blk : block )
     ]]
     ImGui_ImplVulkan_Init(safe_addr(init_info), app |> vk_render_pass)
 
-    app |> frame_loop <| (cmd : CommandBuffer; fb : Framebuffer)
+    app |> frame_loop <| $(cmd : CommandBuffer; fb : Framebuffer)
         blk |> invoke
 
     ImGui_ImplVulkan_Shutdown()
