@@ -4,6 +4,7 @@ options persistent_heap = true
 
 require daslib/safe_addr
 require daslib/vulkan_boost
+require daslib/vulkan_simple_app
 require daslib/defer
 require math
 require strings
@@ -154,27 +155,8 @@ def imgui_vulkan_app ( title:string; blk : block )
         ]]
         ImGui_ImplVulkan_Init(safe_addr(init_info), sis |> vk_render_pass)
 
-        var keep_running = true
-        while keep_running // swapchain re-creation loop
-            // waiting while window is minimized
-            while uint2(0,0) == sis.setup.window |> get_framebuffer_size()
-                glfwWaitEvents()
-            vk_device(sis) |> device_wait_idle
-
-            delete sds
-            sds <- create_simple_sds(sis)
-
-            while keep_running
-                keep_running = glfwWindowShouldClose(sis|>glfw_window) == 0
-                glfwPollEvents()
-                swapchain_valid = draw_simple_frame(sis, sds) <| (
-                    cmd : CommandBuffer; fb : Framebuffer
-                )
-                    blk |> invoke
-                if ! swapchain_valid
-                    break
-
-            sis |> wait_idle
+        simple_frame_loop(sis, sds) <| (cmd : CommandBuffer; fb : Framebuffer)
+            blk |> invoke
 
         ImGui_ImplVulkan_Shutdown()
         ImGui_ImplGlfw_Shutdown()
