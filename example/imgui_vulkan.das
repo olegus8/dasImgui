@@ -170,7 +170,7 @@ def imgui_vulkan_app ( title:string; blk : block )
                 swapchain_valid = draw_simple_frame(sis, sds) <| (
                     cmd : CommandBuffer; fb : Framebuffer
                 )
-                    invoke(blk)
+                    blk |> invoke
                 if ! swapchain_valid
                     break
 
