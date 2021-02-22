@@ -150,7 +150,7 @@ def imgui_vulkan_app ( title:string; blk : block )
     ImGui_ImplVulkan_Init(safe_addr(init_info), app |> vk_render_pass)
 
     app |> run_cmd_sync <| $(cmd : CommandBuffer)
-        ImGui_ImplVulkan_CreateFontsTexture(cmd |> boost_to_vk)
+        ImGui_ImplVulkan_CreateFontsTexture(cmd |> boost_value_to_vk)
     ImGui_ImplVulkan_DestroyFontUploadObjects()
 
     app |> frame_loop <| $(cmd : CommandBuffer)
