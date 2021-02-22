@@ -137,14 +137,14 @@ def imgui_vulkan_app ( title:string; blk : block )
     ImGui_ImplGlfw_InitForVulkan(app |> glfw_window, true)
 
     var init_info <- [[ ImGui_ImplVulkan_InitInfo
-        Instance = app |> vk_instance,
-        PhysicalDevice = app |> vk_phys_dev,
-        Device = app |> vk_device,
-        QueueFamily = app |> vk_gfx_qfam,
-        Queue = app |> vk_queue,
-        DescriptorPool = app |> vk_desc_pool,
-        MinImageCount = 2u,
-        ImageCount = app |> images_in_swapchain
+        Instance        = app |> vk_instance,
+        PhysicalDevice  = app |> vk_phys_dev,
+        Device          = app |> vk_device,
+        QueueFamily     = app |> vk_gfx_qfam,
+        Queue           = app |> vk_queue,
+        DescriptorPool  = app |> vk_desc_pool,
+        MinImageCount   = 2u,
+        ImageCount      = app |> images_in_swapchain
     ]]
     ImGui_ImplVulkan_Init(safe_addr(init_info), app |> vk_render_pass)
 
