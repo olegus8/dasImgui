@@ -150,11 +150,14 @@ def imgui_vulkan_app ( title:string; blk : block )
     ImGui_ImplVulkan_Init(safe_addr(init_info), app |> vk_render_pass)
 
     app |> run_cmd_sync <| $(cmd : CommandBuffer)
-        ImGui_ImplVulkan_CreateFontsTexture(cmd |> boost_value_to_vk)
+        ImGui_ImplVulkan_CreateFontsTexture(boost_value_to_vk(cmd))
     ImGui_ImplVulkan_DestroyFontUploadObjects()
 
     app |> frame_loop <| $(cmd : CommandBuffer)
+        ImGui_ImplVulkan_NewFrame()
+        ImGui_ImplGlfw_NewFrame()
         blk |> invoke
+        ImGui_ImplVulkan_RenderDrawData(GetDrawData(), boost_value_to_vk(cmd))
 
     ImGui_ImplVulkan_Shutdown()
     ImGui_ImplGlfw_Shutdown()
@@ -170,11 +173,9 @@ def main()
 
 	imgui_vulkan_app("Testing IMGUI Vulkan") <|
         print("hello world 6\n")
-        /*
         NewFrame()
         DasShowDemoWindow(null)
         Render()
-        */
 
     unsafe
         string_heap_collect()
@@ -187,35 +188,6 @@ def main()
     assert(heap_leaks == 0)
     assert(string_heap_leaks == 0)
 /*
-    // Upload Fonts
-    {
-        // Use any command queue
-        VkCommandPool command_pool = wd->Frames[wd->FrameIndex].CommandPool;
-        VkCommandBuffer command_buffer = wd->Frames[wd->FrameIndex].CommandBuffer;
-
-        err = vkResetCommandPool(g_Device, command_pool, 0);
-        check_vk_result(err);
-        VkCommandBufferBeginInfo begin_info = {};
-        begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-        begin_info.flags |= VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-        err = vkBeginCommandBuffer(command_buffer, &begin_info);
-        check_vk_result(err);
-
-        ImGui_ImplVulkan_CreateFontsTexture(command_buffer);
-
-        VkSubmitInfo end_info = {};
-        end_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-        end_info.commandBufferCount = 1;
-        end_info.pCommandBuffers = &command_buffer;
-        err = vkEndCommandBuffer(command_buffer);
-        check_vk_result(err);
-        err = vkQueueSubmit(g_Queue, 1, &end_info, VK_NULL_HANDLE);
-        check_vk_result(err);
-
-        err = vkDeviceWaitIdle(g_Device);
-        check_vk_result(err);
-        ImGui_ImplVulkan_DestroyFontUploadObjects();
-    }
 
     // Our state
     bool show_demo_window = true;
