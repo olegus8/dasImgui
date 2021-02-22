@@ -167,8 +167,9 @@ def imgui_vulkan_app ( title:string; blk : block )
             while keep_running
                 keep_running = glfwWindowShouldClose(sis|>glfw_window) == 0
                 glfwPollEvents()
-                swapchain_valid = draw_simple_frame(sis, sds)
-                invoke(blk)
+                swapchain_valid = draw_simple_frame(sis, sds) <| (
+                )
+                    invoke(blk)
                 if ! swapchain_valid
                     break
 
@@ -189,6 +190,11 @@ def main()
 
 	imgui_vulkan_app("Testing IMGUI Vulkan") <|
         print("hello world 6\n")
+        /*
+        NewFrame()
+        DasShowDemoWindow(null)
+        Render()
+        */
 
     unsafe
         string_heap_collect()
