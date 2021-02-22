@@ -17,7 +17,8 @@ require imgui_vulkan
 
 def imgui_vulkan_app ( title:string; blk : block<(c:CommandBuffer)> )
     var app <- SimpleVulkanApp(title, 1920, 1080,
-        VkPresentModeKHR VK_PRESENT_MODE_FIFO_KHR
+        VkPresentModeKHR VK_PRESENT_MODE_MAILBOX_KHR
+        //VkPresentModeKHR VK_PRESENT_MODE_FIFO_KHR
     )
     defer <| { delete app; }
 
