@@ -146,9 +146,9 @@ def imgui_vulkan_app ( title:string; blk : block )
         MinImageCount = 2u,
         ImageCount = app |> images_in_swapchain
     ]]
-    ImGui_ImplVulkan_Init(safe_addr(init_info), sis |> vk_render_pass)
+    ImGui_ImplVulkan_Init(safe_addr(init_info), app |> vk_render_pass)
 
-    simple_frame_loop(sis, sds) <| (cmd : CommandBuffer; fb : Framebuffer)
+    app |> frame_loop <| (cmd : CommandBuffer; fb : Framebuffer)
         blk |> invoke
 
     ImGui_ImplVulkan_Shutdown()
