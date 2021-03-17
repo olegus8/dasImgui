@@ -1,3 +1,4 @@
+options persistent_heap = true
 options persistent_string_heap = true
 
 require imgui_app
@@ -5,12 +6,14 @@ require daslib/glfw_boost
 require daslib/imgui_boost
 require imgui_demo
 
+var window : GLFWwindow?
+
 def imgui_app ( title:string; blk : block )
     if glfwInit()==0
 		panic("can't init glfw")
-    var window = glfwCreateWindow(1920, 1280, title, null, null)
+    window = glfwCreateWindow(1920, 1280, title, null, null)
     if window==null
-		panic("can't create window")
+  		panic("can't create window")
     glfwMakeContextCurrent(window)
     glfwSwapInterval(1)
     CreateContext(null)

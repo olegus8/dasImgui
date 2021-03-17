@@ -30,11 +30,16 @@ def main
 
     local_type_names <- [{auto[]
         "ImVec2";
-        "ImVec3";
         "ImVec4";
         "ImColor";
         "ImGuiTableColumnSortSpecs"
     }]
+
+    alias_types <- {{
+        "ImVec2" => "Type::tFloat2";
+        "ImVec4" => "Type::tFloat4";
+        "ImColor" => "Type::tFloat4"
+    }}
 
     ex_enums <- {{
     // flags
@@ -54,13 +59,28 @@ def main
         "ImGuiButtonFlags_"  => [[ExEnum() name = "ImGuiButtonFlags", isFlags=true]];
         "ImGuiTableColumnFlags_"  => [[ExEnum() name = "ImGuiTableColumnFlags", isFlags=true]];
         "ImGuiKeyModFlags_"  => [[ExEnum() name = "ImGuiKeyModFlags", isFlags=true]];
+        "ImGuiTableRowFlags_"  => [[ExEnum() name = "ImGuiTableRowFlags", isFlags=true]];
+        "ImGuiComboFlags_" => [[ExEnum() name = "ImGuiComboFlags", isFlags=true]];
+        "ImGuiDragDropFlags_" => [[ExEnum() name = "ImGuiDragDropFlags", isFlags=true]];
+        "ImGuiHoveredFlags_" => [[ExEnum() name = "ImGuiHoveredFlags", isFlags=true]];
+        "ImGuiFocusedFlags_" => [[ExEnum() name = "ImGuiFocusedFlags", isFlags=true]];
+        // imnodes
+        "StyleFlags" => [[ExEnum() name = "ImNodesStyleFlags", isFlags=true]];
+        "AttributeFlags" => [[ExEnum() name = "ImNodesAttributeFlags", isFlags=true]];
 
     // not flags
         "ImGuiStyleVar_" => [[ExEnum() name = "ImGuiStyleVar"]];
         "ImGuiCol_" => [[ExEnum() name = "ImGuiCol"]];
         "ImGuiKey_" => [[ExEnum() name = "ImGuiKey"]];
         "ImGuiSortDirection_" => [[ExEnum() name = "ImGuiSortDirection"]];
-        "ImGuiMouseButton_" => [[ExEnum() name = "ImGuiMouseButton"]]
+        "ImGuiMouseButton_" => [[ExEnum() name = "ImGuiMouseButton"]];
+        "ImGuiDir_" => [[ExEnum() name = "ImGuiDir"]];
+        "ImGuiDataType_" => [[ExEnum() name = "ImGuiDataType"]];
+        "ImGuiTableBgTarget_" => [[ExEnum() name = "ImGuiTableBgTarget"]];
+        // imnodes
+        "PinShape" => [[ExEnum() name = "ImNodesPinShape"]];
+        "StyleVar" => [[ExEnum() name = "ImNodesStyleVar"]];
+        "ColorStyle" => [[ExEnum() name = "ImNodesColorStyle"]]
     }}
 
     substitute_field_types <- {{
@@ -70,6 +90,10 @@ def main
         "ImGuiIO::ConfigFlags" => "ImGuiConfigFlags_";
         "ImGuiIO::BackendFlags" => "ImGuiBackendFlags_";
         "ImGuiIO::ImGuiKeyModFlags" => "ImGuiKeyModFlags_"
+    }}
+
+    namespace_to_prefix <- {{
+        "imnodes" => "IMNODES_NAMESPACE"
     }}
 
     // generate

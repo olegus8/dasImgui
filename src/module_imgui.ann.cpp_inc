@@ -2,39 +2,107 @@
 // structures
 // ------------
 
+#ifdef GLOBAL_NAMESPACE
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImDrawData,ImDrawData)
+#endif
+#ifdef IMNODES_NAMESPACE
+	IMPLEMENT_EXTERNAL_TYPE_FACTORY(Style,imnodes::Style)
+#endif
+#ifdef GLOBAL_NAMESPACE
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImFontGlyphRangesBuilder,ImFontGlyphRangesBuilder)
+#endif
+#ifdef GLOBAL_NAMESPACE
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImGuiPayload,ImGuiPayload)
+#endif
+#ifdef GLOBAL_NAMESPACE
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImGuiStoragePair,ImGuiStorage::ImGuiStoragePair)
+#endif
+#ifdef GLOBAL_NAMESPACE
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImFontConfig,ImFontConfig)
+#endif
+#ifdef GLOBAL_NAMESPACE
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImGuiIO,ImGuiIO)
+#endif
+#ifdef GLOBAL_NAMESPACE
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImNewWrapper,ImNewWrapper)
+#endif
+#ifdef GLOBAL_NAMESPACE
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImDrawVert,ImDrawVert)
+#endif
+#ifdef GLOBAL_NAMESPACE
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImGuiTableSortSpecs,ImGuiTableSortSpecs)
+#endif
+#ifdef GLOBAL_NAMESPACE
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImDrawCmdHeader,ImDrawCmdHeader)
+#endif
+#ifdef GLOBAL_NAMESPACE
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImFontGlyph,ImFontGlyph)
+#endif
+#ifdef GLOBAL_NAMESPACE
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImFontAtlas,ImFontAtlas)
+#endif
+#ifdef IMNODES_NAMESPACE
+	IMPLEMENT_EXTERNAL_TYPE_FACTORY(IO,imnodes::IO)
+#endif
+#ifdef IMNODES_NAMESPACE
+	IMPLEMENT_EXTERNAL_TYPE_FACTORY(EmulateThreeButtonMouse,imnodes::IO::EmulateThreeButtonMouse)
+#endif
+#ifdef GLOBAL_NAMESPACE
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImGuiOnceUponAFrame,ImGuiOnceUponAFrame)
+#endif
+#ifdef GLOBAL_NAMESPACE
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImGuiTextFilter,ImGuiTextFilter)
+#endif
+#ifdef GLOBAL_NAMESPACE
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImGuiSizeCallbackData,ImGuiSizeCallbackData)
+#endif
+#ifdef GLOBAL_NAMESPACE
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImGuiListClipper,ImGuiListClipper)
-	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImVec2,ImVec2)
-	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImVec4,ImVec4)
+#endif
+#ifdef GLOBAL_NAMESPACE
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImFont,ImFont)
+#endif
+#ifdef GLOBAL_NAMESPACE
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImGuiTextBuffer,ImGuiTextBuffer)
+#endif
+#ifdef GLOBAL_NAMESPACE
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImGuiInputTextCallbackData,ImGuiInputTextCallbackData)
+#endif
+#ifdef IMNODES_NAMESPACE
+	IMPLEMENT_EXTERNAL_TYPE_FACTORY(LinkDetachWithModifierClick,imnodes::IO::LinkDetachWithModifierClick)
+#endif
+#ifdef GLOBAL_NAMESPACE
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImDrawCmd,ImDrawCmd)
+#endif
+#ifdef GLOBAL_NAMESPACE
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImGuiViewport,ImGuiViewport)
+#endif
+#ifdef GLOBAL_NAMESPACE
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImFontAtlasCustomRect,ImFontAtlasCustomRect)
+#endif
+#ifdef GLOBAL_NAMESPACE
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImGuiStyle,ImGuiStyle)
-	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImColor,ImColor)
+#endif
+#ifdef GLOBAL_NAMESPACE
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImDrawListSplitter,ImDrawListSplitter)
+#endif
+#ifdef GLOBAL_NAMESPACE
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImGuiStorage,ImGuiStorage)
+#endif
+#ifdef GLOBAL_NAMESPACE
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImGuiTextRange,ImGuiTextFilter::ImGuiTextRange)
+#endif
+#ifdef GLOBAL_NAMESPACE
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImGuiTableColumnSortSpecs,ImGuiTableColumnSortSpecs)
+#endif
+#ifdef GLOBAL_NAMESPACE
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImDrawChannel,ImDrawChannel)
+#endif
+#ifdef GLOBAL_NAMESPACE
 	IMPLEMENT_EXTERNAL_TYPE_FACTORY(ImDrawList,ImDrawList)
+#endif
 
+#ifdef GLOBAL_NAMESPACE
 struct ImDrawData_GeneratedAnnotation : ManagedStructureAnnotation<ImDrawData> {
 	ImDrawData_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImDrawData", ml) {
 	}
@@ -49,6 +117,32 @@ struct ImDrawData_GeneratedAnnotation : ManagedStructureAnnotation<ImDrawData> {
 		addField<DAS_BIND_MANAGED_FIELD(FramebufferScale)>("FramebufferScale","FramebufferScale");
 	}
 };
+#endif
+#ifdef IMNODES_NAMESPACE
+struct Style_GeneratedAnnotation : ManagedStructureAnnotation<imnodes::Style> {
+	Style_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("Style", ml) {
+	}
+	void init () {
+		addField<DAS_BIND_MANAGED_FIELD(grid_spacing)>("grid_spacing","grid_spacing");
+		addField<DAS_BIND_MANAGED_FIELD(node_corner_rounding)>("node_corner_rounding","node_corner_rounding");
+		addField<DAS_BIND_MANAGED_FIELD(node_padding_horizontal)>("node_padding_horizontal","node_padding_horizontal");
+		addField<DAS_BIND_MANAGED_FIELD(node_padding_vertical)>("node_padding_vertical","node_padding_vertical");
+		addField<DAS_BIND_MANAGED_FIELD(node_border_thickness)>("node_border_thickness","node_border_thickness");
+		addField<DAS_BIND_MANAGED_FIELD(link_thickness)>("link_thickness","link_thickness");
+		addField<DAS_BIND_MANAGED_FIELD(link_line_segments_per_length)>("link_line_segments_per_length","link_line_segments_per_length");
+		addField<DAS_BIND_MANAGED_FIELD(link_hover_distance)>("link_hover_distance","link_hover_distance");
+		addField<DAS_BIND_MANAGED_FIELD(pin_circle_radius)>("pin_circle_radius","pin_circle_radius");
+		addField<DAS_BIND_MANAGED_FIELD(pin_quad_side_length)>("pin_quad_side_length","pin_quad_side_length");
+		addField<DAS_BIND_MANAGED_FIELD(pin_triangle_side_length)>("pin_triangle_side_length","pin_triangle_side_length");
+		addField<DAS_BIND_MANAGED_FIELD(pin_line_thickness)>("pin_line_thickness","pin_line_thickness");
+		addField<DAS_BIND_MANAGED_FIELD(pin_hover_radius)>("pin_hover_radius","pin_hover_radius");
+		addField<DAS_BIND_MANAGED_FIELD(pin_offset)>("pin_offset","pin_offset");
+		addField<DAS_BIND_MANAGED_FIELD(flags)>("flags","flags");
+		addField<DAS_BIND_MANAGED_FIELD(colors)>("colors","colors");
+	}
+};
+#endif
+#ifdef GLOBAL_NAMESPACE
 struct ImFontGlyphRangesBuilder_GeneratedAnnotation : ManagedStructureAnnotation<ImFontGlyphRangesBuilder> {
 	ImFontGlyphRangesBuilder_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImFontGlyphRangesBuilder", ml) {
 	}
@@ -56,6 +150,8 @@ struct ImFontGlyphRangesBuilder_GeneratedAnnotation : ManagedStructureAnnotation
 		addField<DAS_BIND_MANAGED_FIELD(UsedChars)>("UsedChars","UsedChars");
 	}
 };
+#endif
+#ifdef GLOBAL_NAMESPACE
 struct ImGuiPayload_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiPayload> {
 	ImGuiPayload_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImGuiPayload", ml) {
 	}
@@ -70,6 +166,8 @@ struct ImGuiPayload_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiPayloa
 		addField<DAS_BIND_MANAGED_FIELD(Delivery)>("Delivery","Delivery");
 	}
 };
+#endif
+#ifdef GLOBAL_NAMESPACE
 struct ImGuiStoragePair_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiStorage::ImGuiStoragePair> {
 	ImGuiStoragePair_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImGuiStoragePair", ml) {
 	}
@@ -77,6 +175,8 @@ struct ImGuiStoragePair_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiSt
 		addField<DAS_BIND_MANAGED_FIELD(key)>("key","key");
 	}
 };
+#endif
+#ifdef GLOBAL_NAMESPACE
 struct ImFontConfig_GeneratedAnnotation : ManagedStructureAnnotation<ImFontConfig> {
 	ImFontConfig_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImFontConfig", ml) {
 	}
@@ -102,12 +202,16 @@ struct ImFontConfig_GeneratedAnnotation : ManagedStructureAnnotation<ImFontConfi
 		addField<DAS_BIND_MANAGED_FIELD(DstFont)>("DstFont","DstFont");
 	}
 };
+#endif
+#ifdef GLOBAL_NAMESPACE
 struct ImGuiIO_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiIO> {
 	ImGuiIO_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImGuiIO", ml) {
 	}
 	void init () {
-		addField<ImGuiConfigFlags_,offsetof(ManagedType,ConfigFlags)>("ConfigFlags","ConfigFlags");
-		addField<ImGuiBackendFlags_,offsetof(ManagedType,BackendFlags)>("BackendFlags","BackendFlags");
+		addField<ImGuiConfigFlags_,offsetof(ManagedType,ConfigFlags)>("ConfigFlags","ConfigFlags")
+			.adjustAot("das_reinterpret<ImGuiConfigFlags_>::pass(",")");
+		addField<ImGuiBackendFlags_,offsetof(ManagedType,BackendFlags)>("BackendFlags","BackendFlags")
+			.adjustAot("das_reinterpret<ImGuiBackendFlags_>::pass(",")");
 		addField<DAS_BIND_MANAGED_FIELD(DisplaySize)>("DisplaySize","DisplaySize");
 		addField<DAS_BIND_MANAGED_FIELD(DeltaTime)>("DeltaTime","DeltaTime");
 		addField<DAS_BIND_MANAGED_FIELD(IniSavingRate)>("IniSavingRate","IniSavingRate");
@@ -188,12 +292,16 @@ struct ImGuiIO_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiIO> {
 		addField<DAS_BIND_MANAGED_FIELD(InputQueueCharacters)>("InputQueueCharacters","InputQueueCharacters");
 	}
 };
+#endif
+#ifdef GLOBAL_NAMESPACE
 struct ImNewWrapper_GeneratedAnnotation : ManagedStructureAnnotation<ImNewWrapper> {
 	ImNewWrapper_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImNewWrapper", ml) {
 	}
 	void init () {
 	}
 };
+#endif
+#ifdef GLOBAL_NAMESPACE
 struct ImDrawVert_GeneratedAnnotation : ManagedStructureAnnotation<ImDrawVert> {
 	ImDrawVert_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImDrawVert", ml) {
 	}
@@ -203,6 +311,8 @@ struct ImDrawVert_GeneratedAnnotation : ManagedStructureAnnotation<ImDrawVert> {
 		addField<DAS_BIND_MANAGED_FIELD(col)>("col","col");
 	}
 };
+#endif
+#ifdef GLOBAL_NAMESPACE
 struct ImGuiTableSortSpecs_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiTableSortSpecs> {
 	ImGuiTableSortSpecs_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImGuiTableSortSpecs", ml) {
 	}
@@ -212,6 +322,8 @@ struct ImGuiTableSortSpecs_GeneratedAnnotation : ManagedStructureAnnotation<ImGu
 		addField<DAS_BIND_MANAGED_FIELD(SpecsDirty)>("SpecsDirty","SpecsDirty");
 	}
 };
+#endif
+#ifdef GLOBAL_NAMESPACE
 struct ImDrawCmdHeader_GeneratedAnnotation : ManagedStructureAnnotation<ImDrawCmdHeader> {
 	ImDrawCmdHeader_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImDrawCmdHeader", ml) {
 	}
@@ -221,6 +333,8 @@ struct ImDrawCmdHeader_GeneratedAnnotation : ManagedStructureAnnotation<ImDrawCm
 		addField<DAS_BIND_MANAGED_FIELD(VtxOffset)>("VtxOffset","VtxOffset");
 	}
 };
+#endif
+#ifdef GLOBAL_NAMESPACE
 struct ImFontGlyph_GeneratedAnnotation : ManagedStructureAnnotation<ImFontGlyph> {
 	ImFontGlyph_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImFontGlyph", ml) {
 	}
@@ -236,15 +350,18 @@ struct ImFontGlyph_GeneratedAnnotation : ManagedStructureAnnotation<ImFontGlyph>
 		addField<DAS_BIND_MANAGED_FIELD(V1)>("V1","V1");
 	}
 };
+#endif
+#ifdef GLOBAL_NAMESPACE
 struct ImFontAtlas_GeneratedAnnotation : ManagedStructureAnnotation<ImFontAtlas> {
 	ImFontAtlas_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImFontAtlas", ml) {
 	}
 	void init () {
-		addField<DAS_BIND_MANAGED_FIELD(Locked)>("Locked","Locked");
 		addField<DAS_BIND_MANAGED_FIELD(Flags)>("Flags","Flags");
 		addField<DAS_BIND_MANAGED_FIELD(TexID)>("TexID","TexID");
 		addField<DAS_BIND_MANAGED_FIELD(TexDesiredWidth)>("TexDesiredWidth","TexDesiredWidth");
 		addField<DAS_BIND_MANAGED_FIELD(TexGlyphPadding)>("TexGlyphPadding","TexGlyphPadding");
+		addField<DAS_BIND_MANAGED_FIELD(Locked)>("Locked","Locked");
+		addField<DAS_BIND_MANAGED_FIELD(TexPixelsUseColors)>("TexPixelsUseColors","TexPixelsUseColors");
 		addField<DAS_BIND_MANAGED_FIELD(TexPixelsAlpha8)>("TexPixelsAlpha8","TexPixelsAlpha8");
 		addField<DAS_BIND_MANAGED_FIELD(TexPixelsRGBA32)>("TexPixelsRGBA32","TexPixelsRGBA32");
 		addField<DAS_BIND_MANAGED_FIELD(TexWidth)>("TexWidth","TexWidth");
@@ -261,6 +378,28 @@ struct ImFontAtlas_GeneratedAnnotation : ManagedStructureAnnotation<ImFontAtlas>
 		addField<DAS_BIND_MANAGED_FIELD(PackIdLines)>("PackIdLines","PackIdLines");
 	}
 };
+#endif
+#ifdef IMNODES_NAMESPACE
+struct IO_GeneratedAnnotation : ManagedStructureAnnotation<imnodes::IO> {
+	IO_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("IO", ml) {
+	}
+	void init () {
+		addField<DAS_BIND_MANAGED_FIELD(emulate_three_button_mouse)>("emulate_three_button_mouse","emulate_three_button_mouse");
+		addField<DAS_BIND_MANAGED_FIELD(link_detach_with_modifier_click)>("link_detach_with_modifier_click","link_detach_with_modifier_click");
+	}
+};
+#endif
+#ifdef IMNODES_NAMESPACE
+struct EmulateThreeButtonMouse_GeneratedAnnotation : ManagedStructureAnnotation<imnodes::IO::EmulateThreeButtonMouse> {
+	EmulateThreeButtonMouse_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("EmulateThreeButtonMouse", ml) {
+	}
+	void init () {
+		addField<DAS_BIND_MANAGED_FIELD(enabled)>("enabled","enabled");
+		addField<DAS_BIND_MANAGED_FIELD(modifier)>("modifier","modifier");
+	}
+};
+#endif
+#ifdef GLOBAL_NAMESPACE
 struct ImGuiOnceUponAFrame_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiOnceUponAFrame> {
 	ImGuiOnceUponAFrame_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImGuiOnceUponAFrame", ml) {
 	}
@@ -268,6 +407,8 @@ struct ImGuiOnceUponAFrame_GeneratedAnnotation : ManagedStructureAnnotation<ImGu
 		addField<DAS_BIND_MANAGED_FIELD(RefFrame)>("RefFrame","RefFrame");
 	}
 };
+#endif
+#ifdef GLOBAL_NAMESPACE
 struct ImGuiTextFilter_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiTextFilter> {
 	ImGuiTextFilter_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImGuiTextFilter", ml) {
 	}
@@ -277,6 +418,8 @@ struct ImGuiTextFilter_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiTex
 		addField<DAS_BIND_MANAGED_FIELD(CountGrep)>("CountGrep","CountGrep");
 	}
 };
+#endif
+#ifdef GLOBAL_NAMESPACE
 struct ImGuiSizeCallbackData_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiSizeCallbackData> {
 	ImGuiSizeCallbackData_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImGuiSizeCallbackData", ml) {
 	}
@@ -287,6 +430,8 @@ struct ImGuiSizeCallbackData_GeneratedAnnotation : ManagedStructureAnnotation<Im
 		addField<DAS_BIND_MANAGED_FIELD(DesiredSize)>("DesiredSize","DesiredSize");
 	}
 };
+#endif
+#ifdef GLOBAL_NAMESPACE
 struct ImGuiListClipper_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiListClipper> {
 	ImGuiListClipper_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImGuiListClipper", ml) {
 	}
@@ -300,28 +445,8 @@ struct ImGuiListClipper_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiLi
 		addField<DAS_BIND_MANAGED_FIELD(StartPosY)>("StartPosY","StartPosY");
 	}
 };
-struct ImVec2_GeneratedAnnotation : ManagedStructureAnnotation<ImVec2> {
-	virtual bool isLocal() const override { return true; }
-	virtual bool canBePlacedInContainer() const override { return true; }
-	ImVec2_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImVec2", ml) {
-	}
-	void init () {
-		addField<DAS_BIND_MANAGED_FIELD(x)>("x","x");
-		addField<DAS_BIND_MANAGED_FIELD(y)>("y","y");
-	}
-};
-struct ImVec4_GeneratedAnnotation : ManagedStructureAnnotation<ImVec4> {
-	virtual bool isLocal() const override { return true; }
-	virtual bool canBePlacedInContainer() const override { return true; }
-	ImVec4_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImVec4", ml) {
-	}
-	void init () {
-		addField<DAS_BIND_MANAGED_FIELD(x)>("x","x");
-		addField<DAS_BIND_MANAGED_FIELD(y)>("y","y");
-		addField<DAS_BIND_MANAGED_FIELD(z)>("z","z");
-		addField<DAS_BIND_MANAGED_FIELD(w)>("w","w");
-	}
-};
+#endif
+#ifdef GLOBAL_NAMESPACE
 struct ImFont_GeneratedAnnotation : ManagedStructureAnnotation<ImFont> {
 	ImFont_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImFont", ml) {
 	}
@@ -345,6 +470,8 @@ struct ImFont_GeneratedAnnotation : ManagedStructureAnnotation<ImFont> {
 		addField<DAS_BIND_MANAGED_FIELD(Used4kPagesMap)>("Used4kPagesMap","Used4kPagesMap");
 	}
 };
+#endif
+#ifdef GLOBAL_NAMESPACE
 struct ImGuiTextBuffer_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiTextBuffer> {
 	ImGuiTextBuffer_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImGuiTextBuffer", ml) {
 	}
@@ -352,15 +479,20 @@ struct ImGuiTextBuffer_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiTex
 		addField<DAS_BIND_MANAGED_FIELD(Buf)>("Buf","Buf");
 	}
 };
+#endif
+#ifdef GLOBAL_NAMESPACE
 struct ImGuiInputTextCallbackData_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiInputTextCallbackData> {
 	ImGuiInputTextCallbackData_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImGuiInputTextCallbackData", ml) {
 	}
 	void init () {
-		addField<ImGuiInputTextFlags_,offsetof(ManagedType,EventFlag)>("EventFlag","EventFlag");
-		addField<ImGuiInputTextFlags_,offsetof(ManagedType,Flags)>("Flags","Flags");
+		addField<ImGuiInputTextFlags_,offsetof(ManagedType,EventFlag)>("EventFlag","EventFlag")
+			.adjustAot("das_reinterpret<ImGuiInputTextFlags_>::pass(",")");
+		addField<ImGuiInputTextFlags_,offsetof(ManagedType,Flags)>("Flags","Flags")
+			.adjustAot("das_reinterpret<ImGuiInputTextFlags_>::pass(",")");
 		addField<DAS_BIND_MANAGED_FIELD(UserData)>("UserData","UserData");
 		addField<DAS_BIND_MANAGED_FIELD(EventChar)>("EventChar","EventChar");
-		addField<ImGuiKey_,offsetof(ManagedType,EventKey)>("EventKey","EventKey");
+		addField<ImGuiKey_,offsetof(ManagedType,EventKey)>("EventKey","EventKey")
+			.adjustAot("das_reinterpret<ImGuiKey_>::pass(",")");
 		addField<DAS_BIND_MANAGED_FIELD(Buf)>("Buf","Buf");
 		addField<DAS_BIND_MANAGED_FIELD(BufTextLen)>("BufTextLen","BufTextLen");
 		addField<DAS_BIND_MANAGED_FIELD(BufSize)>("BufSize","BufSize");
@@ -370,6 +502,17 @@ struct ImGuiInputTextCallbackData_GeneratedAnnotation : ManagedStructureAnnotati
 		addField<DAS_BIND_MANAGED_FIELD(SelectionEnd)>("SelectionEnd","SelectionEnd");
 	}
 };
+#endif
+#ifdef IMNODES_NAMESPACE
+struct LinkDetachWithModifierClick_GeneratedAnnotation : ManagedStructureAnnotation<imnodes::IO::LinkDetachWithModifierClick> {
+	LinkDetachWithModifierClick_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("LinkDetachWithModifierClick", ml) {
+	}
+	void init () {
+		addField<DAS_BIND_MANAGED_FIELD(modifier)>("modifier","modifier");
+	}
+};
+#endif
+#ifdef GLOBAL_NAMESPACE
 struct ImDrawCmd_GeneratedAnnotation : ManagedStructureAnnotation<ImDrawCmd> {
 	ImDrawCmd_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImDrawCmd", ml) {
 	}
@@ -383,6 +526,8 @@ struct ImDrawCmd_GeneratedAnnotation : ManagedStructureAnnotation<ImDrawCmd> {
 		addField<DAS_BIND_MANAGED_FIELD(UserCallbackData)>("UserCallbackData","UserCallbackData");
 	}
 };
+#endif
+#ifdef GLOBAL_NAMESPACE
 struct ImGuiViewport_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiViewport> {
 	ImGuiViewport_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImGuiViewport", ml) {
 	}
@@ -394,6 +539,8 @@ struct ImGuiViewport_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiViewp
 		addField<DAS_BIND_MANAGED_FIELD(WorkSize)>("WorkSize","WorkSize");
 	}
 };
+#endif
+#ifdef GLOBAL_NAMESPACE
 struct ImFontAtlasCustomRect_GeneratedAnnotation : ManagedStructureAnnotation<ImFontAtlasCustomRect> {
 	ImFontAtlasCustomRect_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImFontAtlasCustomRect", ml) {
 	}
@@ -408,6 +555,8 @@ struct ImFontAtlasCustomRect_GeneratedAnnotation : ManagedStructureAnnotation<Im
 		addField<DAS_BIND_MANAGED_FIELD(Font)>("Font","Font");
 	}
 };
+#endif
+#ifdef GLOBAL_NAMESPACE
 struct ImGuiStyle_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiStyle> {
 	ImGuiStyle_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImGuiStyle", ml) {
 	}
@@ -450,19 +599,12 @@ struct ImGuiStyle_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiStyle> {
 		addField<DAS_BIND_MANAGED_FIELD(AntiAliasedLinesUseTex)>("AntiAliasedLinesUseTex","AntiAliasedLinesUseTex");
 		addField<DAS_BIND_MANAGED_FIELD(AntiAliasedFill)>("AntiAliasedFill","AntiAliasedFill");
 		addField<DAS_BIND_MANAGED_FIELD(CurveTessellationTol)>("CurveTessellationTol","CurveTessellationTol");
-		addField<DAS_BIND_MANAGED_FIELD(CircleSegmentMaxError)>("CircleSegmentMaxError","CircleSegmentMaxError");
+		addField<DAS_BIND_MANAGED_FIELD(CircleTessellationMaxError)>("CircleTessellationMaxError","CircleTessellationMaxError");
 		addField<DAS_BIND_MANAGED_FIELD(Colors)>("Colors","Colors");
 	}
 };
-struct ImColor_GeneratedAnnotation : ManagedStructureAnnotation<ImColor> {
-	virtual bool isLocal() const override { return true; }
-	virtual bool canBePlacedInContainer() const override { return true; }
-	ImColor_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImColor", ml) {
-	}
-	void init () {
-		addField<DAS_BIND_MANAGED_FIELD(Value)>("Value","Value");
-	}
-};
+#endif
+#ifdef GLOBAL_NAMESPACE
 struct ImDrawListSplitter_GeneratedAnnotation : ManagedStructureAnnotation<ImDrawListSplitter> {
 	ImDrawListSplitter_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImDrawListSplitter", ml) {
 	}
@@ -472,12 +614,16 @@ struct ImDrawListSplitter_GeneratedAnnotation : ManagedStructureAnnotation<ImDra
 		addField<DAS_BIND_MANAGED_FIELD(_Channels)>("_Channels","_Channels");
 	}
 };
+#endif
+#ifdef GLOBAL_NAMESPACE
 struct ImGuiStorage_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiStorage> {
 	ImGuiStorage_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImGuiStorage", ml) {
 	}
 	void init () {
 	}
 };
+#endif
+#ifdef GLOBAL_NAMESPACE
 struct ImGuiTextRange_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiTextFilter::ImGuiTextRange> {
 	ImGuiTextRange_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImGuiTextRange", ml) {
 	}
@@ -486,6 +632,8 @@ struct ImGuiTextRange_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiText
 		addField<DAS_BIND_MANAGED_FIELD(e)>("e","e");
 	}
 };
+#endif
+#ifdef GLOBAL_NAMESPACE
 struct ImGuiTableColumnSortSpecs_GeneratedAnnotation : ManagedStructureAnnotation<ImGuiTableColumnSortSpecs> {
 	virtual bool isLocal() const override { return true; }
 	virtual bool canBePlacedInContainer() const override { return true; }
@@ -497,6 +645,8 @@ struct ImGuiTableColumnSortSpecs_GeneratedAnnotation : ManagedStructureAnnotatio
 		addField<DAS_BIND_MANAGED_FIELD(SortOrder)>("SortOrder","SortOrder");
 	}
 };
+#endif
+#ifdef GLOBAL_NAMESPACE
 struct ImDrawChannel_GeneratedAnnotation : ManagedStructureAnnotation<ImDrawChannel> {
 	ImDrawChannel_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImDrawChannel", ml) {
 	}
@@ -505,6 +655,8 @@ struct ImDrawChannel_GeneratedAnnotation : ManagedStructureAnnotation<ImDrawChan
 		addField<DAS_BIND_MANAGED_FIELD(_IdxBuffer)>("_IdxBuffer","_IdxBuffer");
 	}
 };
+#endif
+#ifdef GLOBAL_NAMESPACE
 struct ImDrawList_GeneratedAnnotation : ManagedStructureAnnotation<ImDrawList> {
 	ImDrawList_GeneratedAnnotation(ModuleLibrary & ml) : ManagedStructureAnnotation ("ImDrawList", ml) {
 	}
@@ -525,3 +677,4 @@ struct ImDrawList_GeneratedAnnotation : ManagedStructureAnnotation<ImDrawList> {
 		addField<DAS_BIND_MANAGED_FIELD(_FringeScale)>("_FringeScale","_FringeScale");
 	}
 };
+#endif

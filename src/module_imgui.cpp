@@ -2,6 +2,7 @@
 #include "daScript/ast/ast_typefactory_bind.h"
 
 #include <imgui.h>
+#include <imnodes.h>
 
 using namespace das;
 
@@ -11,19 +12,16 @@ using namespace das;
 
 #include "module_imgui.h"
 
-#endif
+#include "aot_imgui.h"
 
-/*
-[build] EXEC : warning : variadic function LabelText aka ImGui::LabelText [C:\Users\Boris\Work\yzg\build\IMGUI_GENERATE.vcxproj]
-[build] EXEC : warning : variadic function BulletText aka ImGui::BulletText [C:\Users\Boris\Work\yzg\build\IMGUI_GENERATE.vcxproj]
-[build] EXEC : warning : variadic function SetTooltip aka ImGui::SetTooltip [C:\Users\Boris\Work\yzg\build\IMGUI_GENERATE.vcxproj]
-[build] EXEC : warning : variadic function TextWrapped aka ImGui::TextWrapped [C:\Users\Boris\Work\yzg\build\IMGUI_GENERATE.vcxproj]
-[build] EXEC : warning : variadic function TreeNode aka ImGui::TreeNode [C:\Users\Boris\Work\yzg\build\IMGUI_GENERATE.vcxproj]
-*/
+#endif
 
 namespace das {
     void Text ( const char * txt ) {
         ImGui::Text(txt);
+    }
+    void LabelText ( const char * lab, const char * txt ) {
+        ImGui::LabelText(lab, txt);
     }
     void TextWrapped ( const char * txt ) {
         ImGui::TextWrapped(txt);
@@ -56,12 +54,6 @@ namespace das {
         ImGui::SetTooltip(txt);
     }
 
-    /*
-    IMGUI_API bool          InputText(const char* label, char* buf, size_t buf_size, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = NULL, void* user_data = NULL);
-    IMGUI_API bool          InputTextMultiline(const char* label, char* buf, size_t buf_size, const ImVec2& size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = NULL, void* user_data = NULL);
-    IMGUI_API bool          InputTextWithHint(const char* label, const char* hint, char* buf, size_t buf_size, ImGuiInputTextFlags flags = 0, ImGuiInputTextCallback callback = NULL, void* user_data = NULL);
-    */
-
     struct DasImguiInputText {
         Context *  context;
         TLambda<void,DasImguiInputText *,ImGuiInputTextCallbackData *>    callback;
@@ -76,6 +68,28 @@ namespace das {
             diit->context->throw_error("ImguiTextCallback: missing capture");
         }
         return das_invoke_lambda<int>::invoke<DasImguiInputText *,ImGuiInputTextCallbackData *>(diit->context, diit->callback, diit, data);
+    }
+
+    bool InputTextMultiline(vec4f vdiit, const char* label, const ImVec2& size, ImGuiInputTextFlags_ flags, LineInfoArg * at, Context * context ) {
+        auto diit = cast<DasImguiInputText *>::to(vdiit);
+        if ( diit->buffer.size==0 ) {
+            builtin_array_resize(diit->buffer, 256, 1, context);
+        }
+        if ( diit->callback.capture ) {
+            diit->context = context;
+            diit->at = *at;
+            return ImGui::InputTextMultiline(
+                label,
+                diit->buffer.data,
+                diit->buffer.size,
+                size,
+                flags,
+                &InputTextCallback,
+                diit
+            );
+        } else {
+            return ImGui::InputTextMultiline(label, diit->buffer.data, diit->buffer.size, size, flags);
+        }
     }
 
     bool InputText(vec4f vdiit, const char * label, ImGuiInputTextFlags_ flags, LineInfoArg * at, Context * context ) {
@@ -99,6 +113,28 @@ namespace das {
         }
     }
 
+    bool InputTextWithHint(vec4f vdiit, const char * label, const char * hint, ImGuiInputTextFlags_ flags, LineInfoArg * at, Context * context ) {
+        auto diit = cast<DasImguiInputText *>::to(vdiit);
+        if ( diit->buffer.size==0 ) {
+            builtin_array_resize(diit->buffer, 256, 1, context);
+        }
+        if ( diit->callback.capture ) {
+            diit->context = context;
+            diit->at = *at;
+            return ImGui::InputTextWithHint(
+                label,
+                hint,
+                diit->buffer.data,
+                diit->buffer.size,
+                flags,
+                &InputTextCallback,
+                diit
+            );
+        } else {
+            return ImGui::InputTextWithHint(label, hint, diit->buffer.data, diit->buffer.size, flags);
+        }
+    }
+
     // ImGui::ImGuiTextFilter::PassFilter
 
     bool PassFilter ( ImGuiTextFilter & filter, const char* text ) {
@@ -110,13 +146,13 @@ namespace das {
     }
 
     void AddText2( ImDrawList & drawList, const ImFont* font, float font_size, const ImVec2& pos, ImU32 col,
-        const char* text_begin, float wrap_width = 0.0f, const ImVec4* cpu_fine_clip_rect = nullptr) {
+        const char* text_begin, float wrap_width, const ImVec4* cpu_fine_clip_rect) {
         drawList.AddText(font,font_size,pos,col,text_begin,nullptr,wrap_width,cpu_fine_clip_rect);
     }
 
     // ImColor
 
-    ImColor HSV(float h, float s, float v, float a = 1.0f) {
+    ImColor HSV(float h, float s, float v, float a) {
         return ImColor::HSV(h,s,v,a);
     }
 
@@ -128,6 +164,10 @@ namespace das {
 
     int ImGTB_At ( ImGuiTextBuffer & buf, int32_t index ) {
         return buf[index];
+    }
+
+    void ImGTB_SetAt ( ImGuiTextBuffer & buf, int32_t index, int32_t value ) {
+        buf.Buf[index] = (char) value;
     }
 
     char * ImGTB_Slice ( ImGuiTextBuffer & buf, int32_t head, int32_t tail, Context * context, LineInfoArg * at ) {
@@ -177,7 +217,67 @@ namespace das {
     ImVec2 CalcTextSize(const char* text,bool hide_text_after_double_hash, float wrap_width) {
         return ImGui::CalcTextSize(text,nullptr,hide_text_after_double_hash,wrap_width);
     }
+
+    // Combo with accessor
+    struct ImGuiComboGetter {
+        Context *   context;
+        Lambda      lambda;
+        LineInfo    at;
+    };
+
+    bool ComboGetterCallback ( void* data, int idx, const char** out_text ) {
+        ImGuiComboGetter * getter = (ImGuiComboGetter *) data;
+        if ( !getter->lambda.capture ) {
+            getter->context->throw_error_at(getter->at, "expecting lambda");
+        }
+        *out_text = nullptr;
+        auto res = das_invoke_lambda<bool>::invoke<int,char **>(getter->context,getter->lambda,idx,(char **)out_text);
+        if ( *out_text==nullptr ) *out_text = "";
+        return res;
+    }
+
+    bool Combo ( vec4f cg, const char * label, int * current_item, int items_count, int popup_max_height_in_items, Context * ctx, LineInfoArg * at ) {
+        ImGuiComboGetter * getter = cast<ImGuiComboGetter *>::to(cg);
+        getter->context = ctx;
+        getter->at = *at;
+        return ImGui::Combo(label,current_item,&ComboGetterCallback,getter,items_count,popup_max_height_in_items);
+    }
+
+    // Plot lines or historgrams
+
+    struct ImGuiPlotGetter {
+        Context *   context;
+        Lambda      lambda;
+        LineInfo    at;
+    };
+
+    float PlotLinesCallback ( void* data, int idx ) {
+        ImGuiPlotGetter * getter = (ImGuiPlotGetter *) data;
+        if ( !getter->lambda.capture ) {
+            getter->context->throw_error_at(getter->at, "expecting lambda");
+        }
+        return  das_invoke_lambda<float>::invoke<int>(getter->context,getter->lambda,idx);
+    }
+
+    void PlotLines ( vec4f igpg, const char* label, int values_count, int values_offset, const char* overlay_text,
+        float scale_min, float scale_max, ImVec2 graph_size, Context * ctx, LineInfoArg * at ) {
+        ImGuiPlotGetter * getter = cast<ImGuiPlotGetter *>::to(igpg);
+        getter->context = ctx;
+        getter->at = *at;
+        return ImGui::PlotLines(label, &PlotLinesCallback, getter, values_count, values_offset, overlay_text, scale_min, scale_max, graph_size );
+    }
+
+    void PlotHistogram ( vec4f igpg, const char* label, int values_count, int values_offset, const char* overlay_text,
+        float scale_min, float scale_max, ImVec2 graph_size, Context * ctx, LineInfoArg * at ) {
+        ImGuiPlotGetter * getter = cast<ImGuiPlotGetter *>::to(igpg);
+        getter->context = ctx;
+        getter->at = *at;
+        return ImGui::PlotHistogram(label, &PlotLinesCallback, getter, values_count, values_offset, overlay_text, scale_min, scale_max, graph_size );
+    }
 }
+
+////////
+// IMGUI
 
 Module_imgui::Module_imgui() : Module("imgui") {
     // check version
@@ -185,12 +285,9 @@ Module_imgui::Module_imgui() : Module("imgui") {
     // make basic module
     lib.addModule(this);
     lib.addBuiltInModule();
-    addAnnotation(make_smart<DummyTypeAnnotation>("ImGuiContext", "ImGuiContext",
-        1, 1)); // sizeof(ImGuiContext), alignof(ImGuiContext)));
-    addAnnotation(make_smart<DummyTypeAnnotation>("ImDrawListSharedData", "ImDrawListSharedData",
-        1, 1)); // sizeof(ImGuiContext), alignof(ImGuiContext)));
-    addAnnotation(make_smart<DummyTypeAnnotation>("ImFontBuilderIO", "ImFontBuilderIO",
-        1, 1)); // sizeof(ImGuiContext), alignof(ImGuiContext)));
+    addAnnotation(make_smart<DummyTypeAnnotation>("ImGuiContext", "ImGuiContext", 1, 1));
+    addAnnotation(make_smart<DummyTypeAnnotation>("ImDrawListSharedData", "ImDrawListSharedData", 1, 1));
+    addAnnotation(make_smart<DummyTypeAnnotation>("ImFontBuilderIO", "ImFontBuilderIO", 1, 1));
     // constants
     addConstant(*this,"IMGUI_VERSION", IMGUI_VERSION);
     addConstant(*this,"IMGUI_VERSION_NUM", IMGUI_VERSION_NUM);
@@ -199,6 +296,12 @@ Module_imgui::Module_imgui() : Module("imgui") {
 bool Module_imgui::initDependencies() {
     if ( initialized ) return true;
     initialized = true;
+#if USE_GENERATED
+    // aliases
+    addAlias(typeFactory<ImVec2>::make(lib));
+    addAlias(typeFactory<ImVec4>::make(lib));
+    addAlias(typeFactory<ImColor>::make(lib));
+#endif
     initEnums();
     initAnnotations();
     initFunctions();
@@ -210,18 +313,11 @@ bool Module_imgui::initDependencies() {
     addConstant(*this,"IM_COL32_G_SHIFT",uint32_t(IM_COL32_G_SHIFT));
     addConstant(*this,"IM_COL32_B_SHIFT",uint32_t(IM_COL32_B_SHIFT));
     addConstant(*this,"IM_COL32_A_SHIFT",uint32_t(IM_COL32_A_SHIFT));
-    // vector C-tors
-    addCtor<ImVec2>(*this,lib,"ImVec2","ImVec2");
-    addCtor<ImVec2,float,float>(*this,lib,"ImVec2","ImVec2");
-    addCtor<ImVec4>(*this,lib,"ImVec4","ImVec4");
-    addCtor<ImVec4,float,float,float,float>(*this,lib,"ImVec4","ImVec4");
     // imgui text filter
     addExtern<DAS_BIND_FUN(das::PassFilter)>(*this, lib, "PassFilter",
         SideEffects::worstDefault, "das::PassFilter");
     // imcolor
-    addCtor<ImColor>(*this,lib,"ImColor","ImColor");
-    addCtor<ImColor,const ImVec4 &>(*this,lib,"ImColor","ImColor");
-    addExtern<DAS_BIND_FUN(das::HSV),SimNode_ExtFuncCallAndCopyOrMove>(*this, lib, "HSV",
+    addExtern<DAS_BIND_FUN(das::HSV)>(*this, lib, "HSV",
         SideEffects::none, "das::HSV")
             ->args({"h","s","v","a"})
                 ->arg_init(3,make_smart<ExprConstFloat>(1.0f));
@@ -242,6 +338,8 @@ bool Module_imgui::initDependencies() {
         SideEffects::worstDefault,"das::TextDisabled");
     addExtern<DAS_BIND_FUN(das::TextColored)>(*this,lib,"TextColored",
         SideEffects::worstDefault,"das::TextColored");
+    addExtern<DAS_BIND_FUN(das::LabelText)>(*this,lib,"LabelText",
+        SideEffects::worstDefault,"das::LabelText");
     addExtern<DAS_BIND_FUN(das::LogText)>(*this,lib,"LogText",
         SideEffects::worstDefault,"das::LogText");
     addExtern<DAS_BIND_FUN(das::TreeNode)>(*this,lib,"TreeNode",
@@ -261,11 +359,17 @@ bool Module_imgui::initDependencies() {
     // input text
     addExtern<DAS_BIND_FUN(das::InputText)>(*this, lib, "_builtin_InputText",
         SideEffects::worstDefault, "das::InputText");
+    addExtern<DAS_BIND_FUN(das::InputTextWithHint)>(*this, lib, "_builtin_InputTextWithHint",
+        SideEffects::worstDefault, "das::InputTextWithHint");
+    addExtern<DAS_BIND_FUN(das::InputTextMultiline)>(*this, lib, "_builtin_InputTextMultiline",
+        SideEffects::worstDefault, "das::InputTextMultiline");
     // imgui text buffer
     addExtern<DAS_BIND_FUN(das::ImGTB_Append)>(*this,lib,"append",
         SideEffects::worstDefault,"das::ImGTB_Append");
-    addExtern<DAS_BIND_FUN(das::ImGTB_At)>(*this,lib,"at",      // TODO: do we need to learn to map operator []?
+    addExtern<DAS_BIND_FUN(das::ImGTB_At)>(*this,lib,"at",          // TODO: do we need to learn to map operator []?
         SideEffects::worstDefault,"das::ImGTB_At");
+    addExtern<DAS_BIND_FUN(das::ImGTB_SetAt)>(*this,lib,"set_at",   // TODO: do we need to learn to map operator []?
+        SideEffects::worstDefault,"das::ImGTB_SetAt");
     addExtern<DAS_BIND_FUN(das::ImGTB_Slice)>(*this,lib,"slice",
         SideEffects::worstDefault,"das::ImGTB_Slice");
     // ImGuiInputTextCallbackData
@@ -280,10 +384,18 @@ bool Module_imgui::initDependencies() {
     addExtern<DAS_BIND_FUN(das::SortDirection)>(*this,lib,"SortDirection",
         SideEffects::none,"das::SortDirection");
     // CalcTextSize
-    addExtern<DAS_BIND_FUN(das::CalcTextSize), SimNode_ExtFuncCallAndCopyOrMove>(*this, lib, "CalcTextSize",SideEffects::worstDefault, "ImGui::CalcTextSize")
+    addExtern<DAS_BIND_FUN(das::CalcTextSize)>(*this, lib, "CalcTextSize",SideEffects::worstDefault, "das::CalcTextSize")
 	->args({"text","hide_text_after_double_hash","wrap_width"})
 		->arg_init(1,make_smart<ExprConstBool>(false))
 		->arg_init(2,make_smart<ExprConstFloat>(-1.0f));
+    // combo
+    addExtern<DAS_BIND_FUN(das::Combo)>(*this, lib, "_builtin_Combo",
+        SideEffects::worstDefault, "das::Combo");
+    // plot lines and historgram
+    addExtern<DAS_BIND_FUN(das::PlotLines)>(*this, lib, "_builtin_PlotLines",
+        SideEffects::worstDefault, "das::PlotLines");
+    addExtern<DAS_BIND_FUN(das::PlotHistogram)>(*this, lib, "_builtin_PlotHistogram",
+        SideEffects::worstDefault, "das::PlotHistogram");
     // additional default values
     findUniqueFunction("AddRect")
         ->arg_init(5, make_smart<ExprConstEnumeration>("All",makeType<ImDrawCornerFlags_>(lib)));
@@ -306,6 +418,21 @@ bool Module_imgui::initDependencies() {
     }
     findUniqueFunction("TableSetupColumn")
         ->arg_init(3, make_smart<ExprConstUInt>(uint32_t(0)));
+    findUniqueFunction("BeginListBox")
+        ->arg_init(1, make_smart<ExprCall>(LineInfo(), "ImVec2"));
+    findUniqueFunction("ColorButton")
+        ->arg_init(3, make_smart<ExprCall>(LineInfo(), "ImVec2"));
+    // time to fix-up const & ImVec2 and const & ImVec4
+    for ( auto fn : this->functions ) {
+        const auto&  pfn = fn.second;
+        for ( auto & arg : pfn->arguments ) {
+            if ( arg->type->constant && arg->type->ref && arg->type->dim.size()==0 ) {
+                if ( arg->type->baseType==Type::tFloat2 || arg->type->baseType==Type::tFloat4 ) {
+                    arg->type->ref = false;
+                }
+            }
+        }
+    }
 #endif
     return true;
 }
@@ -313,9 +440,69 @@ bool Module_imgui::initDependencies() {
 ModuleAotType Module_imgui::aotRequire ( TextWriter & tw ) const  {
     // add your stuff here
     tw << "#include <imgui.h>\n";
+    tw << "#include \"../modules/dasImGui/src/aot_imgui.h\"\n";
+    tw << "#include \"daScript/ast/ast.h\"\n";
+    tw << "#include \"daScript/simulate/bind_enum.h\"\n";
+    tw << "#include \"../modules/dasImGui/src/module_imgui.h\"\n";
     // specifying AOT type, in this case direct cpp mode (and not hybrid mode)
     return ModuleAotType::cpp;
 }
 
 // registering module, so that its available via 'NEED_MODULE' macro
 REGISTER_MODULE(Module_imgui);
+
+///////////
+// IMNODES
+
+Module_imnodes::Module_imnodes() : Module("imnodes") {
+}
+
+bool Module_imnodes::initDependencies() {
+    if ( initialized ) return true;
+    auto mod_imgui = Module::require("imgui");
+    if ( !mod_imgui ) return false;
+    if ( !mod_imgui->initDependencies() ) return false;
+    initialized = true;
+    // make basic module
+    lib.addModule(this);
+    lib.addBuiltInModule();
+    lib.addModule(mod_imgui);
+    addAnnotation(make_smart<DummyTypeAnnotation>("EditorContext", "EditorContext",1, 1));
+    initEnums();
+    initAnnotations();
+    initFunctions();
+    initMethods();
+#if USE_GENERATED
+    findUniqueFunction("BeginInputAttribute")
+        ->arg_init(1, make_smart<ExprConstEnumeration>("CircleFilled",makeType<imnodes::PinShape>(lib)));
+    findUniqueFunction("BeginOutputAttribute")
+        ->arg_init(1, make_smart<ExprConstEnumeration>("CircleFilled",makeType<imnodes::PinShape>(lib)));
+    // time to fix-up const & ImVec2 and const & ImVec4
+    for ( auto fn : this->functions ) {
+        const auto&  pfn = fn.second;
+        for ( auto & arg : pfn->arguments ) {
+            if ( arg->type->constant && arg->type->ref && arg->type->dim.size()==0 ) {
+                if ( arg->type->baseType==Type::tFloat2 || arg->type->baseType==Type::tFloat4 ) {
+                    arg->type->ref = false;
+                }
+            }
+        }
+    }
+#endif
+    return true;
+}
+
+ModuleAotType Module_imnodes::aotRequire ( TextWriter & tw ) const  {
+    // add your stuff here
+    tw << "#include <imgui.h>\n";
+    tw << "#include <imnodes.h>\n";
+    tw << "#include \"../modules/dasImGui/src/aot_imgui.h\"\n";
+    tw << "#include \"daScript/ast/ast.h\"\n";
+    tw << "#include \"daScript/simulate/bind_enum.h\"\n";
+    tw << "#include \"../modules/dasImGui/src/module_imgui.h\"\n";
+    // specifying AOT type, in this case direct cpp mode (and not hybrid mode)
+    return ModuleAotType::cpp;
+}
+
+// registering module, so that its available via 'NEED_MODULE' macro
+REGISTER_MODULE(Module_imnodes);

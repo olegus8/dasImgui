@@ -12,3 +12,6 @@ src/imgui_headers.h.json.log
 example/imgui.ini
 imgui-1.81/backends/imgui_impl_vulkan.h.json
 src/imgui_vulkan_headers.h.json.log
+example/_aot_generated/imgui_demo.das.cpp
+example/_aot_generated/imgui_opengl2.das.cpp
+daslib/_aot_generated/imgui_boost.das.cpp

@@ -16,20 +16,82 @@ protected:
     void initMethods();
 };
 
-namespace das {
-    template <>
-    struct cast_arg<ImVec2> {
-        static __forceinline ImVec2 to ( Context & ctx, SimNode * node ) {
-            return * (ImVec2 *) node->evalPtr(ctx);
-        }
-    };
-}
+class Module_imnodes : public Module {
+    ModuleLibrary lib;
+public:
+    Module_imnodes();
+    bool initialized = false;
+    virtual bool initDependencies() override;
+    virtual ModuleAotType aotRequire ( TextWriter & tw ) const override;
+protected:
+    void initEnums();
+    void initAnnotations();
+    void initFunctions();
+    void initMethods();
+};
 
 MAKE_TYPE_FACTORY(ImGuiContext,ImGuiContext);
 MAKE_TYPE_FACTORY(ImDrawListSharedData,ImDrawListSharedData);
 MAKE_TYPE_FACTORY(ImFontBuilderIO,ImFontBuilderIO);
+MAKE_TYPE_FACTORY(EditorContext,imnodes::EditorContext);
 
 namespace das {
+
+template <> struct typeFactory<ImColor> {
+	static TypeDeclPtr make(const ModuleLibrary &) {
+		auto t = make_smart<TypeDecl>(Type::tFloat4);
+		t->alias = "ImColor";
+		t->aotAlias = true;
+		return t;
+	}
+};
+template <> struct typeName<ImColor> { constexpr static const char * name() { return "ImColor"; } };
+template <>
+struct cast_arg<const ImColor &> {
+    static __forceinline ImColor to ( Context & ctx, SimNode * node ) {
+        vec4f res = node->eval(ctx);
+        ImColor col; memcpy(&col,&res,sizeof(ImColor));
+        return col;
+    }
+};
+
+template <> struct typeFactory<ImVec2> {
+	static TypeDeclPtr make(const ModuleLibrary &) {
+		auto t = make_smart<TypeDecl>(Type::tFloat2);
+		t->alias = "ImVec2";
+		t->aotAlias = true;
+		return t;
+	}
+};
+template <> struct typeName<ImVec2> { constexpr static const char * name() { return "ImVec2"; } };
+template <> struct cast_arg<const ImVec2 &> {
+    static __forceinline ImVec2 to ( Context & ctx, SimNode * node ) {
+        vec4f res = node->eval(ctx);
+        ImVec2 v2; memcpy(&v2,&res,sizeof(ImVec2));
+        return v2;
+    }
+};
+
+template <> struct typeFactory<ImVec4> {
+	static TypeDeclPtr make(const ModuleLibrary &) {
+		auto t = make_smart<TypeDecl>(Type::tFloat4);
+		t->alias = "ImVec4";
+		t->aotAlias = true;
+		return t;
+	}
+};
+template <> struct typeName<ImVec4> { constexpr static const char * name() { return "ImVec4"; } };
+template <> struct cast_arg<const ImVec4 &> {
+    static __forceinline ImVec4 to ( Context & ctx, SimNode * node ) {
+        vec4f res = node->eval(ctx);
+        ImVec4 v4; memcpy(&v4,&res,sizeof(ImVec4));
+        return v4;
+    }
+};
+
+template<> struct das::cast <ImVec2>  : cast_fVec_half<ImVec2> {};
+template<> struct das::cast <ImVec4>  : cast_fVec<ImVec4> {};
+template<> struct das::cast <ImColor> : cast_fVec<ImColor> {};
 
 template <>
 struct typeName<char> {
