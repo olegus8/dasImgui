@@ -1,6 +1,8 @@
 #pragma once
 
-#define USE_GENERATED   1
+#define USE_GENERATED           1
+
+#define USE_GENERATED_SPLIT     1
 
 class Module_imgui : public Module {
     ModuleLibrary lib;
@@ -14,26 +16,33 @@ protected:
     void initAnnotations();
     void initFunctions();
     void initMethods();
-};
-
-class Module_imnodes : public Module {
-    ModuleLibrary lib;
-public:
-    Module_imnodes();
-    bool initialized = false;
-    virtual bool initDependencies() override;
-    virtual ModuleAotType aotRequire ( TextWriter & tw ) const override;
 protected:
-    void initEnums();
-    void initAnnotations();
-    void initFunctions();
-    void initMethods();
+    void initFunctions_0();
+    void initFunctions_1();
+    void initFunctions_2();
+    void initFunctions_3();
+    void initFunctions_4();
+    void initFunctions_5();
+    void initFunctions_6();
+    void initFunctions_7();
+    void initFunctions_8();
+    void initFunctions_9();
+    void initFunctions_10();
+    void initFunctions_11();
+    void initFunctions_12();
+    void initFunctions_13();
+    void initFunctions_14();
+    void initFunctions_15();
+    void initFunctions_16();
+    void initFunctions_17();
+    void initFunctions_18();
+    void initFunctions_19();
+    void initFunctions_20();
 };
 
 MAKE_TYPE_FACTORY(ImGuiContext,ImGuiContext);
 MAKE_TYPE_FACTORY(ImDrawListSharedData,ImDrawListSharedData);
 MAKE_TYPE_FACTORY(ImFontBuilderIO,ImFontBuilderIO);
-MAKE_TYPE_FACTORY(EditorContext,imnodes::EditorContext);
 
 namespace das {
 
@@ -89,9 +98,9 @@ template <> struct cast_arg<const ImVec4 &> {
     }
 };
 
-template<> struct das::cast <ImVec2>  : cast_fVec_half<ImVec2> {};
-template<> struct das::cast <ImVec4>  : cast_fVec<ImVec4> {};
-template<> struct das::cast <ImColor> : cast_fVec<ImColor> {};
+template<> struct cast <ImVec2>  : cast_fVec_half<ImVec2> {};
+template<> struct cast <ImVec4>  : cast_fVec<ImVec4> {};
+template<> struct cast <ImColor> : cast_fVec<ImColor> {};
 
 template <>
 struct typeName<char> {

@@ -1,8 +1,8 @@
 #include "daScript/daScript.h"
 #include "daScript/ast/ast_typefactory_bind.h"
 
-#include <imgui.h>
-#include <imnodes.h>
+#include "imgui_stub.h"
+#include "imnodes_stub.h"
 
 using namespace das;
 
@@ -18,6 +18,8 @@ using namespace das;
 
 void Module_imgui::initFunctions() {
 #if USE_GENERATED
+#if !USE_GENERATED_SPLIT
 #include "module_imgui.inc"
+#endif
 #endif
 }

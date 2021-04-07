@@ -3,7 +3,7 @@ addConstant(*this,"IM_UNICODE_CODEPOINT_MAX",uint32_t(0x10FFFF));
 addConstant(*this,"IM_UNICODE_CODEPOINT_MAX",uint32_t(0xFFFF));
 addConstant(*this,"IM_COL32_A_MASK",uint32_t(0xFF000000));
 addConstant(*this,"IM_COL32_A_MASK",uint32_t(0xFF000000));
-addConstant(*this,"IMGUI_VERSION_NUM",int32_t(18101));
+addConstant(*this,"IMGUI_VERSION_NUM",int32_t(18200));
 addConstant(*this,"IM_COL32_R_SHIFT",int32_t(16));
 addConstant(*this,"IM_COL32_G_SHIFT",int32_t(8));
 addConstant(*this,"IM_COL32_B_SHIFT",int32_t(0));

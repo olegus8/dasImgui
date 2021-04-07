@@ -26,6 +26,31 @@ public:
 #endif
 #ifdef GLOBAL_NAMESPACE
 
+class EnumerationImDrawFlags : public das::Enumeration {
+public:
+    EnumerationImDrawFlags() : das::Enumeration("ImDrawFlags") {
+        external = true;
+        cppName = "ImDrawFlags_";
+        baseType = (das::Type) das::ToBasicType< das::underlying_type< ImDrawFlags_ >::type >::type;
+		addIEx("None", "ImDrawFlags_None", int64_t(ImDrawFlags_::ImDrawFlags_None), das::LineInfo());
+		addIEx("Closed", "ImDrawFlags_Closed", int64_t(ImDrawFlags_::ImDrawFlags_Closed), das::LineInfo());
+		addIEx("RoundCornersTopLeft", "ImDrawFlags_RoundCornersTopLeft", int64_t(ImDrawFlags_::ImDrawFlags_RoundCornersTopLeft), das::LineInfo());
+		addIEx("RoundCornersTopRight", "ImDrawFlags_RoundCornersTopRight", int64_t(ImDrawFlags_::ImDrawFlags_RoundCornersTopRight), das::LineInfo());
+		addIEx("RoundCornersBottomLeft", "ImDrawFlags_RoundCornersBottomLeft", int64_t(ImDrawFlags_::ImDrawFlags_RoundCornersBottomLeft), das::LineInfo());
+		addIEx("RoundCornersBottomRight", "ImDrawFlags_RoundCornersBottomRight", int64_t(ImDrawFlags_::ImDrawFlags_RoundCornersBottomRight), das::LineInfo());
+		addIEx("RoundCornersNone", "ImDrawFlags_RoundCornersNone", int64_t(ImDrawFlags_::ImDrawFlags_RoundCornersNone), das::LineInfo());
+		addIEx("RoundCornersTop", "ImDrawFlags_RoundCornersTop", int64_t(ImDrawFlags_::ImDrawFlags_RoundCornersTop), das::LineInfo());
+		addIEx("RoundCornersBottom", "ImDrawFlags_RoundCornersBottom", int64_t(ImDrawFlags_::ImDrawFlags_RoundCornersBottom), das::LineInfo());
+		addIEx("RoundCornersLeft", "ImDrawFlags_RoundCornersLeft", int64_t(ImDrawFlags_::ImDrawFlags_RoundCornersLeft), das::LineInfo());
+		addIEx("RoundCornersRight", "ImDrawFlags_RoundCornersRight", int64_t(ImDrawFlags_::ImDrawFlags_RoundCornersRight), das::LineInfo());
+		addIEx("RoundCornersAll", "ImDrawFlags_RoundCornersAll", int64_t(ImDrawFlags_::ImDrawFlags_RoundCornersAll), das::LineInfo());
+		addIEx("RoundCornersDefault_", "ImDrawFlags_RoundCornersDefault_", int64_t(ImDrawFlags_::ImDrawFlags_RoundCornersDefault_), das::LineInfo());
+		addIEx("RoundCornersMask_", "ImDrawFlags_RoundCornersMask_", int64_t(ImDrawFlags_::ImDrawFlags_RoundCornersMask_), das::LineInfo());
+	}
+};
+#endif
+#ifdef GLOBAL_NAMESPACE
+
 class EnumerationImGuiHoveredFlags : public das::Enumeration {
 public:
     EnumerationImGuiHoveredFlags() : das::Enumeration("ImGuiHoveredFlags") {
@@ -203,9 +228,6 @@ public:
 		addIEx("DataTypeMask", "ImGuiColorEditFlags__DataTypeMask", int64_t(ImGuiColorEditFlags_::ImGuiColorEditFlags__DataTypeMask), das::LineInfo());
 		addIEx("PickerMask", "ImGuiColorEditFlags__PickerMask", int64_t(ImGuiColorEditFlags_::ImGuiColorEditFlags__PickerMask), das::LineInfo());
 		addIEx("InputMask", "ImGuiColorEditFlags__InputMask", int64_t(ImGuiColorEditFlags_::ImGuiColorEditFlags__InputMask), das::LineInfo());
-		addIEx("RGB", "ImGuiColorEditFlags_RGB", int64_t(ImGuiColorEditFlags_::ImGuiColorEditFlags_RGB), das::LineInfo());
-		addIEx("HSV", "ImGuiColorEditFlags_HSV", int64_t(ImGuiColorEditFlags_::ImGuiColorEditFlags_HSV), das::LineInfo());
-		addIEx("HEX", "ImGuiColorEditFlags_HEX", int64_t(ImGuiColorEditFlags_::ImGuiColorEditFlags_HEX), das::LineInfo());
 	}
 };
 #endif
@@ -438,27 +460,6 @@ public:
 		addIEx("ImGuiMouseCursor_Hand", "ImGuiMouseCursor_Hand", int64_t(ImGuiMouseCursor_::ImGuiMouseCursor_Hand), das::LineInfo());
 		addIEx("ImGuiMouseCursor_NotAllowed", "ImGuiMouseCursor_NotAllowed", int64_t(ImGuiMouseCursor_::ImGuiMouseCursor_NotAllowed), das::LineInfo());
 		addIEx("ImGuiMouseCursor_COUNT", "ImGuiMouseCursor_COUNT", int64_t(ImGuiMouseCursor_::ImGuiMouseCursor_COUNT), das::LineInfo());
-	}
-};
-#endif
-#ifdef GLOBAL_NAMESPACE
-
-class EnumerationImDrawCornerFlags : public das::Enumeration {
-public:
-    EnumerationImDrawCornerFlags() : das::Enumeration("ImDrawCornerFlags") {
-        external = true;
-        cppName = "ImDrawCornerFlags_";
-        baseType = (das::Type) das::ToBasicType< das::underlying_type< ImDrawCornerFlags_ >::type >::type;
-		addIEx("None", "ImDrawCornerFlags_None", int64_t(ImDrawCornerFlags_::ImDrawCornerFlags_None), das::LineInfo());
-		addIEx("TopLeft", "ImDrawCornerFlags_TopLeft", int64_t(ImDrawCornerFlags_::ImDrawCornerFlags_TopLeft), das::LineInfo());
-		addIEx("TopRight", "ImDrawCornerFlags_TopRight", int64_t(ImDrawCornerFlags_::ImDrawCornerFlags_TopRight), das::LineInfo());
-		addIEx("BotLeft", "ImDrawCornerFlags_BotLeft", int64_t(ImDrawCornerFlags_::ImDrawCornerFlags_BotLeft), das::LineInfo());
-		addIEx("BotRight", "ImDrawCornerFlags_BotRight", int64_t(ImDrawCornerFlags_::ImDrawCornerFlags_BotRight), das::LineInfo());
-		addIEx("Top", "ImDrawCornerFlags_Top", int64_t(ImDrawCornerFlags_::ImDrawCornerFlags_Top), das::LineInfo());
-		addIEx("Bot", "ImDrawCornerFlags_Bot", int64_t(ImDrawCornerFlags_::ImDrawCornerFlags_Bot), das::LineInfo());
-		addIEx("Left", "ImDrawCornerFlags_Left", int64_t(ImDrawCornerFlags_::ImDrawCornerFlags_Left), das::LineInfo());
-		addIEx("Right", "ImDrawCornerFlags_Right", int64_t(ImDrawCornerFlags_::ImDrawCornerFlags_Right), das::LineInfo());
-		addIEx("All", "ImDrawCornerFlags_All", int64_t(ImDrawCornerFlags_::ImDrawCornerFlags_All), das::LineInfo());
 	}
 };
 #endif
@@ -711,7 +712,7 @@ public:
 		addIEx("AllowTabInput", "ImGuiInputTextFlags_AllowTabInput", int64_t(ImGuiInputTextFlags_::ImGuiInputTextFlags_AllowTabInput), das::LineInfo());
 		addIEx("CtrlEnterForNewLine", "ImGuiInputTextFlags_CtrlEnterForNewLine", int64_t(ImGuiInputTextFlags_::ImGuiInputTextFlags_CtrlEnterForNewLine), das::LineInfo());
 		addIEx("NoHorizontalScroll", "ImGuiInputTextFlags_NoHorizontalScroll", int64_t(ImGuiInputTextFlags_::ImGuiInputTextFlags_NoHorizontalScroll), das::LineInfo());
-		addIEx("AlwaysInsertMode", "ImGuiInputTextFlags_AlwaysInsertMode", int64_t(ImGuiInputTextFlags_::ImGuiInputTextFlags_AlwaysInsertMode), das::LineInfo());
+		addIEx("AlwaysOverwrite", "ImGuiInputTextFlags_AlwaysOverwrite", int64_t(ImGuiInputTextFlags_::ImGuiInputTextFlags_AlwaysOverwrite), das::LineInfo());
 		addIEx("ReadOnly", "ImGuiInputTextFlags_ReadOnly", int64_t(ImGuiInputTextFlags_::ImGuiInputTextFlags_ReadOnly), das::LineInfo());
 		addIEx("Password", "ImGuiInputTextFlags_Password", int64_t(ImGuiInputTextFlags_::ImGuiInputTextFlags_Password), das::LineInfo());
 		addIEx("NoUndoRedo", "ImGuiInputTextFlags_NoUndoRedo", int64_t(ImGuiInputTextFlags_::ImGuiInputTextFlags_NoUndoRedo), das::LineInfo());
@@ -913,7 +914,6 @@ public:
 		addIEx("NoRoundToFormat", "ImGuiSliderFlags_NoRoundToFormat", int64_t(ImGuiSliderFlags_::ImGuiSliderFlags_NoRoundToFormat), das::LineInfo());
 		addIEx("NoInput", "ImGuiSliderFlags_NoInput", int64_t(ImGuiSliderFlags_::ImGuiSliderFlags_NoInput), das::LineInfo());
 		addIEx("InvalidMask_", "ImGuiSliderFlags_InvalidMask_", int64_t(ImGuiSliderFlags_::ImGuiSliderFlags_InvalidMask_), das::LineInfo());
-		addIEx("ClampOnInput", "ImGuiSliderFlags_ClampOnInput", int64_t(ImGuiSliderFlags_::ImGuiSliderFlags_ClampOnInput), das::LineInfo());
 	}
 };
 #endif

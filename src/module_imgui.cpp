@@ -1,12 +1,13 @@
 #include "daScript/daScript.h"
 #include "daScript/ast/ast_typefactory_bind.h"
 
-#include <imgui.h>
-#include <imnodes.h>
+#include "imgui_stub.h"
+#include "imnodes_stub.h"
 
 using namespace das;
 
 #include "need_imgui.h"
+#include "need_imnodes.h"
 
 #if USE_GENERATED
 
@@ -18,40 +19,40 @@ using namespace das;
 
 namespace das {
     void Text ( const char * txt ) {
-        ImGui::Text(txt);
+        ImGui::Text("%s",txt);
     }
     void LabelText ( const char * lab, const char * txt ) {
-        ImGui::LabelText(lab, txt);
+        ImGui::LabelText(lab,"%s",txt);
     }
     void TextWrapped ( const char * txt ) {
-        ImGui::TextWrapped(txt);
+        ImGui::TextWrapped("%s",txt);
     }
     void TextDisabled ( const char * txt ) {
-        ImGui::TextDisabled(txt);
+        ImGui::TextDisabled("%s",txt);
     }
     void TextColored ( const ImVec4 & col, const char * txt ) {
-        ImGui::TextColored(col,txt);
+        ImGui::TextColored(col,"%s",txt);
     }
     void LogText ( const char * txt ) {
-        ImGui::LogText(txt);
+        ImGui::LogText("%s",txt);
     }
     bool TreeNode ( const char * id, const char * txt ) {
-        return ImGui::TreeNode(id,txt);
+        return ImGui::TreeNode(id,"%s",txt);
     }
     bool TreeNodeEx ( const char * id, ImGuiTreeNodeFlags_ flags, const char * txt ) {
-        return ImGui::TreeNodeEx(id, flags, txt);
+        return ImGui::TreeNodeEx(id,flags,"%s",txt);
     }
     bool TreeNodeEx2 ( const void * id, ImGuiTreeNodeFlags_ flags, const char * txt ) {
-        return ImGui::TreeNodeEx(id, flags, txt);
+        return ImGui::TreeNodeEx(id,flags,"%s",txt);
     }
     void TextUnformatted ( const char * txt ) {
         ImGui::TextUnformatted(txt, nullptr);
     }
     void BulletText ( const char * txt ) {
-        ImGui::BulletText(txt);
+        ImGui::BulletText("%s",txt);
     }
     void SetTooltip ( const char * txt ) {
-        ImGui::SetTooltip(txt);
+        ImGui::SetTooltip("%s",txt);
     }
 
     struct DasImguiInputText {
@@ -304,7 +305,31 @@ bool Module_imgui::initDependencies() {
 #endif
     initEnums();
     initAnnotations();
+#if USE_GENERATED_SPLIT
+    initFunctions_0();
+    initFunctions_1();
+    initFunctions_2();
+    initFunctions_3();
+    initFunctions_4();
+    initFunctions_5();
+    initFunctions_6();
+    initFunctions_7();
+    initFunctions_8();
+    initFunctions_9();
+    initFunctions_10();
+    initFunctions_11();
+    initFunctions_12();
+    initFunctions_13();
+    initFunctions_14();
+    initFunctions_15();
+    initFunctions_16();
+    initFunctions_17();
+    initFunctions_18();
+    initFunctions_19();
+    initFunctions_20();
+#else
     initFunctions();
+#endif
     initMethods();
 #if USE_GENERATED
     // constants
@@ -398,9 +423,9 @@ bool Module_imgui::initDependencies() {
         SideEffects::worstDefault, "das::PlotHistogram");
     // additional default values
     findUniqueFunction("AddRect")
-        ->arg_init(5, make_smart<ExprConstEnumeration>("All",makeType<ImDrawCornerFlags_>(lib)));
+        ->arg_init(5, make_smart<ExprConstEnumeration>("RoundCornersAll",makeType<ImDrawFlags_>(lib)));
     findUniqueFunction("AddRectFilled")
-        ->arg_init(5, make_smart<ExprConstEnumeration>("All",makeType<ImDrawCornerFlags_>(lib)));
+        ->arg_init(5, make_smart<ExprConstEnumeration>("RoundCornersAll",makeType<ImDrawFlags_>(lib)));
     findUniqueFunction("BeginTable")
         ->arg_init(3, make_smart<ExprCall>(LineInfo(), "ImVec2"));
     for ( auto & fn : functionsByName["Selectable"] ) {
@@ -439,11 +464,12 @@ bool Module_imgui::initDependencies() {
 
 ModuleAotType Module_imgui::aotRequire ( TextWriter & tw ) const  {
     // add your stuff here
-    tw << "#include <imgui.h>\n";
-    tw << "#include \"../modules/dasImGui/src/aot_imgui.h\"\n";
+    tw << "#include \"../modules/dasImgui/src/imgui_stub.h\"\n";
+    tw << "#include \"../modules/dasImgui/src/imnodes_stub.h\"\n";
+    tw << "#include \"../modules/dasImgui/src/aot_imgui.h\"\n";
     tw << "#include \"daScript/ast/ast.h\"\n";
     tw << "#include \"daScript/simulate/bind_enum.h\"\n";
-    tw << "#include \"../modules/dasImGui/src/module_imgui.h\"\n";
+    tw << "#include \"../modules/dasImgui/src/module_imgui.h\"\n";
     // specifying AOT type, in this case direct cpp mode (and not hybrid mode)
     return ModuleAotType::cpp;
 }
@@ -468,6 +494,7 @@ bool Module_imnodes::initDependencies() {
     lib.addBuiltInModule();
     lib.addModule(mod_imgui);
     addAnnotation(make_smart<DummyTypeAnnotation>("EditorContext", "EditorContext",1, 1));
+    addAnnotation(make_smart<DummyTypeAnnotation>("ImNodesContext", "imnodes::Context",1, 1));
     initEnums();
     initAnnotations();
     initFunctions();
@@ -494,12 +521,12 @@ bool Module_imnodes::initDependencies() {
 
 ModuleAotType Module_imnodes::aotRequire ( TextWriter & tw ) const  {
     // add your stuff here
-    tw << "#include <imgui.h>\n";
-    tw << "#include <imnodes.h>\n";
-    tw << "#include \"../modules/dasImGui/src/aot_imgui.h\"\n";
+    tw << "#include \"../modules/dasImgui/src/imgui_stub.h\"\n";
+    tw << "#include \"../modules/dasImgui/src/imnodes_stub.h\"\n";
+    tw << "#include \"../modules/dasImgui/src/aot_imgui.h\"\n";
     tw << "#include \"daScript/ast/ast.h\"\n";
     tw << "#include \"daScript/simulate/bind_enum.h\"\n";
-    tw << "#include \"../modules/dasImGui/src/module_imgui.h\"\n";
+    tw << "#include \"../modules/dasImgui/src/module_imgui.h\"\n";
     // specifying AOT type, in this case direct cpp mode (and not hybrid mode)
     return ModuleAotType::cpp;
 }

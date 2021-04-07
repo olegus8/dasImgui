@@ -1,6 +1,6 @@
 #include "daScript/daScript.h"
 
-#include <imgui.h>
+#include "imgui_stub.h"
 #include <GLFW/glfw3.h>
 
 #include "..\imgui\backends\imgui_impl_opengl2.h"
@@ -89,7 +89,8 @@ public:
         return true;
     }
     virtual ModuleAotType aotRequire ( TextWriter & tw ) const override {
-        tw << "#include <imgui.h>\n";
+        tw << "#include \"../modules/dasImgui/src/imgui_stub.h\"\n";
+        tw << "#include \"../modules/dasImgui/src/imnodes_stub.h\"\n";
         tw << "#include <backends/imgui_impl_glfw.h>\n";
         tw << "#include <backends/imgui_impl_opengl2.h>\n";
         return ModuleAotType::cpp;

@@ -2,9 +2,9 @@
 
 namespace das {
 
-    template <> struct das::das_alias<ImVec2> : das::das_alias_vec<ImVec2,float2> {};
-    template <> struct das::das_alias<ImVec4> : das::das_alias_vec<ImVec4,float4> {};
-    template <> struct das::das_alias<ImColor> : das::das_alias_vec<ImColor,float4> {};
+    template <> struct das_alias<ImVec2>  : das_alias_vec<ImVec2,float2> {};
+    template <> struct das_alias<ImVec4>  : das_alias_vec<ImVec4,float4> {};
+    template <> struct das_alias<ImColor> : das_alias_vec<ImColor,float4> {};
     template <typename TT>
     struct das_index<ImVector<TT>> : das_default_vector_index<ImVector<TT>, TT> {};
     template <typename TT>

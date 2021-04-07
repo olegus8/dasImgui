@@ -6,7 +6,7 @@ def main
     // configure
 
     blocked_type_names <- [{auto[]
-        // "ImVector";
+        "va_list";
         "ImGuiStoragePair";
         "ImDrawListSharedData";
         "ImGuiInputTextCallback"
@@ -53,6 +53,7 @@ def main
         "ImGuiInputTextFlags_" => [[ExEnum() name = "ImGuiInputTextFlags", isFlags=true]];
         "ImGuiColorEditFlags_" => [[ExEnum() name = "ImGuiColorEditFlags", isFlags=true]];
         "ImDrawCornerFlags_" => [[ExEnum() name = "ImDrawCornerFlags", isFlags=true]];
+        "ImDrawFlags_" => [[ExEnum() name = "ImDrawFlags", isFlags=true]];
         "ImGuiTabBarFlags_" => [[ExEnum() name = "ImGuiTabBarFlags", isFlags=true]];
         "ImGuiTabItemFlags_" => [[ExEnum() name = "ImGuiTabItemFlags", isFlags=true]];
         "ImGuiTreeNodeFlags_" => [[ExEnum() name = "ImGuiTreeNodeFlags", isFlags=true]];
@@ -97,8 +98,33 @@ def main
     }}
 
     // generate
-
     var args <- get_command_line_arguments()
+    generate_split_functions = true
+    split_prefix = "{args[4]}_split"
+
+    split_cpp_prefix="
+#include \"daScript\/daScript.h\"
+#include \"daScript\/ast\/ast_typefactory_bind.h\"
+#include \"imgui_stub.h\"
+#include \"imnodes_stub.h\"
+using namespace das;
+#include \"need_imgui.h\"
+#include \"need_imnodes.h\"
+#if USE_GENERATED
+#define GLOBAL_NAMESPACE    1
+#include \"module_imgui.h\"
+#endif
+void Module_imgui::initFunctions_$$$() \{
+#if USE_GENERATED
+#if USE_GENERATED_SPLIT
+"
+
+    split_cpp_suffix="
+#endif
+#endif
+}
+"
+
     bindHeaders(args[3], args[4])
     genDefineConstants(args[5],args[4])
 

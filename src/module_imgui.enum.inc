@@ -6,6 +6,10 @@
 addEnumeration(make_smart<EnumerationImGuiDataType>());
 #endif
 #ifdef GLOBAL_NAMESPACE
+addEnumeration(make_smart<EnumerationImDrawFlags>());
+addEnumFlagOps<ImDrawFlags_>(*this,lib,"ImDrawFlags_");
+#endif
+#ifdef GLOBAL_NAMESPACE
 addEnumeration(make_smart<EnumerationImGuiHoveredFlags>());
 addEnumFlagOps<ImGuiHoveredFlags_>(*this,lib,"ImGuiHoveredFlags_");
 #endif
@@ -57,10 +61,6 @@ addEnumFlagOps<ImGuiFocusedFlags_>(*this,lib,"ImGuiFocusedFlags_");
 #endif
 #ifdef GLOBAL_NAMESPACE
 addEnumeration(make_smart<EnumerationImGuiMouseCursor_>());
-#endif
-#ifdef GLOBAL_NAMESPACE
-addEnumeration(make_smart<EnumerationImDrawCornerFlags>());
-addEnumFlagOps<ImDrawCornerFlags_>(*this,lib,"ImDrawCornerFlags_");
 #endif
 #ifdef GLOBAL_NAMESPACE
 addEnumeration(make_smart<EnumerationImGuiTableBgTarget>());

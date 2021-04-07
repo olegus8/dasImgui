@@ -1058,10 +1058,12 @@ def DasShowDemoWindowLayout
         SameLine()
         Button("LEVERAGE\nBUZZWORD", size)
         SameLine()
+        /*
         if ListBoxHeader("List", size)
             Selectable("Selected", true)
             Selectable("Not Selected", false)
             ListBoxFooter()
+        */
         TreePop()
 
     if TreeNode("Text Baseline Alignment")
@@ -2202,9 +2204,9 @@ def DasShowExampleAppCustomRendering(p_open:bool? implicit)
             let p = GetCursorScreenPos()
             let col = ColorConvertFloat4ToU32(colf)
             let spacing = 10.0f
-            let corners_none = ImDrawCornerFlags None
-            let corners_all = ImDrawCornerFlags All
-            let corners_tl_br = ImDrawCornerFlags TopLeft | ImDrawCornerFlags BotRight
+            let corners_none = ImDrawFlags None
+            let corners_all = ImDrawFlags RoundCornersAll
+            let corners_tl_br = ImDrawFlags RoundCornersTopLeft | ImDrawFlags RoundCornersBottomRight
             let rounding = sz / 5.0f
             let circle_segments = circle_segments_override ? circle_segments_override_v : 0
             let curve_segments = curve_segments_override ? curve_segments_override_v : 0

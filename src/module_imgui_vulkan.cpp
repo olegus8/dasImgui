@@ -75,7 +75,7 @@ public:
         return true;
     }
     virtual ModuleAotType aotRequire ( TextWriter & tw ) const override {
-        tw << "#include <imgui.h>\n";
+        tw << "#include "imgui_stub.h"\n";
         return ModuleAotType::cpp;
     }
 };
